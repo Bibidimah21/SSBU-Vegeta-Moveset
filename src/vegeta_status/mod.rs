@@ -17,11 +17,12 @@ use crate::vegeta::CHARGE_TIME;
 
 pub static mut GALICKGUN_ROT: [i32;8] = [0;8];
 
-pub const FIGHTER_VEGETA_STATUS_KIND_SUPERDASHKICK: i32 = 0x1f0;
-pub const FIGHTER_VEGETA_STATUS_KIND_GALICK_GUN_START: i32 = 0x1f1;
-pub const FIGHTER_VEGETA_STATUS_KIND_GALICK_GUN_HOLD: i32 = 0x1f2;
-pub const FIGHTER_VEGETA_STATUS_KIND_GALICK_GUN_FIRE: i32 = 0x1f3;
-pub const FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_NUM_KIBLAST: i32 = 0x100000c7;
+pub const FIGHTER_VEGETA_STATUS_KIND_SUPERDASHKICK: i32 = 0x1eb; //491
+pub const FIGHTER_VEGETA_STATUS_KIND_GALICK_GUN_START: i32 = 0x1ec; //492
+pub const FIGHTER_VEGETA_STATUS_KIND_GALICK_GUN_HOLD: i32 = 0x1ed; //493
+pub const FIGHTER_VEGETA_STATUS_KIND_GALICK_GUN_FIRE: i32 = 0x1ee; //494
+pub const FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_KIBLAST_TOTAL: i32 = 0x100000c7;
+pub const FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_KIBLAST_RAPIDFIRE: i32 = 0x200000e5;
 
 
 #[status_script(agent = "lucario", status = FIGHTER_STATUS_KIND_SPECIAL_N, condition = LUA_SCRIPT_STATUS_FUNC_STATUS_MAIN)]
@@ -33,11 +34,12 @@ pub unsafe fn special_n_status(fighter: &mut L2CFighterCommon) -> L2CValue {
     )
      */
     let mut boma = &mut *fighter.module_accessor;
-    boma.inc_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_NUM_KIBLAST);
+    boma.inc_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_KIBLAST_TOTAL);
     if boma.is_grounded(){
         boma.change_motion(Hash40::new("kiblast_left"), false)
     }
     else{
+        boma.set_position_lock();
         boma.change_motion(Hash40::new("kiblastair_left"), false)
     }
     fighter.sub_shift_status_main(L2CValue::Ptr(special_n_main as *const () as _))
@@ -45,42 +47,69 @@ pub unsafe fn special_n_status(fighter: &mut L2CFighterCommon) -> L2CValue {
 
 unsafe extern "C" fn special_n_main(fighter: &mut L2CFighterCommon) -> L2CValue {
     let mut boma:&mut BattleObjectModuleAccessor = &mut *fighter.module_accessor;
-    if boma.motion_frame() > 10.0 && boma.is_button_on(Buttons::Special) && boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_NUM_KIBLAST) < 5{
-        if boma.is_motion(Hash40::new("kiblast_left")) || boma.is_motion(Hash40::new("kiblastair_left")){
-            boma.inc_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_NUM_KIBLAST);
-            if boma.is_grounded(){
-                boma.change_motion(Hash40::new("kiblast_right"), false)
+    if boma.is_button_on(Buttons::Attack){
+        boma.on_flag(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_KIBLAST_RAPIDFIRE);
+    }
+    if boma.motion_frame() > 10.0{
+        if boma.is_flag(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_KIBLAST_RAPIDFIRE) && boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_KIBLAST_TOTAL) < 8{
+            if boma.is_motion(Hash40::new("kiblast_left")) || boma.is_motion(Hash40::new("kiblastair_left")){
+                boma.inc_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_KIBLAST_TOTAL);
+                if boma.is_grounded(){
+                    boma.change_motion(Hash40::new("kiblast_right"), false)
+                }
+                else{
+                    boma.change_motion(Hash40::new("kiblastair_right"), false)
+                }
             }
             else{
-                boma.change_motion(Hash40::new("kiblastair_right"), false)
+                boma.inc_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_KIBLAST_TOTAL);
+                if boma.is_grounded(){
+                    boma.change_motion(Hash40::new("kiblast_left"), false)
+                }
+                else{
+                    boma.change_motion(Hash40::new("kiblastair_left"), false)
+                }
             }
         }
-        else{
-            boma.inc_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_NUM_KIBLAST);
-            if boma.is_grounded(){
-                boma.change_motion(Hash40::new("kiblast_left"), false)
+        else if boma.is_button_on(Buttons::Special) && boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_KIBLAST_TOTAL) < 8{
+            if boma.is_motion(Hash40::new("kiblast_left")) || boma.is_motion(Hash40::new("kiblastair_left")){
+                boma.inc_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_KIBLAST_TOTAL);
+                if boma.is_grounded(){
+                    boma.change_motion(Hash40::new("kiblast_right"), false)
+                }
+                else{
+                    boma.change_motion(Hash40::new("kiblastair_right"), false)
+                }
             }
             else{
-                boma.change_motion(Hash40::new("kiblastair_left"), false)
+                boma.inc_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_KIBLAST_TOTAL);
+                if boma.is_grounded(){
+                    boma.change_motion(Hash40::new("kiblast_left"), false)
+                }
+                else{
+                    boma.change_motion(Hash40::new("kiblastair_left"), false)
+                }
             }
         }
     }
     if boma.is_motion_end(){
         if boma.is_grounded() {
             fighter.change_status(FIGHTER_STATUS_KIND_WAIT.into(), false.into());
-        } else {
+        }
+        else {
             fighter.change_status(FIGHTER_STATUS_KIND_FALL.into(), false.into());
         }
     }
-
-
     L2CValue::I32(0)
 }
 
 #[status_script(agent = "lucario", status = FIGHTER_STATUS_KIND_SPECIAL_N, condition = LUA_SCRIPT_STATUS_FUNC_STATUS_END)]
 pub unsafe fn special_n_status_end(fighter: &mut L2CFighterCommon) -> L2CValue {
     let mut boma = &mut *fighter.module_accessor;
-    boma.set_int(0, FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_NUM_KIBLAST);
+    boma.set_int(0, FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_KIBLAST_TOTAL);
+    boma.off_flag(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_KIBLAST_RAPIDFIRE);
+    boma.unset_position_lock();
+
     L2CValue::I32(0)
 }
 
@@ -124,12 +153,12 @@ pub unsafe fn bigbangatk_end(fighter: &mut L2CFighterCommon) -> L2CValue {
     L2CValue::I32(0)
 }
 
-#[status_script(agent = "lucario", status = 0x1f0, condition = LUA_SCRIPT_STATUS_FUNC_STATUS_PRE)]
+#[status_script(agent = "lucario", status = 0x1eb, condition = LUA_SCRIPT_STATUS_FUNC_STATUS_PRE)]
 pub unsafe fn superdashkick_pre(fighter: &mut L2CFighterCommon) -> L2CValue {
     L2CValue::I32(0)
 }
 
-#[status_script(agent = "lucario", status = 0x1f0, condition = LUA_SCRIPT_STATUS_FUNC_STATUS_MAIN)]
+#[status_script(agent = "lucario", status = 0x1eb, condition = LUA_SCRIPT_STATUS_FUNC_STATUS_MAIN)]
 pub unsafe fn superdashkick(fighter: &mut L2CFighterCommon) -> L2CValue {
     let mut boma = &mut *fighter.module_accessor;
 
@@ -147,21 +176,21 @@ unsafe extern "C" fn superdashkick_main(fighter: &mut L2CFighterCommon) -> L2CVa
     L2CValue::I32(0)
 }
 
-#[status_script(agent = "lucario", status = 0x1f0, condition = LUA_SCRIPT_STATUS_FUNC_STATUS_END)]
+#[status_script(agent = "lucario", status = 0x1eb, condition = LUA_SCRIPT_STATUS_FUNC_STATUS_END)]
 pub unsafe fn superdashkick_end(fighter: &mut L2CFighterCommon) -> L2CValue {
     let mut boma = &mut *fighter.module_accessor;
     boma.set_gravity(true);
     L2CValue::I32(0)
 }
 
-#[status_script(agent = "lucario", status = 0x1f1, condition = LUA_SCRIPT_STATUS_FUNC_STATUS_PRE)]
+#[status_script(agent = "lucario", status = 0x1ec, condition = LUA_SCRIPT_STATUS_FUNC_STATUS_PRE)]
 pub unsafe fn galickgun_start_pre(fighter: &mut L2CFighterCommon) -> L2CValue {
     //println!("gg start pre");
 
     L2CValue::I32(0)
 }
 
-#[status_script(agent = "lucario", status = 0x1f1, condition = LUA_SCRIPT_STATUS_FUNC_STATUS_MAIN)]
+#[status_script(agent = "lucario", status = 0x1ec, condition = LUA_SCRIPT_STATUS_FUNC_STATUS_MAIN)]
 pub unsafe fn galickgun_start(fighter: &mut L2CFighterCommon) -> L2CValue {
     //println!("gg start");
     let mut boma = &mut *fighter.module_accessor;
@@ -193,7 +222,7 @@ unsafe extern "C" fn galickgun_start_main(fighter: &mut L2CFighterCommon) -> L2C
     L2CValue::I32(0)
 }
 
-#[status_script(agent = "lucario", status = 0x1f1, condition = LUA_SCRIPT_STATUS_FUNC_STATUS_END)]
+#[status_script(agent = "lucario", status = 0x1ec, condition = LUA_SCRIPT_STATUS_FUNC_STATUS_END)]
 pub unsafe fn galickgun_start_end(fighter: &mut L2CFighterCommon) -> L2CValue {
     //println!("gg start end");
     let mut boma = &mut *fighter.module_accessor;
@@ -201,13 +230,13 @@ pub unsafe fn galickgun_start_end(fighter: &mut L2CFighterCommon) -> L2CValue {
     L2CValue::I32(0)
 }
 
-#[status_script(agent = "lucario", status = 0x1f2, condition = LUA_SCRIPT_STATUS_FUNC_STATUS_PRE)]
+#[status_script(agent = "lucario", status = 0x1ed, condition = LUA_SCRIPT_STATUS_FUNC_STATUS_PRE)]
 pub unsafe fn galickgun_hold_pre(fighter: &mut L2CFighterCommon) -> L2CValue {
     //println!("gg hold pre");
     L2CValue::I32(0)
 }
 
-#[status_script(agent = "lucario", status = 0x1f2, condition = LUA_SCRIPT_STATUS_FUNC_STATUS_MAIN)]
+#[status_script(agent = "lucario", status = 0x1ed, condition = LUA_SCRIPT_STATUS_FUNC_STATUS_MAIN)]
 pub unsafe fn galickgun_hold(fighter: &mut L2CFighterCommon) -> L2CValue {
     //println!("gg hold");
     let mut boma = &mut *fighter.module_accessor;
@@ -254,7 +283,7 @@ unsafe extern "C" fn galickgun_hold_main(fighter: &mut L2CFighterCommon) -> L2CV
     L2CValue::I32(0)
 }
 
-#[status_script(agent = "lucario", status = 0x1f2, condition = LUA_SCRIPT_STATUS_FUNC_STATUS_END)]
+#[status_script(agent = "lucario", status = 0x1ed, condition = LUA_SCRIPT_STATUS_FUNC_STATUS_END)]
 pub unsafe fn galickgun_hold_end(fighter: &mut L2CFighterCommon) -> L2CValue {
     //println!("gg hold end");
     //  enable_gravity(fighter.module_accessor);
@@ -263,12 +292,12 @@ pub unsafe fn galickgun_hold_end(fighter: &mut L2CFighterCommon) -> L2CValue {
     L2CValue::I32(0)
 }
 
-#[status_script(agent = "lucario", status = 0x1f3, condition = LUA_SCRIPT_STATUS_FUNC_STATUS_PRE)]
+#[status_script(agent = "lucario", status = 0x1ee, condition = LUA_SCRIPT_STATUS_FUNC_STATUS_PRE)]
 pub unsafe fn galickgunfire_pre(fighter: &mut L2CFighterCommon) -> L2CValue {
     L2CValue::I32(0)
 }
 
-#[status_script(agent = "lucario", status = 0x1f3, condition = LUA_SCRIPT_STATUS_FUNC_STATUS_MAIN)]
+#[status_script(agent = "lucario", status = 0x1ee, condition = LUA_SCRIPT_STATUS_FUNC_STATUS_MAIN)]
 pub unsafe fn galickgunfire(fighter: &mut L2CFighterCommon) -> L2CValue {
     let mut boma = &mut *fighter.module_accessor;
 
@@ -325,7 +354,7 @@ unsafe extern "C" fn galickgunfire_main(fighter: &mut L2CFighterCommon) -> L2CVa
     L2CValue::I32(0)
 }
 
-#[status_script(agent = "lucario", status = 0x1f3, condition = LUA_SCRIPT_STATUS_FUNC_STATUS_END)]
+#[status_script(agent = "lucario", status = 0x1ee, condition = LUA_SCRIPT_STATUS_FUNC_STATUS_END)]
 pub unsafe fn galickgunfire_end(fighter: &mut L2CFighterCommon) -> L2CValue {
     //  enable_gravity(fighter.module_accessor);
     let mut boma = &mut *fighter.module_accessor;

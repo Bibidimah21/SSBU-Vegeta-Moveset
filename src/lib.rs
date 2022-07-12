@@ -19,9 +19,10 @@ use std::mem::transmute;
 use std::ptr::hash;
 use skyline::hooks::{getRegionAddress, Region};
 use skyline::logging::print_stack_trace;
-use smash::app::{BattleObjectModuleAccessor, ItemKind, utility};
+use smash::app::{ArticleOperationTarget, BattleObjectModuleAccessor, ItemKind, utility};
 use smash::hash40;
 use smash::lib::lua_const::*;
+use smash::app::lua_bind::*;
 use smash::phx::Hash40;
 use utils::*;
 use skyline::nn;
@@ -84,8 +85,15 @@ unsafe fn declare_const_hook(unk: u64, constant: *const u8, mut value: u32) {
     if str.contains("FIGHTER_LUCARIO_INSTANCE_WORK_ID_INT_TERM") {
         value = 0x100000c8;
     }
+    if str.contains("FIGHTER_KOOPA_STATUS_KIND_MAX") {
+        value = 0x1F4 //500
+    }
+    if str.contains("FIGHTER_LUCARIO_INSTANCE_WORK_ID_FLAG_TERM"){
+        value = 0x200000e6;
+    }
     original!()(unk, constant, value)
 }
+
 
 #[skyline::hook(offset = INT_OFFSET)]
 pub unsafe fn get_param_int_replace(work_module: u64, param_type: u64, param_hash: u64) -> i32 {
