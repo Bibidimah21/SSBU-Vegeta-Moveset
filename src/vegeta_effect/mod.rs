@@ -113,7 +113,23 @@ unsafe fn effect_vegeta_attacklw3(fighter: &mut L2CAgentBase) {
     });
 }
 
-#[acmd_script(agent = "lucario_auraball", scripts = ["effect_shoot", "effect_charge", "effect_chargemax"], category = ACMD_EFFECT, low_priority )]
+#[acmd_script(
+agent = "lucario",
+script = "effect_attackhi3",
+category = ACMD_EFFECT,
+low_priority )]
+unsafe fn vegeta_attackhi3(fighter: &mut L2CAgentBase) {
+    let lua_state = fighter.lua_state_agent;
+    let module_accessor = fighter.module_accessor;
+    acmd!(lua_state, {
+        frame(Frame=14)
+        if(is_execute){
+            EFFECT_FOLLOW(hash40("lucario_hattack_b"), hash40("top"), 0, 27.0, 0, 0, 90, 90, 1.0, true)
+        }
+    });
+}
+
+#[acmd_script(agent = "lucario_auraball", scripts = ["effect_start", "effect_shoot", "effect_charge", "effect_chargemax"], category = ACMD_EFFECT, low_priority )]
 unsafe fn effect_vegeta_projectile(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
     acmd!(lua_state, {
@@ -129,19 +145,27 @@ unsafe fn effect_vegeta_galickgun_fire(fighter: &mut L2CAgentBase) {
     acmd!(lua_state, {
     frame(Frame=11)
     if(is_execute){
-        EFFECT(hash40("lucario_final_beam"), hash40("rot"), 0, 3, 0, 0, 0, GALICKGUN_ROT[entry_id], 0.6, false)
+        EFFECT(hash40("lucario_final_beam"), hash40("rot"), 5, 0, 0, 0, 0, GALICKGUN_ROT[entry_id], 0.6, false)
         LAST_EFFECT_SET_COLOR(/*R*/ 0.5, /*G*/ 0.3, /*B*/ 0.6)
 
     }
     frame(Frame=35)
     if(is_execute){
         EFFECT_OFF_KIND(hash40("lucario_final_beam"), true, true)
-        EFFECT(hash40("lucario_final_beam_end"), hash40("rot"), 0, 3, 0, 0, 0, GALICKGUN_ROT[entry_id], 0.6, false)
+        EFFECT(hash40("lucario_final_beam_end"), hash40("rot"), 5, 0, 0, 0, 0, GALICKGUN_ROT[entry_id], 0.6, false)
         LAST_EFFECT_SET_COLOR(/*R*/ 0.5, /*G*/ 0.3, /*B*/ 0.6)
     }
     });
 }
 
+#[acmd_script(agent = "lucario", script = "effect_attackhi4", category = ACMD_EFFECT, low_priority )]
+unsafe fn effect_vegeta_attackhi4(fighter: &mut L2CAgentBase) {
+    let lua_state = fighter.lua_state_agent;
+    let module_accessor = fighter.module_accessor;
+    acmd!(lua_state, {
+
+    });
+}
 
 #[acmd_script(agent = "lucario", script = "effect_attackairf", category = ACMD_EFFECT, low_priority )]
 unsafe fn effect_vegeta_attackairf(fighter: &mut L2CAgentBase) {
@@ -149,10 +173,7 @@ unsafe fn effect_vegeta_attackairf(fighter: &mut L2CAgentBase) {
     let module_accessor = fighter.module_accessor;
     let entry_id = (*module_accessor).entry_id();
     acmd!(lua_state, {
-    frame(Frame=10)
-    if(is_execute){
-          //EFFECT_FOLLOW(hash40("sys_attack_arc_b"), hash40("top"), 0, 0, 0, 0, 0, 0, 3.0, false)
-    }
+
     });
 }
 
@@ -215,5 +236,7 @@ pub fn install() {
         effect_vegeta_attacks3,
         effect_vegeta_attacklw3,
         effect_vegeta_bigbangatk,
+        vegeta_attackhi3,
+        effect_vegeta_attackhi4
     };
 }

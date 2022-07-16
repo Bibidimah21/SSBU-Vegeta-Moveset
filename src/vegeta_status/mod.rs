@@ -23,16 +23,30 @@ pub const FIGHTER_VEGETA_STATUS_KIND_GALICK_GUN_HOLD: i32 = 0x1ed; //493
 pub const FIGHTER_VEGETA_STATUS_KIND_GALICK_GUN_FIRE: i32 = 0x1ee; //494
 pub const FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_KIBLAST_TOTAL: i32 = 0x100000c7;
 pub const FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_KIBLAST_RAPIDFIRE: i32 = 0x200000e5;
+pub const FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_AMAZING_IMPACT: i32 = 0x200000e6;
 
+#[status_script(agent = "lucario_auraball", status = WEAPON_LUCARIO_AURABALL_STATUS_KIND_START, condition = LUA_SCRIPT_STATUS_FUNC_STATUS_MAIN)]
+pub unsafe fn auraball_start(fighter: &mut L2CWeaponCommon) -> L2CValue {
+    L2CValue::I32(0)
+}
+
+#[status_script(agent = "lucario_auraball", status = WEAPON_LUCARIO_AURABALL_STATUS_KIND_CHARGE, condition = LUA_SCRIPT_STATUS_FUNC_STATUS_MAIN)]
+pub unsafe fn auraball_charge(fighter: &mut L2CWeaponCommon) -> L2CValue {
+    L2CValue::I32(0)
+}
+
+#[status_script(agent = "lucario_auraball", status = WEAPON_LUCARIO_AURABALL_STATUS_KIND_SHOOT, condition = LUA_SCRIPT_STATUS_FUNC_STATUS_MAIN)]
+pub unsafe fn auraball_shoot(fighter: &mut L2CWeaponCommon) -> L2CValue {
+    L2CValue::I32(0)
+}
+
+#[status_script(agent = "lucario", status = FIGHTER_STATUS_KIND_SPECIAL_N, condition = LUA_SCRIPT_STATUS_FUNC_STATUS_PRE)]
+pub unsafe fn special_n_pre_status(fighter: &mut L2CFighterCommon) -> L2CValue {
+    L2CValue::I32(0)
+}
 
 #[status_script(agent = "lucario", status = FIGHTER_STATUS_KIND_SPECIAL_N, condition = LUA_SCRIPT_STATUS_FUNC_STATUS_MAIN)]
 pub unsafe fn special_n_status(fighter: &mut L2CFighterCommon) -> L2CValue {
-    /*
-    fighter.change_status(
-        FIGHTER_VEGETA_STATUS_KIND_GALICK_GUN_START.into(),
-        false.into(),
-    )
-     */
     let mut boma = &mut *fighter.module_accessor;
     boma.inc_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_KIBLAST_TOTAL);
     if boma.is_grounded(){
@@ -47,6 +61,7 @@ pub unsafe fn special_n_status(fighter: &mut L2CFighterCommon) -> L2CValue {
 
 unsafe extern "C" fn special_n_main(fighter: &mut L2CFighterCommon) -> L2CValue {
     let mut boma:&mut BattleObjectModuleAccessor = &mut *fighter.module_accessor;
+    boma.set_position_lock();
     if boma.is_button_on(Buttons::Attack){
         boma.on_flag(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_KIBLAST_RAPIDFIRE);
     }
@@ -380,6 +395,78 @@ pub unsafe fn throw_f_end(fighter: &mut L2CFighterCommon) -> L2CValue {
 }
 */
 
+#[status_script(agent = "lucario", status = FIGHTER_STATUS_KIND_ATTACK_HI4, condition = LUA_SCRIPT_STATUS_FUNC_STATUS_MAIN)]
+pub unsafe fn attackhi4_status(fighter: &mut L2CFighterCommon) -> L2CValue {
+    let mut boma = &mut *fighter.module_accessor;
+    let lua_state = fighter.lua_state_agent;
+    let boma = smash::app::sv_system::battle_object_module_accessor(lua_state);
+    boma.change_motion(Hash40::new("attack_hi4"), false);
+    fighter.sub_shift_status_main(L2CValue::Ptr(attackhi4_main as *const () as _))
+}
+unsafe extern "C" fn attackhi4_main(fighter: &mut L2CFighterCommon) -> L2CValue {
+    let mut boma:&mut BattleObjectModuleAccessor = &mut *fighter.module_accessor;
+    let lua_state = fighter.lua_state_agent;
+    let attacked_players = get_attacked_players(boma);
+    if attacked_players.len() > 0{
+        let attacked_player = &mut *get_module_accessor_by_entry_id(attacked_players[0] as i32);
+        if (19.0..25.0).contains(&boma.motion_frame()){
+            if boma.is_button_on(Buttons::Attack){
+                boma.set_position(&Vector3f{
+                    x: attacked_player.pos_x(),
+                    y: attacked_player.pos_y(),
+                    z: attacked_player.pos_z()
+                });
+                boma.on_flag(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_AMAZING_IMPACT);
+                acmd!(lua_state, {
+                   SLOW_OPPONENT(20, 600)
+                });
+                fighter.change_status(FIGHTER_STATUS_KIND_ATTACK_AIR.into(), false.into())
+            }
+        }
+    }
+    if boma.is_motion_end() {
+        fighter.change_status(FIGHTER_STATUS_KIND_WAIT.into(), false.into());
+    }
+    L2CValue::I32(0)
+}
+
+#[status_script(agent = "lucario", status = FIGHTER_STATUS_KIND_ATTACK_AIR, condition = LUA_SCRIPT_STATUS_FUNC_STATUS_MAIN)]
+pub unsafe fn attackair_status(fighter: &mut L2CFighterCommon) -> L2CValue {
+    let mut boma = &mut *fighter.module_accessor;
+    let lua_state = fighter.lua_state_agent;
+    let boma = smash::app::sv_system::battle_object_module_accessor(lua_state);
+    if boma.is_flag(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_AMAZING_IMPACT){
+        boma.change_motion(Hash40::new("attack_air_f"), false);
+        fighter.sub_shift_status_main(L2CValue::Ptr(attackair_main as *const () as _))
+    }
+    else{
+        original!(fighter)
+    }
+}
+unsafe extern "C" fn attackair_main(fighter: &mut L2CFighterCommon) -> L2CValue {
+    let mut boma:&mut BattleObjectModuleAccessor = &mut *fighter.module_accessor;
+    let lua_state = fighter.lua_state_agent;
+    boma.set_position_lock();
+    if boma.motion_frame() == 10.0{
+        acmd!(lua_state, {
+            SLOW_OPPONENT(0, 0)
+        });
+    }
+    if boma.is_motion_end(){
+        fighter.change_status(FIGHTER_STATUS_KIND_FALL.into(), false.into());
+    }
+    L2CValue::I32(0)
+}
+
+#[status_script(agent = "lucario", status = FIGHTER_STATUS_KIND_ATTACK_AIR, condition = LUA_SCRIPT_STATUS_FUNC_STATUS_END)]
+pub unsafe fn attackair_status_end(fighter: &mut L2CFighterCommon) -> L2CValue {
+    let mut boma = &mut *fighter.module_accessor;
+    let lua_state = fighter.lua_state_agent;
+    boma.unset_position_lock();
+    let boma = smash::app::sv_system::battle_object_module_accessor(lua_state);
+    boma.off_flag(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_AMAZING_IMPACT);
+    original!(fighter)
+}
 pub fn install() {
     smashline::install_status_scripts!(
         superdashkick_pre,
@@ -396,8 +483,15 @@ pub fn install() {
         galickgunfire_end,
         special_s_status,
         bigbangatk_end,
+        special_n_pre_status,
         special_n_status,
-        special_n_status_end
+        special_n_status_end,
+        auraball_start,
+        auraball_charge,
+        auraball_shoot,
+        attackhi4_status,
+        attackair_status,
+        attackair_status_end
       //  throw_f_end,
        // throw_f_status,
     );

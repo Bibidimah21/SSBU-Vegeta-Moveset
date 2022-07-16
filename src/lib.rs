@@ -40,7 +40,7 @@ Input grab: "Shall I tell you where you miscalculated"
 jab: dbfz ss vegeta lights
 up smash: dbfz vegeta 2h
 down smash: ki blast thing, not sure
-side smash: thing that vegeta does to cabba and frieza. similar to hit
+side smash: galick impact (?)
 side special: big bang attack
 qcf + attack: dbfz super dash kick
 qcb + attack: dbfz ssgss vegeta scale 1 to 10
@@ -52,15 +52,11 @@ up throw: throw directly up then quick beam attack
 nair: dbfz ss/ssgss vegeta j.m
 fair: dbfz base vegeta j.h
 uair: dbfz vegeta j2h
-dair: ss vegeta j2l ?
+dair: ss vegeta j2l
 bair: ?
-up tilt: ?
-light up tilt: ?
-down tilt: dbfz vegeta 2m
-light down tilt: 2l
+up tilt: upwards blast
+down tilt: dbfz bardock 2m
 side tilt: Uppercut -> Roundhouse Kick
-light side tilt: ?
-
  */
 
 static mut CONSTANT_OFFSET: usize = 0x3727390; //13.0.1
@@ -89,7 +85,7 @@ unsafe fn declare_const_hook(unk: u64, constant: *const u8, mut value: u32) {
         value = 0x1F4 //500
     }
     if str.contains("FIGHTER_LUCARIO_INSTANCE_WORK_ID_FLAG_TERM"){
-        value = 0x200000e6;
+        value = 0x200000e7;
     }
     original!()(unk, constant, value)
 }
@@ -126,6 +122,14 @@ pub unsafe fn get_param_float_replace(work_module: u64, param_type: u64, param_h
             hash40("charge_min_scale_shoot"), hash40("charge_max_scale_shoot")].contains(&param_hash){
             return 1.0;
         }
+    }
+    if boma.kind() == *FIGHTER_KIND_LUCARIO{
+       if param_hash == hash40("run_speed_max"){
+           return 2.167;
+       }
+        if param_hash == hash40("run_accel_mul"){
+           return 0.099;
+       }
     }
     ret
 }

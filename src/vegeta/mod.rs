@@ -194,7 +194,7 @@ pub fn hadoken(weapon: &mut L2CFighterBase) {
         }
         if owner_module_accessor.status_kind() == *FIGHTER_STATUS_KIND_SPECIAL_N{
             if weapon_module_accessor.motion_frame() == 1.0{
-                let bbatk = EffectModule::req_follow(weapon_module_accessor, Hash40::new("sys_sscope_bullet_max"), smash::phx::Hash40::new("top"), &ZERO_VECTOR, &ZERO_VECTOR, 1.6, true, 0, 0, 0, 0, 0, true, true) as u32;
+                let bbatk = EffectModule::req_follow(weapon_module_accessor, Hash40::new("sys_sscope_bullet"), smash::phx::Hash40::new("top"), &ZERO_VECTOR, &ZERO_VECTOR, 1.9, true, 0, 0, 0, 0, 0, true, true) as u32;
             }
             acmd!(lua_state, {
                 ATTACK(ID=0, Part=0, Bone=hash40("top"), Damage=3.0, Angle=40, KBG=65, FKB=0, BKB=55, Size=4.24, X=0.0, Y=0.0, Z=0.0, X2=LUA_VOID, Y2=LUA_VOID, Z2=LUA_VOID, Hitlag=1.0, SDI=1.0, Clang_Rebound=ATTACK_SETOFF_KIND_ON, FacingRestrict=ATTACK_LR_CHECK_SPEED, SetWeight=false, ShieldDamage=-7, Trip=0.0, Rehit=0, Reflectable=true, Absorbable=true, Flinchless=false, DisableHitlag=false, Direct_Hitbox=false, Ground_or_Air=COLLISION_SITUATION_MASK_GA, Hitbits=COLLISION_CATEGORY_MASK_ALL, CollisionPart=COLLISION_PART_MASK_ALL, FriendlyFire=false, Effect=hash40("collision_attr_normal"), SFXLevel=ATTACK_SOUND_LEVEL_M,SFXType=COLLISION_SOUND_ATTR_FIRE, Type=ATTACK_REGION_ENERGY)
@@ -216,6 +216,7 @@ unsafe fn print_all_fighters_motions(){
         println!("[print_all_fighter_motions] Fighter Num: {} Motion {:#x}", i, MotionModule::motion_kind(module_accessor));
     }
 }
+
 
 
 #[fighter_frame(agent = FIGHTER_KIND_LUCARIO)]

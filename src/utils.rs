@@ -13,6 +13,7 @@ use smash::{
     phx::{Hash40, Vector3f},
     *,
 };
+use smash_utils::bomaext::BomaExt;
 use smash_utils::utils::FIGHTER_MANAGER;
 use smashline::*;
 
@@ -45,6 +46,28 @@ extern "C" {
     );
 }
 
+pub unsafe fn get_attackers(boma: &mut BattleObjectModuleAccessor) -> Vec<usize>{
+    let attacker_ids = boma.get_int(*FIGHTER_INSTANCE_WORK_ID_INT_SUCCEED_ATTACKER_ENTRY_ID);
+    let mut players:Vec<usize> = vec![];
+    for i in 0..8{
+        if attacker_ids & (1 << i) == 0 {
+            continue;
+        }
+        players.push(i as usize)
+    }
+    players
+}
+
+pub unsafe fn get_attacked_players(boma: &mut BattleObjectModuleAccessor) -> Vec<usize>{
+    let mut attacked_players:Vec<usize> = vec![];
+    for i in 0..7{
+        let player = &mut *get_module_accessor_by_entry_id(i);
+        if get_attackers(player).contains(&boma.entry_id()){
+            attacked_players.push(i as usize);
+        }
+    }
+    attacked_players
+}
 
 pub fn get_module_accessor_by_entry_id(
     entry_id: i32,
