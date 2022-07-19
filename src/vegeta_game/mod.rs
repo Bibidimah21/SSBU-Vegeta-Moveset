@@ -11,7 +11,7 @@ use smashline::*;
 use crate::vegeta::{TEST, TEST2, TEST3};
 use smash::phx::Vector3f;
 use smash_utils::bomaext::BomaExt;
-use crate::vegeta_status::FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_AMAZING_IMPACT;
+use crate::utils::FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_AMAZING_IMPACT;
 
 #[acmd_script(
 agent = "lucario",
@@ -82,7 +82,7 @@ unsafe fn vegeta_attack13(fighter: &mut L2CAgentBase) {
     if(is_excute){
         ATTACK(ID=0, Part=0, Bone=hash40("top"), Damage=6.0, Angle=361, KBG=100, FKB=0, BKB=60, Size=8.0, X=0.0, Y=12.0, Z=10.0, X2=0.0, Y2=22.0, Z2=27.0, Hitlag=1.5, SDI=1.0, Clang_Rebound=ATTACK_SETOFF_KIND_ON, FacingRestrict=ATTACK_LR_CHECK_F, SetWeight=false, ShieldDamage=0, Trip=0.0, Rehit=0, Reflectable=false, Absorbable=false, Flinchless=false, DisableHitlag=false, Direct_Hitbox=true, Ground_or_Air=COLLISION_SITUATION_MASK_GA, Hitbits=COLLISION_CATEGORY_MASK_ALL, CollisionPart=COLLISION_PART_MASK_ALL, FriendlyFire=false, Effect=hash40("collision_attr_aura"), SFXLevel=ATTACK_SOUND_LEVEL_L, SFXType=COLLISION_SOUND_ATTR_NONE, Type=ATTACK_REGION_PUNCH)
     }
-    wait(Frame=2)
+    wait(Frame=4)
     if(is_execute){
         AttackModule::clear_all()
     }
@@ -402,6 +402,29 @@ unsafe fn vegeta_landingairlw(fighter: &mut L2CAgentBase) {
     });
 }
 
+#[acmd_script(agent = "lucario", script = "game_attacks4", category = ACMD_GAME, low_priority )]
+unsafe fn vegeta_attacks4(fighter: &mut L2CAgentBase) {
+    let lua_state = fighter.lua_state_agent;
+    let module_accessor = fighter.module_accessor;
+    let entry_id = get_entry_id(module_accessor);
+    acmd!(lua_state, {
+        frame(Frame=5)
+        if(is_excute){
+            WorkModule::on_flag(Flag=FIGHTER_STATUS_ATTACK_FLAG_START_SMASH_HOLD)
+        }
+        frame(Frame=15)
+        if(is_execute){
+            ATTACK(ID=0, Part=0, Bone=hash40("shoulderr"), Damage=15.0, Angle=361, KBG=99, FKB=0, BKB=25, Size=3.0, X=0.0, Y=0.0, Z=0.0, X2=LUA_VOID, Y2=LUA_VOID, Z2=LUA_VOID, Hitlag=1.0, SDI=1.0, Clang_Rebound=ATTACK_SETOFF_KIND_ON, FacingRestrict=ATTACK_LR_CHECK_POS, SetWeight=false, ShieldDamage=0, Trip=0.0, Rehit=0, Reflectable=false, Absorbable=false, Flinchless=false, DisableHitlag=false, Direct_Hitbox=false, Ground_or_Air=COLLISION_SITUATION_MASK_GA, Hitbits=COLLISION_CATEGORY_MASK_ALL, CollisionPart=COLLISION_PART_MASK_ALL, FriendlyFire=false, Effect=hash40("collision_attr_aura"), SFXLevel=ATTACK_SOUND_LEVEL_L, SFXType=COLLISION_SOUND_ATTR_PUNCH, Type=ATTACK_REGION_PUNCH)
+            ATTACK(ID=1, Part=0, Bone=hash40("armr"), Damage=15.0, Angle=361, KBG=99, FKB=0, BKB=25, Size=3.0, X=0.0, Y=0.0, Z=0.0, X2=LUA_VOID, Y2=LUA_VOID, Z2=LUA_VOID, Hitlag=1.0, SDI=1.0, Clang_Rebound=ATTACK_SETOFF_KIND_ON, FacingRestrict=ATTACK_LR_CHECK_POS, SetWeight=false, ShieldDamage=0, Trip=0.0, Rehit=0, Reflectable=false, Absorbable=false, Flinchless=false, DisableHitlag=false, Direct_Hitbox=false, Ground_or_Air=COLLISION_SITUATION_MASK_GA, Hitbits=COLLISION_CATEGORY_MASK_ALL, CollisionPart=COLLISION_PART_MASK_ALL, FriendlyFire=false, Effect=hash40("collision_attr_aura"), SFXLevel=ATTACK_SOUND_LEVEL_L, SFXType=COLLISION_SOUND_ATTR_PUNCH, Type=ATTACK_REGION_PUNCH)
+            ATTACK(ID=2, Part=0, Bone=hash40("handr"), Damage=15.0, Angle=361, KBG=99, FKB=0, BKB=25, Size=3.0, X=0.0, Y=0.0, Z=0.0, X2=LUA_VOID, Y2=LUA_VOID, Z2=LUA_VOID, Hitlag=1.0, SDI=1.0, Clang_Rebound=ATTACK_SETOFF_KIND_ON, FacingRestrict=ATTACK_LR_CHECK_POS, SetWeight=false, ShieldDamage=0, Trip=0.0, Rehit=0, Reflectable=false, Absorbable=false, Flinchless=false, DisableHitlag=false, Direct_Hitbox=false, Ground_or_Air=COLLISION_SITUATION_MASK_GA, Hitbits=COLLISION_CATEGORY_MASK_ALL, CollisionPart=COLLISION_PART_MASK_ALL, FriendlyFire=false, Effect=hash40("collision_attr_aura"), SFXLevel=ATTACK_SOUND_LEVEL_L, SFXType=COLLISION_SOUND_ATTR_PUNCH, Type=ATTACK_REGION_PUNCH)
+        }
+        wait(Frames=3)
+        if(is_execute){
+            AttackModule::clear_all()
+        }
+    });
+}
+
 #[acmd_script(agent = "lucario", script = "game_attackhi4", category = ACMD_GAME, low_priority )]
 unsafe fn vegeta_attackhi4(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
@@ -424,6 +447,35 @@ unsafe fn vegeta_attackhi4(fighter: &mut L2CAgentBase) {
         }
     });
 }
+
+#[acmd_script(agent = "lucario", script = "game_attacklw4", category = ACMD_GAME, low_priority )]
+unsafe fn vegeta_attacklw4(fighter: &mut L2CAgentBase) {
+    let lua_state = fighter.lua_state_agent;
+    let module_accessor = fighter.module_accessor;
+    let entry_id = get_entry_id(module_accessor);
+    acmd!(lua_state, {
+        frame(Frame=5)
+        if(is_excute){
+            WorkModule::on_flag(Flag=FIGHTER_STATUS_ATTACK_FLAG_START_SMASH_HOLD)
+        }
+        frame(Frame=15)
+        if(is_execute){
+            ArticleModule::generate_article(*FIGHTER_LUCARIO_GENERATE_ARTICLE_AURABALL, false, 0)
+            ArticleModule::shoot_exist(*FIGHTER_LUCARIO_GENERATE_ARTICLE_AURABALL, ArticleOperationTarget(*ARTICLE_OPE_TARGET_ALL), false)
+        }
+        frame(Frame=20)
+        if(is_execute){
+            REVERSE_LR()
+        }
+        frame(Frame=29)
+        if(is_execute){
+            ArticleModule::generate_article(*FIGHTER_LUCARIO_GENERATE_ARTICLE_AURABALL, false, 0)
+            ArticleModule::shoot_exist(*FIGHTER_LUCARIO_GENERATE_ARTICLE_AURABALL, ArticleOperationTarget(*ARTICLE_OPE_TARGET_ALL), false)
+        }
+    });
+}
+
+
 
 #[acmd_script(agent = "lucario", script = "game_throwf", category = ACMD_GAME, low_priority )]
 unsafe fn vegeta_throwf(fighter: &mut L2CAgentBase) {
@@ -512,6 +564,8 @@ pub fn install() {
         vegeta_attackairn,
         vegeta_attackairhi,
         vegeta_attackairlw,
+        vegeta_attacks4,
+        vegeta_attacklw4,
         vegeta_attackhi4,
         vegeta_landingairlw,
         vegeta_attacklw3,
@@ -519,6 +573,6 @@ pub fn install() {
         vegeta_superdashkick,
         vegeta_attacks3,
         vegeta_kiblast,
-        vegeta_attackhi3
+        vegeta_attackhi3,
     };
 }

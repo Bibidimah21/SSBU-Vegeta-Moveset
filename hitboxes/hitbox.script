@@ -103,6 +103,15 @@ frame 20
 atk_clear_all
 #end
 
+#begin c03attacks4s.nuanmb
+frame 15
+attack 0 shoulderr 12.0 53 3.0 0.0 0.0 0.0
+attack 1 armr 12.0 53 3.0 0.0 0.0 0.0
+attack 2 handr 12.0 53 3.0 0.0 0.0 0.0
+wait 3
+atk_clear_all
+#end
+
 #begin e01throwf.nuanmb
 frame 41
 attack 0 top 12.0 53 2.2 0.0 7.0 7.0

@@ -39,8 +39,8 @@ MOVESET PLAN
 Input grab: "Shall I tell you where you miscalculated"
 jab: dbfz ss vegeta lights
 up smash: dbfz vegeta 2h
-down smash: ki blast thing, not sure
-side smash: galick impact (?)
+down smash: gogeta blue level 1 ki blasts, turnauround mid way
+side smash: galick impact (?) frieza rush
 side special: big bang attack
 qcf + attack: dbfz super dash kick
 qcb + attack: dbfz ssgss vegeta scale 1 to 10
@@ -79,13 +79,16 @@ pub fn rust_str_to_cstr(string: &str) -> *const u8 {
 unsafe fn declare_const_hook(unk: u64, constant: *const u8, mut value: u32) {
     let str = CStr::from_ptr(constant as _).to_str().unwrap();
     if str.contains("FIGHTER_LUCARIO_INSTANCE_WORK_ID_INT_TERM") {
-        value = 0x100000c8;
+        value = 0x100000CA;
     }
     if str.contains("FIGHTER_KOOPA_STATUS_KIND_MAX") {
         value = 0x1F4 //500
     }
     if str.contains("FIGHTER_LUCARIO_INSTANCE_WORK_ID_FLAG_TERM"){
-        value = 0x200000e7;
+        value = 0x200000e9;
+    }
+    if str.contains("FIGHTER_LUCARIO_INSTANCE_WORK_ID_FLOAT_TERM"){
+        value = 0x56;
     }
     original!()(unk, constant, value)
 }

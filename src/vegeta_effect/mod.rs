@@ -158,10 +158,30 @@ unsafe fn effect_vegeta_galickgun_fire(fighter: &mut L2CAgentBase) {
     });
 }
 
+#[acmd_script(agent = "lucario", script = "effect_attacks4", category = ACMD_EFFECT, low_priority )]
+unsafe fn effect_vegeta_attacks4(fighter: &mut L2CAgentBase) {
+    let lua_state = fighter.lua_state_agent;
+    let module_accessor = fighter.module_accessor;
+    let entry_id = get_entry_id(module_accessor);
+    acmd!(lua_state, {
+
+    });
+}
+
 #[acmd_script(agent = "lucario", script = "effect_attackhi4", category = ACMD_EFFECT, low_priority )]
 unsafe fn effect_vegeta_attackhi4(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
     let module_accessor = fighter.module_accessor;
+    acmd!(lua_state, {
+
+    });
+}
+
+#[acmd_script(agent = "lucario", script = "effect_attacklw4", category = ACMD_EFFECT, low_priority )]
+unsafe fn effect_vegeta_attacklw4(fighter: &mut L2CAgentBase) {
+    let lua_state = fighter.lua_state_agent;
+    let module_accessor = fighter.module_accessor;
+    let entry_id = get_entry_id(module_accessor);
     acmd!(lua_state, {
 
     });
@@ -237,6 +257,8 @@ pub fn install() {
         effect_vegeta_attacklw3,
         effect_vegeta_bigbangatk,
         vegeta_attackhi3,
-        effect_vegeta_attackhi4
+        effect_vegeta_attackhi4,
+        effect_vegeta_attacks4,
+        effect_vegeta_attacklw4
     };
 }
