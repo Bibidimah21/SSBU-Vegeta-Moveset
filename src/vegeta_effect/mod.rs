@@ -61,6 +61,27 @@ unsafe fn effect_vegeta_attack13(fighter: &mut L2CAgentBase) {
     });
 }
 
+#[acmd_script(agent = "lucario", script = "effect_attackdash", category = ACMD_GAME, low_priority )]
+unsafe fn effect_vegeta_attackdash(fighter: &mut L2CAgentBase) {
+    let lua_state = fighter.lua_state_agent;
+    let module_accessor = fighter.module_accessor;
+    let entry_id = get_entry_id(module_accessor);
+    acmd!(lua_state, {
+        frame(Frame=1)
+        if(is_excute){
+            FOOT_EFFECT(hash40("sys_dash_smoke"), hash40("top"), -3, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, false)
+        }
+        frame(Frame=7)
+        if(is_excute){
+            EFFECT_FLIP_ALPHA(hash40("sys_attack_speedline"), hash40("sys_attack_speedline"), hash40("top"), 1.5, 11.5, 3.5, 9, -10, 0, 0.8, 0, 0, 0, 0, 0, 0, true, EF_FLIP_YZ, 0.7)
+        }
+        frame(Frame=30)
+        if(is_excute){
+            LANDING_EFFECT(hash40("sys_landing_smoke_s"), hash40("top"), 3, 0, 0, 0, 0, 0, 0.9, 0, 0, 0, 0, 0, 0, false)
+        }
+    });
+}
+
 #[acmd_script(
 agent = "lucario",
 scripts = ["effect_attacks3", "effect_attacks3hi", "effect_attacks3lw"],
@@ -259,6 +280,7 @@ pub fn install() {
         vegeta_attackhi3,
         effect_vegeta_attackhi4,
         effect_vegeta_attacks4,
-        effect_vegeta_attacklw4
+        effect_vegeta_attacklw4,
+        effect_vegeta_attackdash
     };
 }

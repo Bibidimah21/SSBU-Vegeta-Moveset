@@ -1,7 +1,7 @@
 use crate::utils::*;
 use smash::app::lua_bind::*;
 use smash::app::sv_battle_object::module_accessor;
-use smash::app::{ArticleOperationTarget, BattleObjectModuleAccessor, enSEType, FighterEntryID};
+use smash::app::{ArticleOperationTarget, BattleObjectModuleAccessor, enSEType, FighterEntryID, HitStatus};
 use smash::lib::lua_const::*;
 use smash::lib::L2CValue;
 use smash::phx::Vector3f;
@@ -461,6 +461,110 @@ pub unsafe fn attackair_status_end(fighter: &mut L2CFighterCommon) -> L2CValue {
     boma.off_flag(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_AMAZING_IMPACT);
     original!(fighter)
 }
+
+#[status_script(agent = "lucario", status = FIGHTER_STATUS_KIND_SPECIAL_LW, condition = LUA_SCRIPT_STATUS_FUNC_STATUS_MAIN)]
+pub unsafe fn ki_charge(fighter: &mut L2CFighterCommon) -> L2CValue {
+    let mut boma = &mut *fighter.module_accessor;
+    EffectModule::kill_kind(boma, Hash40::new("lucario_aura"), false, true);
+    boma.change_motion(Hash40::new("ki_charge_start"), false);
+    fighter.sub_shift_status_main(L2CValue::Ptr(kicharge_main as *const () as _))
+}
+
+unsafe extern "C" fn kicharge_main(fighter: &mut L2CFighterCommon) -> L2CValue {
+    let mut boma:&mut BattleObjectModuleAccessor = &mut *fighter.module_accessor;
+    let lua_state = fighter.lua_state_agent;
+    acmd!(lua_state, {
+       sv_module_access::damage(MSC=MA_MSC_DAMAGE_DAMAGE_NO_REACTION, Type=DAMAGE_NO_REACTION_MODE_ALWAYS, DamageThreshold=0)
+    });
+    if boma.is_motion(Hash40::new("ki_charge_start")) && boma.is_motion_end(){
+        if boma.is_button_on(Buttons::Special) && boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_KI_CHARGE) != 90 && boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM) < 4{
+            boma.change_motion(Hash40::new("ki_charge_hold"), false);
+        }
+        else if boma.motion_frame() == 28.0 && boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_KI_CHARGE) == 90 && boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM) < 4{
+            boma.set_int(0, FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_KI_CHARGE);
+            boma.set_int(0, FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM_TIMER);
+            let handle = EffectModule::req_follow(boma, Hash40::new("lucario_aura"), smash::phx::Hash40::new("top"), &ZERO_VECTOR, &ZERO_VECTOR, 1.0, true, 0, 0, 0, 0, 0, true, true) as u32;
+            EffectModule::set_rate(boma, handle, 3.0);
+            boma.inc_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM);
+            let current_form = boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM);
+            if current_form == 1{
+                EffectModule::set_rgb(boma, handle, 0.7, 0.7, 0.0);
+                EffectModule::set_alpha(boma, handle, 2.0);
+            }
+            else if current_form == 2{
+                EffectModule::set_rgb(boma, handle, 1.5, 1.5, 1.5);
+            }
+            else if current_form == 3{
+                EffectModule::set_rgb(boma, handle, 0.7, 0.7, 10.0);
+            }
+            else if current_form == 4{
+                EffectModule::set_rgb(boma, handle, 10.0, 0.7, 10.0);
+            }
+            else{
+                EffectModule::set_rgb(boma, handle, 0.3, 0.3, 0.3);
+                EffectModule::set_alpha(boma, handle, 2.0);
+            }
+        }
+        else{
+            boma.change_motion(Hash40::new("ki_charge_end"), false);
+        }
+    }
+    if boma.is_motion(Hash40::new("ki_charge_hold")){
+        let current_form = boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM);
+        let handle = boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_KI_CHARGE_EFFECT_HANDLE) as u32;
+        boma.inc_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_KI_CHARGE);
+
+        if boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_KI_CHARGE) == 90{
+            EffectModule::kill_kind(boma, Hash40::new("lucario_aura"), false, true);
+            boma.change_motion(Hash40::new("ki_charge_start"), false);
+        }
+        if !EffectModule::is_exist_effect(boma, handle){
+            let aura = EffectModule::req_follow(boma, Hash40::new("lucario_aura"), smash::phx::Hash40::new("top"), &ZERO_VECTOR, &ZERO_VECTOR, 1.0, true, 0, 0, 0, 0, 0, true, true) as u32;
+            boma.set_int(aura as i32, FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_KI_CHARGE_EFFECT_HANDLE as i32);
+        }
+        EffectModule::set_rate(boma, handle, 0.67);
+
+        if current_form == 1{
+            EffectModule::set_rgb(boma, handle, 0.7, 0.7, 0.0);
+            EffectModule::set_alpha(boma, handle, 2.0);
+        }
+        else if current_form == 2{
+            EffectModule::set_rgb(boma, handle, 1.5, 1.5, 1.5);
+        }
+        else if current_form == 3{
+            EffectModule::set_rgb(boma, handle, 0.7, 0.7, 10.0);
+        }
+        else if current_form == 4{
+            EffectModule::set_rgb(boma, handle, 10.0, 0.7, 10.0);
+        }
+        else{
+            EffectModule::set_rgb(boma, handle, 0.3, 0.3, 0.3);
+            EffectModule::set_alpha(boma, handle, 2.0);
+        }
+        if !boma.is_button_on(Buttons::Special){
+            EffectModule::kill_kind(boma, Hash40::new("lucario_aura"), false, true);
+            boma.change_motion(Hash40::new("ki_charge_end"), false);
+        }
+    }
+    if boma.is_motion(Hash40::new("ki_charge_end")){
+    }
+    boma.set_position_lock();
+    if boma.is_motion_end() {
+        if boma.is_grounded() {
+            fighter.change_status(FIGHTER_STATUS_KIND_WAIT.into(), false.into());
+        } else {
+            fighter.change_status(FIGHTER_STATUS_KIND_FALL.into(), false.into());
+        }
+    }
+    L2CValue::I32(0)
+}
+
+#[status_script(agent = "lucario", status = FIGHTER_STATUS_KIND_SPECIAL_LW, condition = LUA_SCRIPT_STATUS_FUNC_STATUS_END)]
+pub unsafe fn ki_charge_end(fighter: &mut L2CFighterCommon) -> L2CValue {
+    let mut boma = &mut *fighter.module_accessor;
+    boma.unset_position_lock();
+    L2CValue::I32(0)
+}
 pub fn install() {
     smashline::install_status_scripts!(
         superdashkick_pre,
@@ -485,7 +589,9 @@ pub fn install() {
         auraball_shoot,
         attackhi4_status,
         attackair_status,
-        attackair_status_end
+        attackair_status_end,
+        ki_charge,
+        ki_charge_end
       //  throw_f_end,
        // throw_f_status,
     );
