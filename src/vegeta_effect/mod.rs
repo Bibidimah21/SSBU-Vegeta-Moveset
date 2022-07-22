@@ -143,7 +143,7 @@ unsafe fn vegeta_attackhi3(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
     let module_accessor = fighter.module_accessor;
     acmd!(lua_state, {
-        frame(Frame=14)
+        frame(Frame=13)
         if(is_execute){
             EFFECT_FOLLOW(hash40("lucario_hattack_b"), hash40("top"), 0, 27.0, 0, 0, 90, 90, 1.0, true)
         }

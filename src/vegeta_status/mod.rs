@@ -43,6 +43,7 @@ pub unsafe fn special_n_pre_status(fighter: &mut L2CFighterCommon) -> L2CValue {
 pub unsafe fn special_n_status(fighter: &mut L2CFighterCommon) -> L2CValue {
     let mut boma = &mut *fighter.module_accessor;
     boma.inc_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_KIBLAST_TOTAL);
+    boma.play_se(Hash40::new("vc_lucario_004"));
     if boma.is_grounded(){
         boma.change_motion(Hash40::new("kiblast_left"), false)
     }
@@ -55,7 +56,18 @@ pub unsafe fn special_n_status(fighter: &mut L2CFighterCommon) -> L2CValue {
 
 unsafe extern "C" fn special_n_main(fighter: &mut L2CFighterCommon) -> L2CValue {
     let mut boma:&mut BattleObjectModuleAccessor = &mut *fighter.module_accessor;
-    boma.set_position_lock();
+    if boma.is_grounded(){
+        boma.set_position_lock();
+    }
+    if !boma.is_grounded(){
+        if boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_AIR_TIMER) < 90{
+            boma.set_position_lock();
+            boma.inc_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_AIR_TIMER);
+        }
+        else{
+            boma.unset_position_lock()
+        }
+    }
     if boma.is_button_on(Buttons::Attack){
         boma.on_flag(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_KIBLAST_RAPIDFIRE);
     }
@@ -141,7 +153,20 @@ unsafe extern "C" fn bigbangatk_main(fighter: &mut L2CFighterCommon) -> L2CValue
     let mut boma = &mut *fighter.module_accessor;
     let lua_state = fighter.lua_state_agent;
     let entry_id = boma.entry_id();
-    boma.set_position_lock();
+    if boma.is_grounded(){
+        boma.set_position_lock();
+    }
+    if !boma.is_grounded(){
+        if boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_AIR_TIMER) < 90{
+            boma.set_position_lock();
+            boma.inc_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_AIR_TIMER);
+        }
+        else{
+            boma.unset_position_lock()
+        }
+    }
+
+
     boma.suspend_energy(*FIGHTER_KINETIC_ENERGY_ID_MOTION);
     if boma.is_motion_end(){
         if boma.is_grounded() {
@@ -156,8 +181,6 @@ unsafe extern "C" fn bigbangatk_main(fighter: &mut L2CFighterCommon) -> L2CValue
 #[status_script(agent = "lucario", status = FIGHTER_STATUS_KIND_SPECIAL_S, condition = LUA_SCRIPT_STATUS_FUNC_STATUS_END)]
 pub unsafe fn bigbangatk_end(fighter: &mut L2CFighterCommon) -> L2CValue {
     let mut boma = &mut *fighter.module_accessor;
-
-
     boma.unset_position_lock();
     L2CValue::I32(0)
 }
@@ -473,9 +496,23 @@ pub unsafe fn ki_charge(fighter: &mut L2CFighterCommon) -> L2CValue {
 unsafe extern "C" fn kicharge_main(fighter: &mut L2CFighterCommon) -> L2CValue {
     let mut boma:&mut BattleObjectModuleAccessor = &mut *fighter.module_accessor;
     let lua_state = fighter.lua_state_agent;
-    acmd!(lua_state, {
-       sv_module_access::damage(MSC=MA_MSC_DAMAGE_DAMAGE_NO_REACTION, Type=DAMAGE_NO_REACTION_MODE_ALWAYS, DamageThreshold=0)
-    });
+
+
+    if boma.is_grounded(){
+        boma.set_position_lock();
+        acmd!(lua_state, {
+            sv_module_access::damage(MSC=MA_MSC_DAMAGE_DAMAGE_NO_REACTION, Type=DAMAGE_NO_REACTION_MODE_ALWAYS, DamageThreshold=0)
+        });
+    }
+    else{
+        if boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_AIR_TIMER) < 90{
+            boma.set_position_lock();
+            boma.inc_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_AIR_TIMER);
+        }
+        else{
+            boma.unset_position_lock()
+        }
+    }
     if boma.is_motion(Hash40::new("ki_charge_start")) && boma.is_motion_end(){
         if boma.is_button_on(Buttons::Special) && boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_KI_CHARGE) != 90 && boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM) < 4{
             boma.change_motion(Hash40::new("ki_charge_hold"), false);
@@ -483,6 +520,9 @@ unsafe extern "C" fn kicharge_main(fighter: &mut L2CFighterCommon) -> L2CValue {
         else if boma.motion_frame() == 28.0 && boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_KI_CHARGE) == 90 && boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM) < 4{
             boma.set_int(0, FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_KI_CHARGE);
             boma.set_int(0, FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM_TIMER);
+            boma.stop_all_sound();
+            boma.play_se(Hash40::new("vc_lucario_003"));
+            boma.play_se(Hash40::new("se_lucario_special_l02"));
             let handle = EffectModule::req_follow(boma, Hash40::new("lucario_aura"), smash::phx::Hash40::new("top"), &ZERO_VECTOR, &ZERO_VECTOR, 1.0, true, 0, 0, 0, 0, 0, true, true) as u32;
             EffectModule::set_rate(boma, handle, 3.0);
             boma.inc_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM);
@@ -521,6 +561,9 @@ unsafe extern "C" fn kicharge_main(fighter: &mut L2CFighterCommon) -> L2CValue {
         if !EffectModule::is_exist_effect(boma, handle){
             let aura = EffectModule::req_follow(boma, Hash40::new("lucario_aura"), smash::phx::Hash40::new("top"), &ZERO_VECTOR, &ZERO_VECTOR, 1.0, true, 0, 0, 0, 0, 0, true, true) as u32;
             boma.set_int(aura as i32, FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_KI_CHARGE_EFFECT_HANDLE as i32);
+            boma.play_se(Hash40::new("vc_lucario_002"));
+            boma.play_se(Hash40::new("se_lucario_special_l01"));
+
         }
         EffectModule::set_rate(boma, handle, 0.67);
 
@@ -546,9 +589,6 @@ unsafe extern "C" fn kicharge_main(fighter: &mut L2CFighterCommon) -> L2CValue {
             boma.change_motion(Hash40::new("ki_charge_end"), false);
         }
     }
-    if boma.is_motion(Hash40::new("ki_charge_end")){
-    }
-    boma.set_position_lock();
     if boma.is_motion_end() {
         if boma.is_grounded() {
             fighter.change_status(FIGHTER_STATUS_KIND_WAIT.into(), false.into());

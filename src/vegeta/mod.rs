@@ -233,7 +233,7 @@ pub fn hadoken(weapon: &mut L2CFighterBase) {
                 EffectModule::set_rgb(weapon_module_accessor, bbatk, 0.0, 0.8, 1.0);
             }
             acmd!(lua_state, {
-                ATTACK(ID=0, Part=0, Bone=hash40("top"), Damage=damage, Angle=40, KBG=60, FKB=0, BKB=50, Size=hitbox_size, X=0.0, Y=0.0, Z=0.0, X2=LUA_VOID, Y2=LUA_VOID, Z2=LUA_VOID, Hitlag=1.0, SDI=1.0, Clang_Rebound=ATTACK_SETOFF_KIND_ON, FacingRestrict=ATTACK_LR_CHECK_SPEED, SetWeight=false, ShieldDamage=-7, Trip=0.0, Rehit=0, Reflectable=true, Absorbable=true, Flinchless=false, DisableHitlag=false, Direct_Hitbox=false, Ground_or_Air=COLLISION_SITUATION_MASK_GA, Hitbits=COLLISION_CATEGORY_MASK_ALL, CollisionPart=COLLISION_PART_MASK_ALL, FriendlyFire=false, Effect=hash40("collision_attr_normal"), SFXLevel=ATTACK_SOUND_LEVEL_M,SFXType=COLLISION_SOUND_ATTR_FIRE, Type=ATTACK_REGION_ENERGY)
+                ATTACK(ID=0, Part=0, Bone=hash40("top"), Damage=damage, Angle=40, KBG=60, FKB=0, BKB=50, Size=hitbox_size, X=0.0, Y=0.0, Z=0.0, X2=LUA_VOID, Y2=LUA_VOID, Z2=LUA_VOID, Hitlag=1.0, SDI=1.0, Clang_Rebound=ATTACK_SETOFF_KIND_ON, FacingRestrict=ATTACK_LR_CHECK_SPEED, SetWeight=false, ShieldDamage=-7, Trip=0.0, Rehit=0, Reflectable=true, Absorbable=true, Flinchless=false, DisableHitlag=false, Direct_Hitbox=false, Ground_or_Air=COLLISION_SITUATION_MASK_GA, Hitbits=COLLISION_CATEGORY_MASK_ALL, CollisionPart=COLLISION_PART_MASK_ALL, FriendlyFire=false, Effect=hash40("collision_attr_normal"), SFXLevel=ATTACK_SOUND_LEVEL_L,SFXType=COLLISION_SOUND_ATTR_KICK, Type=ATTACK_REGION_ENERGY)
             });
         }
 
@@ -312,6 +312,9 @@ pub fn vegeta_frame(fighter : &mut L2CFighterCommon) {
                 boma.set_int(charge_2 as i32, FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_LW4_LEFT_EFFECT_HANDLE);
             }
         }
+        if boma.is_status(*FIGHTER_STATUS_KIND_ATTACK_LW4_START){
+            boma.off_flag(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_USED_LW4_EFFECT);
+        }
         if boma.is_status(*FIGHTER_STATUS_KIND_ATTACK_LW4) {
             if !boma.is_flag(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_USED_LW4_EFFECT) && boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_LW4_CHARGE_FRAME) == 0 {
                 let charge_1 = EffectModule::req_follow(boma, Hash40::new("sys_sscope_bullet_max"), smash::phx::Hash40::new("haver"), &Vector3f { x: 0.0, y: 0.0, z: 5.0 }, &ZERO_VECTOR, 2.0, true, 0, 0, 0, 0, 0, true, true) as u32;
@@ -324,11 +327,9 @@ pub fn vegeta_frame(fighter : &mut L2CFighterCommon) {
             }
             if boma.motion_frame() == 14.0 {
                 EffectModule::kill(boma, boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_LW4_RIGHT_EFFECT_HANDLE) as u32, false, true);
-                boma.off_flag(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_USED_LW4_EFFECT);
             }
             if boma.motion_frame() == 28.0 {
                 EffectModule::kill(boma, boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_LW4_LEFT_EFFECT_HANDLE) as u32, false, true);
-                boma.off_flag(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_USED_LW4_EFFECT);
             }
         }
         if !boma.is_status_one_of(&[*FIGHTER_STATUS_KIND_ATTACK_LW4_HOLD, *FIGHTER_STATUS_KIND_ATTACK_LW4, *FIGHTER_STATUS_KIND_ATTACK_LW4_START, *FIGHTER_STATUS_KIND_SPECIAL_S]) {
@@ -353,11 +354,14 @@ pub fn vegeta_frame(fighter : &mut L2CFighterCommon) {
         EffectModule::kill_kind(boma, Hash40::new("lucario_hadou_l_l"), false, true);
         EffectModule::kill_kind(boma, Hash40::new("lucario_hadou_l_r"), false, true);
         EffectModule::kill_kind(boma, Hash40::new("lucario_hadou_m"), false, true);
-
         GroundModule::set_rhombus_offset(boma, &smash::phx::Vector2f {
             x: 0.0,
             y: -1.0
         });
+        if boma.is_grounded(){
+            boma.set_int(0, FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_AIR_TIMER);
+            boma.off_flag(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_USED_AIR_GALICK_GUN);
+        }
         /*
         if boma.is_button_on(Buttons::Special){
             if boma.is_button_trigger(Buttons::AppealSR){
@@ -473,8 +477,10 @@ pub fn vegeta_frame(fighter : &mut L2CFighterCommon) {
             base_neutral_face(boma);
             boma.set_float(1.0, FIGHTER_VEGETA_INSTANCE_WORK_ID_FLOAT_POWER_MUL);
         }
-
-        qcf_handle(boma);
+        if boma.is_status(*FIGHTER_STATUS_KIND_DEAD){
+            boma.set_int(0,FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM);
+        }
+        //qcf_handle(boma);
         qcb_handle(boma);
         /*
         if ControlModule::check_button_on(boma, *CONTROL_PAD_BUTTON_SPECIAL){
