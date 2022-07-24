@@ -16,7 +16,7 @@ use smash::lib::lua_const::*;
 use crate::utils::*;
 use skyline::hooks::{getRegionAddress, Region};
 use skyline::libc::*;
-use smash::app::{ArticleOperationTarget, enSEType};
+use smash::app::{ArticleOperationTarget, enSEType, Fighter};
 use smash_utils::cmdflag::Buttons;
 use crate::vegeta_status::*;
 use smash_utils::utils::{CancelKind, FIGHTER_MANAGER};
@@ -46,6 +46,9 @@ const ALL_VEGETA_MESHES:[&str;39] = [
 
 pub unsafe fn disable_all_face_meshes(module_accessor: *mut BattleObjectModuleAccessor){
     for mesh in ALL_VEGETA_MESHES {
+        if mesh == "ken_earring_p"{
+            continue
+        }
         ModelModule::set_mesh_visibility(module_accessor, Hash40::new(mesh), false);
     }
 }
@@ -87,17 +90,24 @@ pub unsafe fn ue_neutral_face(module_accessor: *mut app::BattleObjectModuleAcces
     ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_hair5"), true);
 }
 
+pub unsafe fn ue_ki_charge_face(module_accessor: *mut app::BattleObjectModuleAccessor){
+    disable_all_face_meshes(module_accessor);
+    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_smile_mouth"), true);
+    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_openblink_p"), true);
+    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_hair5"), true);
+}
+
 pub unsafe fn base_power_attack_face_n(module_accessor: *mut app::BattleObjectModuleAccessor){
     disable_all_face_meshes(module_accessor);
     ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_final_mouth"), true);
-    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_finalblink"), true);
+    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_openblink"), true);
     ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_hair1"), true);
 }
 
 pub unsafe fn base_power_charge_face_n(module_accessor: *mut app::BattleObjectModuleAccessor){
     disable_all_face_meshes(module_accessor);
     ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_hurt_mouth"), true);
-    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_finalblink"), true);
+    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_openblink"), true);
     ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_hair1"), true);
 }
 
@@ -253,8 +263,7 @@ unsafe fn print_all_fighters_motions(){
     }
 }
 
-
-
+static mut IS_USED_EFFECT:bool = false;
 #[fighter_frame(agent = FIGHTER_KIND_LUCARIO)]
 pub fn vegeta_frame(fighter : &mut L2CFighterCommon) {
     unsafe {
@@ -264,10 +273,6 @@ pub fn vegeta_frame(fighter : &mut L2CFighterCommon) {
         let entry_id = get_entry_id(boma);
         let current_form = boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM);
         let current_form_timer = boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM_TIMER);
-
-        if ControlModule::check_button_trigger(boma, *CONTROL_PAD_BUTTON_APPEAL_S_L) {
-            //print_all_fighters_motions();
-        }
         let multiplier = boma.get_float(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLOAT_POWER_MUL);
         AttackModule::set_power_mul(boma, multiplier);
         if boma.is_status_one_of(&[*FIGHTER_STATUS_KIND_ATTACK_S4_HOLD, *FIGHTER_STATUS_KIND_ATTACK_S4, *FIGHTER_STATUS_KIND_ATTACK_S4_START]) {
@@ -280,10 +285,28 @@ pub fn vegeta_frame(fighter : &mut L2CFighterCommon) {
         } else {
             boma.off_flag(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_USED_S4_EFFECT);
         }
+        if boma.is_motion(Hash40::new("win_2")){
+            IS_USED_EFFECT = false;
+            if !boma.is_motion_end(){
+                base_neutral_face(boma);
+            }
+        }
+        else if boma.is_motion(Hash40::new("win_2_wait")){
+            if !IS_USED_EFFECT{
+                let handle = EffectModule::req_follow(boma, Hash40::new("lucario_aura"), smash::phx::Hash40::new("top"), &ZERO_VECTOR, &ZERO_VECTOR, 1.0, true, 0, 0, 0, 0, 0, true, true) as u32;
+                EffectModule::set_rate(boma, handle, 3.0);
+                EffectModule::set_rgb(boma, handle, 10.0, 0.7, 10.0);
+                IS_USED_EFFECT = true;
+            }
+            ue_ki_charge_face(boma);
+        }
+        else{
+            base_neutral_face(boma);
+        }
         if boma.is_status(*FIGHTER_STATUS_KIND_ATTACK_LW4_HOLD) {
             boma.inc_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_LW4_CHARGE_FRAME);
             let mut charge = boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_LW4_CHARGE_FRAME) as f32 / 120.0;
-            let mut hitbox_size = (charge * 3.5) + 7.0;
+            let mut hitbox_size  = (charge * 3.5) + 7.0;
             let mut effect_size = (charge * 0.75) + 1.5;
             let mut damage = (charge * 7.0) + 10.0;
             if charge > 1.0 {
@@ -425,58 +448,61 @@ pub fn vegeta_frame(fighter : &mut L2CFighterCommon) {
         if current_form != 0 && !boma.is_status(*FIGHTER_STATUS_KIND_SPECIAL_LW){
             boma.inc_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM_TIMER);
         }
-        if current_form == 1 {
-            ssj_neutral_face(boma);
-            boma.set_float(1.2, FIGHTER_VEGETA_INSTANCE_WORK_ID_FLOAT_POWER_MUL);
-            if current_form_timer == 1800{
-                boma.set_int(0,FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM);
-                boma.on_flag(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_FORM_TIMER_END);
-                boma.set_int(0, FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM_TIMER);
-                let aura = EffectModule::req_follow(boma, Hash40::new("lucario_aura"), smash::phx::Hash40::new("top"), &ZERO_VECTOR, &ZERO_VECTOR, 1.0, true, 0, 0, 0, 0, 0, true, true) as u32;
-                EffectModule::set_rgb(boma, aura, 0.7, 0.7, 0.0);
-                EffectModule::set_alpha(boma, aura, 2.0);
+        if !FighterManager::is_result_mode(FIGHTER_MANAGER){
+            if current_form == 1 {
+                ssj_neutral_face(boma);
+                boma.set_float(1.2, FIGHTER_VEGETA_INSTANCE_WORK_ID_FLOAT_POWER_MUL);
+                if current_form_timer == 1800{
+                    boma.set_int(0,FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM);
+                    boma.on_flag(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_FORM_TIMER_END);
+                    boma.set_int(0, FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM_TIMER);
+                    let aura = EffectModule::req_follow(boma, Hash40::new("lucario_aura"), smash::phx::Hash40::new("top"), &ZERO_VECTOR, &ZERO_VECTOR, 1.0, true, 0, 0, 0, 0, 0, true, true) as u32;
+                    EffectModule::set_rgb(boma, aura, 0.7, 0.7, 0.0);
+                    EffectModule::set_alpha(boma, aura, 2.0);
+                }
+            }
+            else if current_form == 2 {
+                ssjb_neutral_face(boma);
+                boma.set_float(1.4, FIGHTER_VEGETA_INSTANCE_WORK_ID_FLOAT_POWER_MUL);
+                if current_form_timer == 1500{
+                    boma.set_int(0,FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM);
+                    boma.on_flag(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_FORM_TIMER_END);
+                    boma.set_int(0, FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM_TIMER);
+                    let aura = EffectModule::req_follow(boma, Hash40::new("lucario_aura"), smash::phx::Hash40::new("top"), &ZERO_VECTOR, &ZERO_VECTOR, 1.0, true, 0, 0, 0, 0, 0, true, true) as u32;
+                    EffectModule::set_rgb(boma, aura, 1.5, 1.5, 1.5);
+                    EffectModule::set_rate(boma, aura, 5.0);
+                }
+            }
+            else if current_form == 3 {
+                ssjbe_neutral_face(boma);
+                boma.set_float(1.6, FIGHTER_VEGETA_INSTANCE_WORK_ID_FLOAT_POWER_MUL);
+                if current_form_timer == 1200{
+                    boma.set_int(0,FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM);
+                    boma.on_flag(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_FORM_TIMER_END);
+                    boma.set_int(0, FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM_TIMER);
+                    let aura = EffectModule::req_follow(boma, Hash40::new("lucario_aura"), smash::phx::Hash40::new("top"), &ZERO_VECTOR, &ZERO_VECTOR, 1.0, true, 0, 0, 0, 0, 0, true, true) as u32;
+                    EffectModule::set_rgb(boma, aura, 0.7, 0.7, 10.0);
+                    EffectModule::set_rate(boma, aura, 5.0);
+                }
+            }
+            else if current_form == 4 {
+                ue_neutral_face(boma);
+                boma.set_float(1.8, FIGHTER_VEGETA_INSTANCE_WORK_ID_FLOAT_POWER_MUL);
+                if current_form_timer == 900{
+                    boma.set_int(0,FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM);
+                    boma.on_flag(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_FORM_TIMER_END);
+                    boma.set_int(0, FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM_TIMER);
+                    let aura = EffectModule::req_follow(boma, Hash40::new("lucario_aura"), smash::phx::Hash40::new("top"), &ZERO_VECTOR, &ZERO_VECTOR, 1.0, true, 0, 0, 0, 0, 0, true, true) as u32;
+                    EffectModule::set_rgb(boma, aura, 10.0, 0.7, 10.0);
+                    EffectModule::set_rate(boma, aura, 5.0);
+                }
+            }
+            else{
+                base_neutral_face(boma);
+                boma.set_float(1.0, FIGHTER_VEGETA_INSTANCE_WORK_ID_FLOAT_POWER_MUL);
             }
         }
-        else if current_form == 2 {
-            ssjb_neutral_face(boma);
-            boma.set_float(1.4, FIGHTER_VEGETA_INSTANCE_WORK_ID_FLOAT_POWER_MUL);
-            if current_form_timer == 1500{
-                boma.set_int(0,FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM);
-                boma.on_flag(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_FORM_TIMER_END);
-                boma.set_int(0, FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM_TIMER);
-                let aura = EffectModule::req_follow(boma, Hash40::new("lucario_aura"), smash::phx::Hash40::new("top"), &ZERO_VECTOR, &ZERO_VECTOR, 1.0, true, 0, 0, 0, 0, 0, true, true) as u32;
-                EffectModule::set_rgb(boma, aura, 1.5, 1.5, 1.5);
-                EffectModule::set_rate(boma, aura, 5.0);
-            }
-        }
-        else if current_form == 3 {
-            ssjbe_neutral_face(boma);
-            boma.set_float(1.6, FIGHTER_VEGETA_INSTANCE_WORK_ID_FLOAT_POWER_MUL);
-            if current_form_timer == 1200{
-                boma.set_int(0,FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM);
-                boma.on_flag(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_FORM_TIMER_END);
-                boma.set_int(0, FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM_TIMER);
-                let aura = EffectModule::req_follow(boma, Hash40::new("lucario_aura"), smash::phx::Hash40::new("top"), &ZERO_VECTOR, &ZERO_VECTOR, 1.0, true, 0, 0, 0, 0, 0, true, true) as u32;
-                EffectModule::set_rgb(boma, aura, 0.7, 0.7, 10.0);
-                EffectModule::set_rate(boma, aura, 5.0);
-            }
-        }
-        else if current_form == 4 {
-            ue_neutral_face(boma);
-            boma.set_float(1.8, FIGHTER_VEGETA_INSTANCE_WORK_ID_FLOAT_POWER_MUL);
-            if current_form_timer == 900{
-                boma.set_int(0,FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM);
-                boma.on_flag(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_FORM_TIMER_END);
-                boma.set_int(0, FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM_TIMER);
-                let aura = EffectModule::req_follow(boma, Hash40::new("lucario_aura"), smash::phx::Hash40::new("top"), &ZERO_VECTOR, &ZERO_VECTOR, 1.0, true, 0, 0, 0, 0, 0, true, true) as u32;
-                EffectModule::set_rgb(boma, aura, 10.0, 0.7, 10.0);
-                EffectModule::set_rate(boma, aura, 5.0);
-            }
-        }
-        else {
-            base_neutral_face(boma);
-            boma.set_float(1.0, FIGHTER_VEGETA_INSTANCE_WORK_ID_FLOAT_POWER_MUL);
-        }
+
         if boma.is_status(*FIGHTER_STATUS_KIND_DEAD){
             boma.set_int(0,FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM);
         }

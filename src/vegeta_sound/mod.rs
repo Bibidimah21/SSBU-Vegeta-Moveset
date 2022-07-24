@@ -13,8 +13,7 @@ use smashline::*;
 #[acmd_script(
 agent = "lucario",
 script = "sound_attack11",
-category = ACMD_SOUND,
-low_priority )]
+category = ACMD_SOUND)]
 unsafe fn sound_vegeta_attack11(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
     let module_accessor = fighter.module_accessor;
@@ -28,8 +27,7 @@ unsafe fn sound_vegeta_attack11(fighter: &mut L2CAgentBase) {
 #[acmd_script(
 agent = "lucario",
 script = "sound_attack12",
-category = ACMD_SOUND,
-low_priority )]
+category = ACMD_SOUND)]
 unsafe fn sound_vegeta_attack12(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
     let module_accessor = fighter.module_accessor;
@@ -43,8 +41,7 @@ unsafe fn sound_vegeta_attack12(fighter: &mut L2CAgentBase) {
 #[acmd_script(
 agent = "lucario",
 script = "sound_attack13",
-category = ACMD_SOUND,
-low_priority )]
+category = ACMD_SOUND)]
 unsafe fn sound_vegeta_attack13(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
     let module_accessor = fighter.module_accessor;
@@ -61,7 +58,7 @@ unsafe fn sound_vegeta_attack13(fighter: &mut L2CAgentBase) {
 }
 
 
-#[acmd_script(agent = "lucario", scripts = ["sound_bigbangatk", "sound_bigbangatk_air"], category = ACMD_SOUND, low_priority )]
+#[acmd_script(agent = "lucario", scripts = ["sound_bigbangatk", "sound_bigbangatk_air"], category = ACMD_SOUND)]
 unsafe fn sound_vegeta_bigbangatk(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
     let module_accessor = fighter.module_accessor;
@@ -78,7 +75,7 @@ unsafe fn sound_vegeta_bigbangatk(fighter: &mut L2CAgentBase) {
     });
 }
 
-#[acmd_script(agent = "lucario", script = "sound_attackairf", category = ACMD_SOUND, low_priority )]
+#[acmd_script(agent = "lucario", script = "sound_attackairf", category = ACMD_SOUND)]
 unsafe fn sound_vegeta_attackairf(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
     let module_accessor: &mut BattleObjectModuleAccessor = &mut *fighter.module_accessor;
@@ -91,7 +88,7 @@ unsafe fn sound_vegeta_attackairf(fighter: &mut L2CAgentBase) {
     });
 }
 
-#[acmd_script(agent = "lucario", script = "sound_attackairb", category = ACMD_SOUND, low_priority )]
+#[acmd_script(agent = "lucario", script = "sound_attackairb", category = ACMD_SOUND)]
 unsafe fn sound_vegeta_attackairb(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
     let module_accessor: &mut BattleObjectModuleAccessor = &mut *fighter.module_accessor;
@@ -105,7 +102,7 @@ unsafe fn sound_vegeta_attackairb(fighter: &mut L2CAgentBase) {
     });
 }
 
-#[acmd_script(agent = "lucario", script = "sound_attackairn", category = ACMD_SOUND, low_priority )]
+#[acmd_script(agent = "lucario", script = "sound_attackairn", category = ACMD_SOUND)]
 unsafe fn sound_vegeta_attackairn(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
     let module_accessor = fighter.module_accessor;
@@ -117,7 +114,7 @@ unsafe fn sound_vegeta_attackairn(fighter: &mut L2CAgentBase) {
     });
 }
 
-#[acmd_script(agent = "lucario", script = "sound_attackairhi", category = ACMD_SOUND, low_priority )]
+#[acmd_script(agent = "lucario", script = "sound_attackairhi", category = ACMD_SOUND)]
 unsafe fn sound_vegeta_attackairhi(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
     let module_accessor = fighter.module_accessor;
@@ -130,7 +127,7 @@ unsafe fn sound_vegeta_attackairhi(fighter: &mut L2CAgentBase) {
     });
 }
 
-#[acmd_script(agent = "lucario", script = "sound_attackairlw", category = ACMD_SOUND, low_priority )]
+#[acmd_script(agent = "lucario", script = "sound_attackairlw", category = ACMD_SOUND)]
 unsafe fn sound_vegeta_attackairlw(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
     let module_accessor = fighter.module_accessor;
@@ -146,8 +143,7 @@ unsafe fn sound_vegeta_attackairlw(fighter: &mut L2CAgentBase) {
 #[acmd_script(
 agent = "lucario",
 scripts = ["sound_attacks3", "sound_attacks3hi", "sound_attacks3lw"],
-category = ACMD_SOUND,
-low_priority )]
+category = ACMD_SOUND)]
 unsafe fn sound_vegeta_attacks3(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
     let module_accessor = fighter.module_accessor;
@@ -162,8 +158,7 @@ unsafe fn sound_vegeta_attacks3(fighter: &mut L2CAgentBase) {
 #[acmd_script(
 agent = "lucario",
 script = "sound_attacklw3",
-category = ACMD_SOUND,
-low_priority )]
+category = ACMD_SOUND)]
 unsafe fn sound_vegeta_attacklw3(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
     let module_accessor = fighter.module_accessor;
@@ -178,8 +173,7 @@ unsafe fn sound_vegeta_attacklw3(fighter: &mut L2CAgentBase) {
 #[acmd_script(
 agent = "lucario",
 script = "sound_attackhi3",
-category = ACMD_SOUND,
-low_priority )]
+category = ACMD_SOUND)]
 unsafe fn sound_vegeta_attackhi3(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
     let module_accessor = fighter.module_accessor;
@@ -195,7 +189,7 @@ unsafe fn sound_vegeta_attackhi3(fighter: &mut L2CAgentBase) {
     });
 }
 
-#[acmd_script(agent = "lucario", script = "sound_attacks4", category = ACMD_SOUND, low_priority )]
+#[acmd_script(agent = "lucario", script = "sound_attacks4", category = ACMD_SOUND)]
 unsafe fn sound_vegeta_attacks4(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
     let module_accessor = fighter.module_accessor;
@@ -208,7 +202,7 @@ unsafe fn sound_vegeta_attacks4(fighter: &mut L2CAgentBase) {
     });
 }
 
-#[acmd_script(agent = "lucario", script = "sound_attackhi4", category = ACMD_SOUND, low_priority )]
+#[acmd_script(agent = "lucario", script = "sound_attackhi4", category = ACMD_SOUND)]
 unsafe fn sound_vegeta_attackhi4(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
     let module_accessor = fighter.module_accessor;
@@ -221,7 +215,7 @@ unsafe fn sound_vegeta_attackhi4(fighter: &mut L2CAgentBase) {
     });
 }
 
-#[acmd_script(agent = "lucario", script = "sound_attacklw4", category = ACMD_SOUND, low_priority )]
+#[acmd_script(agent = "lucario", script = "sound_attacklw4", category = ACMD_SOUND)]
 unsafe fn sound_vegeta_attacklw4(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
     let module_accessor = fighter.module_accessor;

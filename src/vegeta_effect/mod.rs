@@ -1,5 +1,5 @@
 use crate::utils::*;
-use crate::vegeta::CHARGE_TIME;
+use crate::vegeta::{CHARGE_TIME, ue_ki_charge_face};
 use crate::vegeta_status::GALICKGUN_ROT;
 use smash::app::lua_bind::*;
 use smash::app::*;
@@ -16,8 +16,7 @@ use crate::vegeta::{TEST, TEST2, TEST3};
 #[acmd_script(
 agent = "lucario",
 script = "effect_attack11",
-category = ACMD_EFFECT,
-low_priority )]
+category = ACMD_EFFECT)]
 unsafe fn effect_vegeta_attack11(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
     let module_accessor = fighter.module_accessor;
@@ -29,8 +28,7 @@ unsafe fn effect_vegeta_attack11(fighter: &mut L2CAgentBase) {
 #[acmd_script(
 agent = "lucario",
 script = "effect_attack12",
-category = ACMD_EFFECT,
-low_priority )]
+category = ACMD_EFFECT)]
 unsafe fn effect_vegeta_attack12(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
     let module_accessor = fighter.module_accessor;
@@ -42,8 +40,7 @@ unsafe fn effect_vegeta_attack12(fighter: &mut L2CAgentBase) {
 #[acmd_script(
 agent = "lucario",
 script = "effect_attack13",
-category = ACMD_EFFECT,
-low_priority )]
+category = ACMD_EFFECT)]
 unsafe fn effect_vegeta_attack13(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
     let module_accessor = fighter.module_accessor;
@@ -61,7 +58,7 @@ unsafe fn effect_vegeta_attack13(fighter: &mut L2CAgentBase) {
     });
 }
 
-#[acmd_script(agent = "lucario", script = "effect_attackdash", category = ACMD_GAME, low_priority )]
+#[acmd_script(agent = "lucario", script = "effect_attackdash", category = ACMD_GAME)]
 unsafe fn effect_vegeta_attackdash(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
     let module_accessor = fighter.module_accessor;
@@ -85,8 +82,7 @@ unsafe fn effect_vegeta_attackdash(fighter: &mut L2CAgentBase) {
 #[acmd_script(
 agent = "lucario",
 scripts = ["effect_attacks3", "effect_attacks3hi", "effect_attacks3lw"],
-category = ACMD_EFFECT,
-low_priority )]
+category = ACMD_EFFECT)]
 unsafe fn effect_vegeta_attacks3(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
     let module_accessor = fighter.module_accessor;
@@ -103,7 +99,7 @@ unsafe fn effect_vegeta_attacks3(fighter: &mut L2CAgentBase) {
     });
 }
 
-#[acmd_script(agent = "lucario", scripts = ["effect_bigbangatk", "effect_bigbangatk_air"], category = ACMD_EFFECT, low_priority )]
+#[acmd_script(agent = "lucario", scripts = ["effect_bigbangatk", "effect_bigbangatk_air"], category = ACMD_EFFECT)]
 unsafe fn effect_vegeta_bigbangatk(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
     let module_accessor = fighter.module_accessor;
@@ -124,8 +120,7 @@ unsafe fn effect_vegeta_bigbangatk(fighter: &mut L2CAgentBase) {
 #[acmd_script(
 agent = "lucario",
 script = "effect_attacklw3",
-category = ACMD_EFFECT,
-low_priority )]
+category = ACMD_EFFECT)]
 unsafe fn effect_vegeta_attacklw3(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
     let module_accessor = fighter.module_accessor;
@@ -137,8 +132,7 @@ unsafe fn effect_vegeta_attacklw3(fighter: &mut L2CAgentBase) {
 #[acmd_script(
 agent = "lucario",
 script = "effect_attackhi3",
-category = ACMD_EFFECT,
-low_priority )]
+category = ACMD_EFFECT)]
 unsafe fn vegeta_attackhi3(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
     let module_accessor = fighter.module_accessor;
@@ -150,7 +144,7 @@ unsafe fn vegeta_attackhi3(fighter: &mut L2CAgentBase) {
     });
 }
 
-#[acmd_script(agent = "lucario_auraball", scripts = ["effect_start", "effect_shoot", "effect_charge", "effect_chargemax"], category = ACMD_EFFECT, low_priority )]
+#[acmd_script(agent = "lucario_auraball", scripts = ["effect_start", "effect_shoot", "effect_charge", "effect_chargemax"], category = ACMD_EFFECT)]
 unsafe fn effect_vegeta_projectile(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
     acmd!(lua_state, {
@@ -158,7 +152,7 @@ unsafe fn effect_vegeta_projectile(fighter: &mut L2CAgentBase) {
     });
 }
 
-#[acmd_script(agent = "lucario", scripts = ["effect_galickgun_fire", "effect_galickgun_fire_air"], category = ACMD_EFFECT, low_priority )]
+#[acmd_script(agent = "lucario", scripts = ["effect_galickgun_fire", "effect_galickgun_fire_air"], category = ACMD_EFFECT)]
 unsafe fn effect_vegeta_galickgun_fire(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
     let module_accessor = fighter.module_accessor;
@@ -179,7 +173,7 @@ unsafe fn effect_vegeta_galickgun_fire(fighter: &mut L2CAgentBase) {
     });
 }
 
-#[acmd_script(agent = "lucario", script = "effect_attacks4", category = ACMD_EFFECT, low_priority )]
+#[acmd_script(agent = "lucario", script = "effect_attacks4", category = ACMD_EFFECT)]
 unsafe fn effect_vegeta_attacks4(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
     let module_accessor = fighter.module_accessor;
@@ -189,7 +183,7 @@ unsafe fn effect_vegeta_attacks4(fighter: &mut L2CAgentBase) {
     });
 }
 
-#[acmd_script(agent = "lucario", script = "effect_attackhi4", category = ACMD_EFFECT, low_priority )]
+#[acmd_script(agent = "lucario", script = "effect_attackhi4", category = ACMD_EFFECT)]
 unsafe fn effect_vegeta_attackhi4(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
     let module_accessor = fighter.module_accessor;
@@ -198,7 +192,7 @@ unsafe fn effect_vegeta_attackhi4(fighter: &mut L2CAgentBase) {
     });
 }
 
-#[acmd_script(agent = "lucario", script = "effect_attacklw4", category = ACMD_EFFECT, low_priority )]
+#[acmd_script(agent = "lucario", script = "effect_attacklw4", category = ACMD_EFFECT)]
 unsafe fn effect_vegeta_attacklw4(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
     let module_accessor = fighter.module_accessor;
@@ -208,7 +202,7 @@ unsafe fn effect_vegeta_attacklw4(fighter: &mut L2CAgentBase) {
     });
 }
 
-#[acmd_script(agent = "lucario", script = "effect_attackairf", category = ACMD_EFFECT, low_priority )]
+#[acmd_script(agent = "lucario", script = "effect_attackairf", category = ACMD_EFFECT)]
 unsafe fn effect_vegeta_attackairf(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
     let module_accessor = fighter.module_accessor;
@@ -219,7 +213,7 @@ unsafe fn effect_vegeta_attackairf(fighter: &mut L2CAgentBase) {
 }
 
 
-#[acmd_script(agent = "lucario", script = "effect_attackairn", category = ACMD_EFFECT, low_priority )]
+#[acmd_script(agent = "lucario", script = "effect_attackairn", category = ACMD_EFFECT)]
 unsafe fn effect_vegeta_attackairn(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
     let module_accessor = fighter.module_accessor;
@@ -232,7 +226,7 @@ unsafe fn effect_vegeta_attackairn(fighter: &mut L2CAgentBase) {
     });
 }
 
-#[acmd_script(agent = "lucario", script = "effect_attackairhi", category = ACMD_EFFECT, low_priority )]
+#[acmd_script(agent = "lucario", script = "effect_attackairhi", category = ACMD_EFFECT)]
 unsafe fn effect_vegeta_attackairhi(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
     let module_accessor = fighter.module_accessor;
@@ -242,7 +236,7 @@ unsafe fn effect_vegeta_attackairhi(fighter: &mut L2CAgentBase) {
     });
 }
 
-#[acmd_script(agent = "lucario", script = "effect_attackairlw", category = ACMD_EFFECT, low_priority )]
+#[acmd_script(agent = "lucario", script = "effect_attackairlw", category = ACMD_EFFECT)]
 unsafe fn effect_vegeta_attackairlw(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
     let module_accessor = fighter.module_accessor;
@@ -252,8 +246,38 @@ unsafe fn effect_vegeta_attackairlw(fighter: &mut L2CAgentBase) {
     });
 }
 
-#[acmd_script(agent = "lucario", script = "effect_throwf", category = ACMD_EFFECT, low_priority )]
+#[acmd_script(agent = "lucario", script = "effect_throwf", category = ACMD_EFFECT)]
 unsafe fn effect_vegeta_throwf(fighter: &mut L2CAgentBase) {
+    let lua_state = fighter.lua_state_agent;
+    let module_accessor = fighter.module_accessor;
+    let entry_id = (*module_accessor).entry_id();
+    acmd!(lua_state, {
+
+    });
+}
+
+#[acmd_script(agent = "lucario", script = "effect_win2", category = ACMD_EFFECT)]
+unsafe fn effect_win_2(fighter: &mut L2CAgentBase) {
+    let lua_state = fighter.lua_state_agent;
+    let module_accessor = fighter.module_accessor;
+    let entry_id = (*module_accessor).entry_id();
+    acmd!(lua_state, {
+
+    });
+}
+
+#[acmd_script(agent = "lucario", script = "effect_win2wait", category = ACMD_EFFECT)]
+unsafe fn effect_win_2_wait(fighter: &mut L2CAgentBase) {
+    let lua_state = fighter.lua_state_agent;
+    let module_accessor = fighter.module_accessor;
+    let entry_id = (*module_accessor).entry_id();
+    acmd!(lua_state, {
+
+    });
+}
+
+#[acmd_script(agent = "lucario", scripts = ["effect_win1", "effect_win3", "effect_win1wait", "effect_win3wait"], category = ACMD_EFFECT)]
+unsafe fn effect_win(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
     let module_accessor = fighter.module_accessor;
     let entry_id = (*module_accessor).entry_id();
@@ -281,6 +305,9 @@ pub fn install() {
         effect_vegeta_attackhi4,
         effect_vegeta_attacks4,
         effect_vegeta_attacklw4,
-        effect_vegeta_attackdash
+        effect_vegeta_attackdash,
+        effect_win,
+        effect_win_2,
+        effect_win_2_wait,
     };
 }
