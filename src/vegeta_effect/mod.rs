@@ -1,5 +1,5 @@
 use crate::utils::*;
-use crate::vegeta::{CHARGE_TIME, ue_ki_charge_face};
+use crate::vegeta::{CHARGE_TIME, ue_smile_face};
 use crate::vegeta_status::GALICKGUN_ROT;
 use smash::app::lua_bind::*;
 use smash::app::*;

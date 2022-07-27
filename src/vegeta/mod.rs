@@ -90,11 +90,18 @@ pub unsafe fn ue_neutral_face(module_accessor: *mut app::BattleObjectModuleAcces
     ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_hair5"), true);
 }
 
-pub unsafe fn ue_ki_charge_face(module_accessor: *mut app::BattleObjectModuleAccessor){
+pub unsafe fn ue_smile_face(module_accessor: *mut app::BattleObjectModuleAccessor){
     disable_all_face_meshes(module_accessor);
     ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_smile_mouth"), true);
     ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_openblink_p"), true);
     ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_hair5"), true);
+}
+
+pub unsafe fn base_smile_face(module_accessor: *mut app::BattleObjectModuleAccessor){
+    disable_all_face_meshes(module_accessor);
+    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_smile2_mouth"), true);
+    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_openblink"), true);
+    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_hair1"), true);
 }
 
 pub unsafe fn base_power_attack_face_n(module_accessor: *mut app::BattleObjectModuleAccessor){
@@ -298,7 +305,10 @@ pub fn vegeta_frame(fighter : &mut L2CFighterCommon) {
                 EffectModule::set_rgb(boma, handle, 10.0, 0.7, 10.0);
                 IS_USED_EFFECT = true;
             }
-            ue_ki_charge_face(boma);
+            ue_smile_face(boma);
+        }
+        else if boma.is_motion_one_of(&[Hash40::new("win_3"), Hash40::new("win_3_wait")]){
+            base_smile_face(boma);
         }
         else{
             base_neutral_face(boma);
@@ -385,66 +395,10 @@ pub fn vegeta_frame(fighter : &mut L2CFighterCommon) {
             boma.set_int(0, FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_AIR_TIMER);
             boma.off_flag(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_USED_AIR_GALICK_GUN);
         }
-        /*
-        if boma.is_button_on(Buttons::Special){
-            if boma.is_button_trigger(Buttons::AppealSR){
-                TEST2+=10;
-                println!("{TEST2}");
-            }
-            if boma.is_button_trigger(Buttons::AppealSL){
-                TEST2-=10;
-                println!("{TEST2}");
-            }
-            if boma.is_button_trigger(Buttons::AppealHi){
-                TEST2+=1;
-                println!("{TEST2}");
-            }
-            if boma.is_button_trigger(Buttons::AppealLw){
-                TEST2-=1;
-                println!("{TEST2}");
-            }
+        if MotionModule::motion_kind(boma) == hash40("attack_air_lw"){
+            //enable_jump(boma);
         }
-       else if boma.is_button_on(Buttons::Attack){
-            if boma.is_button_trigger(Buttons::AppealSR){
-                TEST3+=10;
-                println!("{TEST3}");
-            }
-            if boma.is_button_trigger(Buttons::AppealSL){
-                TEST3-=10;
-                println!("{TEST3}");
-            }
-            if boma.is_button_trigger(Buttons::AppealHi){
-                TEST3+=1;
-                println!("{TEST3}");
-            }
-            if boma.is_button_trigger(Buttons::AppealLw){
-                TEST3-=1;
-                println!("{TEST3}");
-            }
-        }
-        else{
-            if MotionModule::motion_kind(boma) == hash40("attack_air_lw"){
-                enable_jump(boma);
-            }
-            if boma.is_button_trigger(Buttons::AppealSR){
-                TEST+=10;
-                println!("{TEST}");
-            }
-            if boma.is_button_trigger(Buttons::AppealSL){
-                TEST-=10;
-                println!("{TEST}");
-            }
-            if boma.is_button_trigger(Buttons::AppealHi){
-                TEST+=1;
-                println!("{TEST}");
-            }
-            if boma.is_button_trigger(Buttons::AppealLw){
-                TEST-=1;
-                println!("{TEST}");
-            }
-        }
-
- */
+        test_variables(boma);
         if current_form != 0 && !boma.is_status(*FIGHTER_STATUS_KIND_SPECIAL_LW){
             boma.inc_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM_TIMER);
         }

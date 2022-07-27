@@ -100,13 +100,13 @@ pub unsafe fn get_param_int_replace(work_module: u64, param_type: u64, param_has
     let ret = original!()(work_module, param_type, param_hash);
     if boma.kind() == *WEAPON_KIND_LUCARIO_AURABALL{
         if param_hash == hash40("life"){
-            return 100;
+            return 50;
         }
         if param_hash == hash40("down") {
-           return -3
+           return -1
         }
         else if [hash40("up"), hash40("half_width")].contains(&param_hash){
-          return 3
+          return 1
         }
     }
     ret

@@ -14,8 +14,10 @@ use smash::{
     *,
 };
 use smash_utils::bomaext::BomaExt;
+use smash_utils::cmdflag::Buttons;
 use smash_utils::utils::FIGHTER_MANAGER;
 use smashline::*;
+use crate::vegeta::{TEST, TEST2, TEST3};
 
 pub const FIGHTER_VEGETA_STATUS_KIND_SUPERDASHKICK: i32 = 0x1eb;
 pub const FIGHTER_VEGETA_STATUS_KIND_GALICK_GUN_START: i32 = 0x1ec;
@@ -130,7 +132,62 @@ pub unsafe fn enable_jump(module_accessor: &mut BattleObjectModuleAccessor){
         }
     }
 }
-
+pub unsafe fn test_variables(boma: &mut BattleObjectModuleAccessor){
+    if boma.is_button_on(Buttons::Special){
+        if boma.is_button_trigger(Buttons::AppealSR){
+            TEST2+=10;
+            println!("{TEST2}");
+        }
+        if boma.is_button_trigger(Buttons::AppealSL){
+            TEST2-=10;
+            println!("{TEST2}");
+        }
+        if boma.is_button_trigger(Buttons::AppealHi){
+            TEST2+=1;
+            println!("{TEST2}");
+        }
+        if boma.is_button_trigger(Buttons::AppealLw){
+            TEST2-=1;
+            println!("{TEST2}");
+        }
+    }
+    else if boma.is_button_on(Buttons::Attack){
+        if boma.is_button_trigger(Buttons::AppealSR){
+            TEST3+=10;
+            println!("{TEST3}");
+        }
+        if boma.is_button_trigger(Buttons::AppealSL){
+            TEST3-=10;
+            println!("{TEST3}");
+        }
+        if boma.is_button_trigger(Buttons::AppealHi){
+            TEST3+=1;
+            println!("{TEST3}");
+        }
+        if boma.is_button_trigger(Buttons::AppealLw){
+            TEST3-=1;
+            println!("{TEST3}");
+        }
+    }
+    else{
+        if boma.is_button_trigger(Buttons::AppealSR){
+            TEST+=10;
+            println!("{TEST}");
+        }
+        if boma.is_button_trigger(Buttons::AppealSL){
+            TEST-=10;
+            println!("{TEST}");
+        }
+        if boma.is_button_trigger(Buttons::AppealHi){
+            TEST+=1;
+            println!("{TEST}");
+        }
+        if boma.is_button_trigger(Buttons::AppealLw){
+            TEST-=1;
+            println!("{TEST}");
+        }
+    }
+}
 
 pub fn is_grounded(module_accessor: *mut app::BattleObjectModuleAccessor) -> bool {
     let situation_kind = unsafe { StatusModule::situation_kind(module_accessor) as i32 };

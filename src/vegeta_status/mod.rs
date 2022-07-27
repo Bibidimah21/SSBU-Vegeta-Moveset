@@ -11,7 +11,7 @@ use smash::hash40;
 use smash::phx::Hash40;
 use smash_utils::bomaext::ModelColorType;
 use smash_utils::bomaext::BomaExt;
-use smash_utils::cmdflag::Buttons;
+use smash_utils::cmdflag::{Buttons, Cat2, PadFlag};
 
 use crate::vegeta::CHARGE_TIME;
 
@@ -605,6 +605,7 @@ pub unsafe fn ki_charge_end(fighter: &mut L2CFighterCommon) -> L2CValue {
     boma.unset_position_lock();
     L2CValue::I32(0)
 }
+
 pub fn install() {
     smashline::install_status_scripts!(
         superdashkick_pre,
@@ -631,7 +632,7 @@ pub fn install() {
         attackair_status,
         attackair_status_end,
         ki_charge,
-        ki_charge_end
+        ki_charge_end,
       //  throw_f_end,
        // throw_f_status,
     );
