@@ -431,7 +431,7 @@ pub fn vegeta_frame(fighter : &mut L2CFighterCommon) {
             else if current_form == 3 {
                 ue_neutral_face(boma);
                 boma.set_float(1.5, FIGHTER_VEGETA_INSTANCE_WORK_ID_FLOAT_POWER_MUL);
-                if current_form_timer == 1200{
+                if current_form_timer == 900{
                     boma.set_int(0,FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM);
                     boma.on_flag(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_FORM_TIMER_END);
                     boma.set_int(0, FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM_TIMER);
