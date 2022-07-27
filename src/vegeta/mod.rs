@@ -213,6 +213,7 @@ pub fn hadoken(weapon: &mut L2CFighterBase) {
         let weapon_module_accessor = smash::app::sv_system::battle_object_module_accessor(lua_state);
         let owner_module_accessor = &mut *weapon_module_accessor.get_owner_boma();
         let owner_motion_kind = MotionModule::motion_kind(owner_module_accessor);
+        let motion_frame = weapon_module_accessor.motion_frame();
         let multiplier = owner_module_accessor.get_float(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLOAT_POWER_MUL);
         AttackModule::set_power_mul(weapon_module_accessor, multiplier);
         EffectModule::kill_kind(weapon_module_accessor, Hash40::new("lucario_hadoudan_tail"), false, true);
@@ -223,6 +224,10 @@ pub fn hadoken(weapon: &mut L2CFighterBase) {
         EffectModule::kill_kind(weapon_module_accessor, Hash40::new("lucario_hadoudan_max_l"), false, true);
         EffectModule::kill_kind(weapon_module_accessor, Hash40::new("lucario_hadoudan_max_r"), false, true);
         EffectModule::kill_kind(weapon_module_accessor, Hash40::new("lucario_hadoudan"), false, true);
+        if motion_frame >= 30.0{
+
+        }
+        println!("{motion_frame}");
 
         if owner_module_accessor.status_kind() == *FIGHTER_STATUS_KIND_SPECIAL_S{
             if weapon_module_accessor.motion_frame() == 1.0{
@@ -398,14 +403,14 @@ pub fn vegeta_frame(fighter : &mut L2CFighterCommon) {
         if MotionModule::motion_kind(boma) == hash40("attack_air_lw"){
             //enable_jump(boma);
         }
-        test_variables(boma);
+        //test_variables(boma);
         if current_form != 0 && !boma.is_status(*FIGHTER_STATUS_KIND_SPECIAL_LW){
             boma.inc_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM_TIMER);
         }
         if !FighterManager::is_result_mode(FIGHTER_MANAGER){
             if current_form == 1 {
                 ssj_neutral_face(boma);
-                boma.set_float(1.2, FIGHTER_VEGETA_INSTANCE_WORK_ID_FLOAT_POWER_MUL);
+                boma.set_float(1.1, FIGHTER_VEGETA_INSTANCE_WORK_ID_FLOAT_POWER_MUL);
                 if current_form_timer == 1800{
                     boma.set_int(0,FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM);
                     boma.on_flag(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_FORM_TIMER_END);
@@ -417,7 +422,7 @@ pub fn vegeta_frame(fighter : &mut L2CFighterCommon) {
             }
             else if current_form == 2 {
                 ssjb_neutral_face(boma);
-                boma.set_float(1.4, FIGHTER_VEGETA_INSTANCE_WORK_ID_FLOAT_POWER_MUL);
+                boma.set_float(1.3, FIGHTER_VEGETA_INSTANCE_WORK_ID_FLOAT_POWER_MUL);
                 if current_form_timer == 1500{
                     boma.set_int(0,FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM);
                     boma.on_flag(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_FORM_TIMER_END);
@@ -428,21 +433,9 @@ pub fn vegeta_frame(fighter : &mut L2CFighterCommon) {
                 }
             }
             else if current_form == 3 {
-                ssjbe_neutral_face(boma);
-                boma.set_float(1.6, FIGHTER_VEGETA_INSTANCE_WORK_ID_FLOAT_POWER_MUL);
-                if current_form_timer == 1200{
-                    boma.set_int(0,FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM);
-                    boma.on_flag(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_FORM_TIMER_END);
-                    boma.set_int(0, FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM_TIMER);
-                    let aura = EffectModule::req_follow(boma, Hash40::new("lucario_aura"), smash::phx::Hash40::new("top"), &ZERO_VECTOR, &ZERO_VECTOR, 1.0, true, 0, 0, 0, 0, 0, true, true) as u32;
-                    EffectModule::set_rgb(boma, aura, 0.7, 0.7, 10.0);
-                    EffectModule::set_rate(boma, aura, 5.0);
-                }
-            }
-            else if current_form == 4 {
                 ue_neutral_face(boma);
-                boma.set_float(1.8, FIGHTER_VEGETA_INSTANCE_WORK_ID_FLOAT_POWER_MUL);
-                if current_form_timer == 900{
+                boma.set_float(1.5, FIGHTER_VEGETA_INSTANCE_WORK_ID_FLOAT_POWER_MUL);
+                if current_form_timer == 1200{
                     boma.set_int(0,FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM);
                     boma.on_flag(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_FORM_TIMER_END);
                     boma.set_int(0, FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM_TIMER);

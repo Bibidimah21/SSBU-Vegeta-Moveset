@@ -514,10 +514,10 @@ unsafe extern "C" fn kicharge_main(fighter: &mut L2CFighterCommon) -> L2CValue {
         }
     }
     if boma.is_motion(Hash40::new("ki_charge_start")) && boma.is_motion_end(){
-        if boma.is_button_on(Buttons::Special) && boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_KI_CHARGE) != 90 && boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM) < 4{
+        if boma.is_button_on(Buttons::Special) && boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_KI_CHARGE) != 90 && boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM) < 3{
             boma.change_motion(Hash40::new("ki_charge_hold"), false);
         }
-        else if boma.motion_frame() == 28.0 && boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_KI_CHARGE) == 90 && boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM) < 4{
+        else if boma.motion_frame() == 28.0 && boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_KI_CHARGE) == 90 && boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM) < 3{
             boma.set_int(0, FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_KI_CHARGE);
             boma.set_int(0, FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM_TIMER);
             boma.stop_all_sound();
@@ -535,9 +535,6 @@ unsafe extern "C" fn kicharge_main(fighter: &mut L2CFighterCommon) -> L2CValue {
                 EffectModule::set_rgb(boma, handle, 1.5, 1.5, 1.5);
             }
             else if current_form == 3{
-                EffectModule::set_rgb(boma, handle, 0.7, 0.7, 10.0);
-            }
-            else if current_form == 4{
                 EffectModule::set_rgb(boma, handle, 10.0, 0.7, 10.0);
             }
             else{
@@ -575,9 +572,6 @@ unsafe extern "C" fn kicharge_main(fighter: &mut L2CFighterCommon) -> L2CValue {
             EffectModule::set_rgb(boma, handle, 1.5, 1.5, 1.5);
         }
         else if current_form == 3{
-            EffectModule::set_rgb(boma, handle, 0.7, 0.7, 10.0);
-        }
-        else if current_form == 4{
             EffectModule::set_rgb(boma, handle, 10.0, 0.7, 10.0);
         }
         else{
