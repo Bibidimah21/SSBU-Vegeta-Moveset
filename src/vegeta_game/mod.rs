@@ -375,6 +375,10 @@ unsafe fn vegeta_attackairf(fighter: &mut L2CAgentBase) {
         collision_attr = hash40("collision_attr_purple");
     }
     acmd!(lua_state, {
+        frame(Frame=5)
+        if(is_excute){
+            WorkModule::on_flag(Flag=FIGHTER_STATUS_ATTACK_AIR_FLAG_ENABLE_LANDING)
+        }
         frame(Frame=13)
         if(is_execute){
             ATTACK(ID=0, Part=0, Bone=hash40("top"), Damage=damage, Angle=290, KBG=kbg, FKB=0, BKB=bkb, Size=3.0, X=0.0, Y=11.0, Z=5.0, X2=LUA_VOID, Y2=LUA_VOID, Z2=LUA_VOID, Hitlag=1.0, SDI=1.0, Clang_Rebound=ATTACK_SETOFF_KIND_ON, FacingRestrict=ATTACK_LR_CHECK_POS, SetWeight=false, ShieldDamage=0, Trip=0.0, Rehit=0, Reflectable=false, Absorbable=false, Flinchless=false, DisableHitlag=false, Direct_Hitbox=false, Ground_or_Air=COLLISION_SITUATION_MASK_GA, Hitbits=COLLISION_CATEGORY_MASK_ALL, CollisionPart=COLLISION_PART_MASK_ALL, FriendlyFire=false, Effect=collision_attr, SFXLevel=ATTACK_SOUND_LEVEL_L, SFXType=collision_sound, Type=ATTACK_REGION_PUNCH)
@@ -385,6 +389,10 @@ unsafe fn vegeta_attackairf(fighter: &mut L2CAgentBase) {
         frame(Frame=16)
         if(is_execute){
             AttackModule::clear_all()
+        }
+        frame(Frame=57)
+        if(is_excute){
+            WorkModule::off_flag(Flag=FIGHTER_STATUS_ATTACK_AIR_FLAG_ENABLE_LANDING)
         }
     });
 }
@@ -400,6 +408,10 @@ unsafe fn vegeta_attackairb(fighter: &mut L2CAgentBase) {
         collision_attr = hash40("collision_attr_purple");
     }
     acmd!(lua_state, {
+        frame(Frame=5)
+        if(is_excute){
+            WorkModule::on_flag(Flag=FIGHTER_STATUS_ATTACK_AIR_FLAG_ENABLE_LANDING)
+        }
         frame(frame=10)
         if(is_execute){
             REVERSE_LR()
@@ -415,6 +427,10 @@ unsafe fn vegeta_attackairb(fighter: &mut L2CAgentBase) {
         if(is_execute){
             AttackModule::clear_all()
         }
+        frame(Frame=38)
+        if(is_excute){
+            WorkModule::off_flag(Flag=FIGHTER_STATUS_ATTACK_AIR_FLAG_ENABLE_LANDING)
+        }
     });
 }
 
@@ -428,6 +444,10 @@ unsafe fn vegeta_attackairn(fighter: &mut L2CAgentBase) {
         collision_attr = hash40("collision_attr_purple");
     }
     acmd!(lua_state, {
+        frame(Frame=2)
+        if(is_excute){
+            WorkModule::on_flag(Flag=FIGHTER_STATUS_ATTACK_AIR_FLAG_ENABLE_LANDING)
+        }
         frame(Frame=6)
         if(is_execute){
             ATTACK(ID=0, Part=0, Bone=hash40("top"), Damage=6.0, Angle=361, KBG=100, FKB=0, BKB=20, Size=3.0, X=0.0, Y=9.5, Z=0.0, X2=LUA_VOID, Y2=LUA_VOID, Z2=LUA_VOID, Hitlag=1.0, SDI=1.0, Clang_Rebound=ATTACK_SETOFF_KIND_ON, FacingRestrict=ATTACK_LR_CHECK_POS, SetWeight=false, ShieldDamage=0, Trip=0.0, Rehit=0, Reflectable=false, Absorbable=false, Flinchless=false, DisableHitlag=false, Direct_Hitbox=false, Ground_or_Air=COLLISION_SITUATION_MASK_GA, Hitbits=COLLISION_CATEGORY_MASK_ALL, CollisionPart=COLLISION_PART_MASK_ALL, FriendlyFire=false, Effect=collision_attr, SFXLevel=ATTACK_SOUND_LEVEL_L, SFXType=COLLISION_SOUND_ATTR_KICK, Type=ATTACK_REGION_PUNCH)
@@ -443,6 +463,10 @@ unsafe fn vegeta_attackairn(fighter: &mut L2CAgentBase) {
         if(is_execute){
             AttackModule::clear_all()
         }
+        frame(Frame=31)
+        if(is_excute){
+            WorkModule::off_flag(Flag=FIGHTER_STATUS_ATTACK_AIR_FLAG_ENABLE_LANDING)
+        }
     });
 }
 
@@ -456,6 +480,10 @@ unsafe fn vegeta_attackairhi(fighter: &mut L2CAgentBase) {
         collision_attr = hash40("collision_attr_purple");
     }
     acmd!(lua_state, {
+        frame(Frame=5)
+        if(is_excute){
+            WorkModule::on_flag(Flag=FIGHTER_STATUS_ATTACK_AIR_FLAG_ENABLE_LANDING)
+        }
         frame(Frame=11)
         if(is_execute){
             ATTACK(ID=0, Part=0, Bone=hash40("top"), Damage=9.0, Angle=75, KBG=90, FKB=0, BKB=20, Size=3.0, X=0.0, Y=9.0, Z=0.0, X2=LUA_VOID, Y2=LUA_VOID, Z2=LUA_VOID, Hitlag=1.0, SDI=1.0, Clang_Rebound=ATTACK_SETOFF_KIND_ON, FacingRestrict=ATTACK_LR_CHECK_POS, SetWeight=false, ShieldDamage=0, Trip=0.0, Rehit=0, Reflectable=false, Absorbable=false, Flinchless=false, DisableHitlag=false, Direct_Hitbox=false, Ground_or_Air=COLLISION_SITUATION_MASK_GA, Hitbits=COLLISION_CATEGORY_MASK_ALL, CollisionPart=COLLISION_PART_MASK_ALL, FriendlyFire=false, Effect=collision_attr, SFXLevel=ATTACK_SOUND_LEVEL_S, SFXType=COLLISION_SOUND_ATTR_HEAVY, Type=ATTACK_REGION_PUNCH)
@@ -465,6 +493,10 @@ unsafe fn vegeta_attackairhi(fighter: &mut L2CAgentBase) {
         frame(Frame=16)
         if(is_execute){
             AttackModule::clear_all()
+        }
+        frame(Frame=34)
+        if(is_excute){
+            WorkModule::off_flag(Flag=FIGHTER_STATUS_ATTACK_AIR_FLAG_ENABLE_LANDING)
         }
     });
 }
@@ -479,6 +511,10 @@ unsafe fn vegeta_attackairlw(fighter: &mut L2CAgentBase) {
         collision_attr = hash40("collision_attr_purple");
     }
     acmd!(lua_state, {
+        frame(Frame=7)
+        if(is_excute){
+            WorkModule::on_flag(Flag=FIGHTER_STATUS_ATTACK_AIR_FLAG_ENABLE_LANDING)
+        }
         if(is_excute){
             WorkModule::on_flag(Flag=FIGHTER_STATUS_ATTACK_AIR_FLAG_LANDING_CLEAR_SPEED)
             WorkModule::on_flag(Flag=FIGHTER_INSTANCE_WORK_ID_FLAG_NO_SPEED_OPERATION_CHK)
@@ -499,6 +535,10 @@ unsafe fn vegeta_attackairlw(fighter: &mut L2CAgentBase) {
             AttackModule::clear_all()
             WorkModule::off_flag(Flag=FIGHTER_STATUS_WORK_ID_FLAG_RESERVE_GRAVITY_STABLE_UNABLE)
             KineticModule::resume_energy(FIGHTER_KINETIC_ENERGY_ID_CONTROL)
+        }
+        frame(Frame=38)
+        if(is_excute){
+            WorkModule::on_flag(Flag=FIGHTER_STATUS_ATTACK_AIR_FLAG_ENABLE_LANDING)
         }
     });
 }
@@ -851,7 +891,7 @@ pub fn install() {
         vegeta_attacks4,
         vegeta_attacklw4,
         vegeta_attackhi4,
-        vegeta_landingairlw,
+       // vegeta_landingairlw,
         vegeta_attacklw3,
         vegeta_catchattack,
         //vegeta_superdashkick,
