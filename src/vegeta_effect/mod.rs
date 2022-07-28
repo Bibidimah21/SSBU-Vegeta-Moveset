@@ -107,7 +107,7 @@ unsafe fn effect_vegeta_bigbangatk(fighter: &mut L2CAgentBase) {
     acmd!(lua_state, {
         frame(Frame=10)
         if(is_execute){
-            EFFECT(hash40("sys_sscope_bullet_max"), hash40("top"), 18, 15, 0, 0, 0, 0, 3, false)
+            EFFECT(hash40("sys_sscope_bullet_max"), hash40("top"), 18, 15, 0, 0, 0, 0, 2.25, false)
             LAST_EFFECT_SET_COLOR(/*R*/ 0.0, /*G*/ 0.8, /*B*/ 13.0)
         }
         frame(Frame=27)
