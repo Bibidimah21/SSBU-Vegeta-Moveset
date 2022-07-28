@@ -83,7 +83,7 @@ unsafe fn vegeta_attack13(fighter: &mut L2CAgentBase) {
     acmd!(lua_state, {
     frame(Frame=7)
     if(is_excute){
-        ATTACK(ID=0, Part=0, Bone=hash40("top"), Damage=1.5, Angle=80, KBG=40, FKB=40, BKB=40, Size=4.0, X=0.0, Y=9.5, Z=6.0, X2=LUA_VOID, Y2=LUA_VOID, Z2=LUA_VOID, Hitlag=1.5, SDI=1.0, Clang_Rebound=ATTACK_SETOFF_KIND_ON, FacingRestrict=ATTACK_LR_CHECK_F, SetWeight=false, ShieldDamage=0, Trip=0.0, Rehit=0, Reflectable=false, Absorbable=false, Flinchless=false, DisableHitlag=false, Direct_Hitbox=true, Ground_or_Air=COLLISION_SITUATION_MASK_GA, Hitbits=COLLISION_CATEGORY_MASK_ALL, CollisionPart=COLLISION_PART_MASK_ALL, FriendlyFire=false, Effect=collision_attr, SFXLevel=ATTACK_SOUND_LEVEL_L, SFXType=COLLISION_SOUND_ATTR_KICK, Type=ATTACK_REGION_PUNCH)
+        ATTACK(ID=0, Part=0, Bone=hash40("top"), Damage=1.5, Angle=80, KBG=40, FKB=40, BKB=40, Size=4.0, X=0.0, Y=9.5, Z=6.0, X2=LUA_VOID, Y2=LUA_VOID, Z2=LUA_VOID, Hitlag=1.5, SDI=1.0, Clang_Rebound=ATTACK_SETOFF_KIND_ON, FacingRestrict=ATTACK_LR_CHECK_F, SetWeight=false, ShieldDamage=0, Trip=0.0, Rehit=0, Reflectable=false, Absorbable=false, Flinchless=false, DisableHitlag=false, Direct_Hitbox=true, Ground_or_Air=COLLISION_SITUATION_MASK_GA, Hitbits=COLLISION_CATEGORY_MASK_ALL, CollisionPart=COLLISION_PART_MASK_ALL, FriendlyFire=false, Effect=hash40("collision_attr_normal"), SFXLevel=ATTACK_SOUND_LEVEL_L, SFXType=COLLISION_SOUND_ATTR_KICK, Type=ATTACK_REGION_PUNCH)
         AttackModule::set_add_reaction_frame(0, 10.0, false)
     }
     frame(Frame=22)
@@ -357,14 +357,16 @@ unsafe fn vegeta_projectile(fighter: &mut L2CAgentBase) {
 #[acmd_script(agent = "lucario", script = "game_attackairf", category = ACMD_GAME)]
 unsafe fn vegeta_attackairf(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
-    let boma: &mut BattleObjectModuleAccessor = &mut *&mut *fighter.module_accessor;
+    let boma: &mut BattleObjectModuleAccessor = &mut *fighter.module_accessor;
     let entry_id = boma.entry_id();
     let mut damage = 10.0;
-    let mut kbg = 150;
-    let mut bkb = 40;
+    let mut kbg = 100;
+    let mut bkb = 20;
     let mut collision_sound = *COLLISION_SOUND_ATTR_PUNCH;
     if boma.is_flag(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_AMAZING_IMPACT){
         damage = 2.0;
+        let mut kbg = 250;
+        let mut bkb = 150;
         collision_sound = *COLLISION_SOUND_ATTR_BAT;
     }
     let current_form = boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM);
@@ -815,6 +817,31 @@ unsafe fn vegeta_throwb(fighter: &mut L2CAgentBase) {
     });
 }
 
+#[acmd_script(agent = "lucario", script = "game_throwhi", category = ACMD_GAME, low_priority )]
+unsafe fn vegeta_throwhi(fighter: &mut L2CAgentBase) {
+    let lua_state = fighter.lua_state_agent;
+    let boma = &mut *fighter.module_accessor;
+    let current_form = boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM);
+    let mut collision_attr = hash40("collision_attr_normal");
+    if current_form == 3{
+        collision_attr = hash40("collision_attr_purple");
+    }
+    acmd!(lua_state, {
+        if(is_excute){
+            ATTACK_ABS(Kind=FIGHTER_ATTACK_ABSOLUTE_KIND_THROW, ID=0, Damage=11.0, Angle=84, KBG=66, FKB=0, BKB=70, Hitlag=0.0, Unk=1.0, FacingRestrict=ATTACK_LR_CHECK_F, Unk=0.0, Unk=true, Effect=collision_attr, SFXLevel=ATTACK_SOUND_LEVEL_S, SFXType=COLLISION_SOUND_ATTR_NONE, Type=ATTACK_REGION_THROW)
+            ATTACK_ABS(Kind=FIGHTER_ATTACK_ABSOLUTE_KIND_CATCH, ID=0, Damage=3.0, Angle=361, KBG=100, FKB=0, BKB=40, Hitlag=0.0, Unk=1.0, FacingRestrict=ATTACK_LR_CHECK_F, Unk=0.0, Unk=true, Effect=collision_attr, SFXLevel=ATTACK_SOUND_LEVEL_S, SFXType=COLLISION_SOUND_ATTR_NONE, Type=ATTACK_REGION_THROW)
+        }
+        frame(Frame=17)
+        if(is_excute){
+        ATK_HIT_ABS(FIGHTER_ATTACK_ABSOLUTE_KIND_THROW, hash40("throw"),
+                        WorkModule::get_int64(module_accessor, *FIGHTER_STATUS_THROW_WORK_INT_TARGET_OBJECT),
+                        WorkModule::get_int64(module_accessor, *FIGHTER_STATUS_THROW_WORK_INT_TARGET_HIT_GROUP),
+                        WorkModule::get_int64(module_accessor, *FIGHTER_STATUS_THROW_WORK_INT_TARGET_HIT_NO))
+        }
+
+    });
+}
+
 pub fn install() {
     smashline::install_acmd_scripts! {
         vegeta_attack11,
@@ -846,6 +873,7 @@ pub fn install() {
         win_wait_2,
         vegeta_throwf,
         vegeta_throwlw,
-        vegeta_throwb
+        vegeta_throwb,
+        vegeta_throwhi
     };
 }

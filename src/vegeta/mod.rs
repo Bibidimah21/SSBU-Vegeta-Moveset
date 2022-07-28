@@ -200,7 +200,6 @@ pub unsafe fn qcb_handle(module_accessor: &mut BattleObjectModuleAccessor){
     }
 }
 
-    //yamlist.exe asm C:\Users\m\Desktop\ALLSSBUMODS2\VegetaMoveset\Code\motion_list.yml -o C:\Users\m\Desktop\ALLSSBUMODS2\VegetaMoveset\VegetaMovesetAnims\fighter\ken\motion\body\c00\motion_list.bin
 
 pub static mut EFFPOS: smash::phx::Vector3f = smash::phx::Vector3f {x:0.0,y:0.0,z:0.0};
 pub static mut EFFROT: smash::phx::Vector3f = smash::phx::Vector3f {x:0.0,y:0.0,z:0.0};
@@ -216,6 +215,13 @@ pub fn hadoken(weapon: &mut L2CFighterBase) {
         let motion_frame = weapon_module_accessor.motion_frame();
         let multiplier = owner_module_accessor.get_float(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLOAT_POWER_MUL);
         AttackModule::set_power_mul(weapon_module_accessor, multiplier);
+        if weapon_module_accessor.motion_frame() >= 30.0{
+            AttackModule::clear_all(weapon_module_accessor);
+            EffectModule::kill_kind(weapon_module_accessor, Hash40::new("sys_killereye_bullet"), false, true);
+            EffectModule::kill_kind(weapon_module_accessor, Hash40::new("sys_sscope_bullet"), false, true);
+            EffectModule::kill_kind(weapon_module_accessor, Hash40::new("sys_sscope_bullet_max"), false, true);
+            return 0.into();
+        }
         EffectModule::kill_kind(weapon_module_accessor, Hash40::new("lucario_hadoudan_tail"), false, true);
         EffectModule::kill_kind(weapon_module_accessor, Hash40::new("lucario_hadoudan_hold"), false, true);
         EffectModule::kill_kind(weapon_module_accessor, Hash40::new("lucario_hadoudan_max_sign"), false, true);
@@ -290,7 +296,8 @@ pub fn vegeta_frame(fighter : &mut L2CFighterCommon) {
                     boma.on_flag(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_USED_S4_EFFECT);
                 }
             }
-        } else {
+        }
+        else {
             boma.off_flag(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_USED_S4_EFFECT);
         }
         if boma.is_motion(Hash40::new("win_2")){
