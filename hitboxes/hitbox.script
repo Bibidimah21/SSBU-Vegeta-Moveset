@@ -85,6 +85,16 @@ frame 16
 atk_clear_all
 #end
 
+#begin c05attackairb.nuanmb
+frame 12
+attack_capsule 0 top 12.0 53 3.0 0.0 5.0 -2.0 0.0 8.0 -2.0
+attack_capsule 1 top 12.0 53 3.0 0.0 5.0 -5.0 0.0 8.0 -5.0
+attack_capsule 2 top 12.0 53 3.0 0.0 5.0 -7.0 0.0 8.0 -7.0
+attack_capsule 3 top 12.0 53 3.0 0.0 5.0 -9.0 0.0 8.0 -9.0
+wait 2
+atk_clear_all
+#end
+
 #begin c02attacklw3.nuanmb
 frame 10
 attack 0 legr 12.0 53 3.0 0.0 0.0 0.0

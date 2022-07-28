@@ -226,6 +226,16 @@ unsafe fn effect_vegeta_attackairn(fighter: &mut L2CAgentBase) {
     });
 }
 
+#[acmd_script(agent = "lucario", script = "effect_attackairb", category = ACMD_EFFECT)]
+unsafe fn effect_vegeta_attackairb(fighter: &mut L2CAgentBase) {
+    let lua_state = fighter.lua_state_agent;
+    let module_accessor = fighter.module_accessor;
+    let entry_id = (*module_accessor).entry_id();
+    acmd!(lua_state, {
+
+    });
+}
+
 #[acmd_script(agent = "lucario", script = "effect_attackairhi", category = ACMD_EFFECT)]
 unsafe fn effect_vegeta_attackairhi(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
@@ -297,6 +307,7 @@ pub fn install() {
         effect_vegeta_attackairf,
         effect_vegeta_attackairhi,
         effect_vegeta_attackairlw,
+        effect_vegeta_attackairb,
         effect_vegeta_throwf,
         effect_vegeta_attacks3,
         effect_vegeta_attacklw3,
