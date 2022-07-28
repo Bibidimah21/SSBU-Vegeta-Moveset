@@ -323,9 +323,6 @@ unsafe fn vegeta_bigbangatk(fighter: &mut L2CAgentBase) {
         collision_attr = hash40("collision_attr_purple");
     }
     acmd!(lua_state, {
-        if(is_execute){
-            ArticleModule::remove_exist(*FIGHTER_LUCARIO_GENERATE_ARTICLE_AURABALL, ArticleOperationTarget(*ARTICLE_OPE_TARGET_ALL))
-        }
         frame(Frame=10)
         if(is_execute){
             ATTACK(ID=0, Part=0, Bone=hash40("top"), Damage=0.7, Angle=40, KBG=10, FKB=10, BKB=0, Size=6.0, X=0.0, Y=15.0, Z=18.0, X2=LUA_VOID, Y2=LUA_VOID, Z2=LUA_VOID, Hitlag=0.1, SDI=1.0, Clang_Rebound=ATTACK_SETOFF_KIND_ON, FacingRestrict=ATTACK_LR_CHECK_POS, SetWeight=false, ShieldDamage=1, Trip=0.0, Rehit=1, Reflectable=true, Absorbable=false, Flinchless=false, DisableHitlag=false, Direct_Hitbox=false, Ground_or_Air=COLLISION_SITUATION_MASK_GA, Hitbits=COLLISION_CATEGORY_MASK_ALL, CollisionPart=COLLISION_PART_MASK_ALL, FriendlyFire=false, Effect=collision_attr, SFXLevel=ATTACK_SOUND_LEVEL_S, SFXType=COLLISION_SOUND_ATTR_NONE, Type=ATTACK_REGION_ENERGY)
