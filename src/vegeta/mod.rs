@@ -322,23 +322,17 @@ pub fn vegeta_frame(fighter : &mut L2CFighterCommon) {
             base_neutral_face(boma);
         }
         if boma.is_status(*FIGHTER_STATUS_KIND_ATTACK_LW4_HOLD) {
-            boma.inc_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_LW4_CHARGE_FRAME);
-            let mut charge = boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_LW4_CHARGE_FRAME) as f32 / 120.0;
+            let mut charge = 0.0;
+            if boma.get_int(*FIGHTER_STATUS_ATTACK_WORK_INT_SMASH_HOLD_KEEP_FRAME) == 120{
+                boma.inc_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_LW4_CHARGE_FRAME);
+                charge = boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_LW4_CHARGE_FRAME) as f32 / 120.0;
+            }
+            else{
+                charge = 1.0;
+            }
             let mut hitbox_size  = (charge * 3.5) + 7.0;
             let mut effect_size = (charge * 0.75) + 1.5;
             let mut damage = (charge * 7.0) + 10.0;
-            if charge > 1.0 {
-                charge = 1.0;
-            }
-            if hitbox_size > 10.5 {
-                hitbox_size = 10.5;
-            }
-            if effect_size > 2.25 {
-                effect_size = 2.25;
-            }
-            if damage > 22.0 {
-                damage = 22.0;
-            }
             boma.set_float(hitbox_size, FIGHTER_VEGETA_INSTANCE_WORK_ID_FLOAT_LW4_HITBOX_SIZE);
             boma.set_float(effect_size, FIGHTER_VEGETA_INSTANCE_WORK_ID_FLOAT_LW4_EFFECT_SIZE);
             boma.set_float(damage, FIGHTER_VEGETA_INSTANCE_WORK_ID_FLOAT_LW4_DAMAGE);
@@ -377,7 +371,7 @@ pub fn vegeta_frame(fighter : &mut L2CFighterCommon) {
             boma.set_int(0, FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_LW4_CHARGE_FRAME);
             boma.set_float(4.67, FIGHTER_VEGETA_INSTANCE_WORK_ID_FLOAT_LW4_HITBOX_SIZE);
             boma.set_float(1.0, FIGHTER_VEGETA_INSTANCE_WORK_ID_FLOAT_LW4_EFFECT_SIZE);
-            boma.set_float(18.0, FIGHTER_VEGETA_INSTANCE_WORK_ID_FLOAT_LW4_DAMAGE);
+            boma.set_float(10.0, FIGHTER_VEGETA_INSTANCE_WORK_ID_FLOAT_LW4_DAMAGE);
             boma.off_flag(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_USED_LW4_EFFECT);
             EffectModule::kill_kind(boma, Hash40::new("sys_sscope_bullet_max"), false, true);
         }
