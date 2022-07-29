@@ -454,6 +454,7 @@ pub unsafe fn attackair_status(fighter: &mut L2CFighterCommon) -> L2CValue {
     let boma = smash::app::sv_system::battle_object_module_accessor(lua_state);
     if boma.is_flag(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_AMAZING_IMPACT){
         boma.change_motion(Hash40::new("attack_air_f"), false);
+        AttackModule::set_reaction_mul(boma, 1.3);
         fighter.sub_shift_status_main(L2CValue::Ptr(attackair_main as *const () as _))
     }
     else{
@@ -482,6 +483,7 @@ pub unsafe fn attackair_status_end(fighter: &mut L2CFighterCommon) -> L2CValue {
     boma.unset_position_lock();
     let boma = smash::app::sv_system::battle_object_module_accessor(lua_state);
     boma.off_flag(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_AMAZING_IMPACT);
+    AttackModule::set_reaction_mul(boma, 1.0);
     original!(fighter)
 }
 
@@ -560,10 +562,8 @@ unsafe extern "C" fn kicharge_main(fighter: &mut L2CFighterCommon) -> L2CValue {
             boma.set_int(aura as i32, FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_KI_CHARGE_EFFECT_HANDLE as i32);
             boma.play_se(Hash40::new("vc_lucario_002"));
             boma.play_se(Hash40::new("se_lucario_special_l01"));
-
         }
         EffectModule::set_rate(boma, handle, 0.67);
-
         if current_form == 1{
             EffectModule::set_rgb(boma, handle, 0.7, 0.7, 0.0);
             EffectModule::set_alpha(boma, handle, 2.0);
@@ -597,6 +597,7 @@ unsafe extern "C" fn kicharge_main(fighter: &mut L2CFighterCommon) -> L2CValue {
 pub unsafe fn ki_charge_end(fighter: &mut L2CFighterCommon) -> L2CValue {
     let mut boma = &mut *fighter.module_accessor;
     boma.unset_position_lock();
+    KineticModule::clear_speed_all(boma);
     L2CValue::I32(0)
 }
 

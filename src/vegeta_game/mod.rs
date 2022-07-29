@@ -366,9 +366,7 @@ unsafe fn vegeta_attackairf(fighter: &mut L2CAgentBase) {
     let mut bkb = 20;
     let mut collision_sound = *COLLISION_SOUND_ATTR_PUNCH;
     if boma.is_flag(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_AMAZING_IMPACT){
-        damage = 2.0;
-        let mut kbg = 250;
-        let mut bkb = 150;
+        damage = 3.0;
         collision_sound = *COLLISION_SOUND_ATTR_BAT;
     }
     let current_form = boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM);
