@@ -624,6 +624,7 @@ unsafe extern "C" fn specialhi_main(fighter: &mut L2CFighterCommon) -> L2CValue 
     }
     boma.enable_cancel_into(CancelKind::SpecialS);
     boma.enable_cancel_into(CancelKind::SpecialLw);
+    boma.enable_cancel_into(CancelKind::SpecialN);
     boma.enable_cancel_into(CancelKind::Aerial);
     KineticModule::unable_energy(boma,  *FIGHTER_KINETIC_ENERGY_ID_GRAVITY);
     L2CValue::I32(0)
