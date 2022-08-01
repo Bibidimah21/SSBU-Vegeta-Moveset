@@ -903,7 +903,7 @@ unsafe fn vegeta_finalstart(fighter: &mut L2CAgentBase) {
     }
     frame(Frame=80)
     if(is_excute){
-            CAM_ZOOM_OUT()
+        CAM_ZOOM_OUT()
     }
     frame(Frame=90)
     if(is_excute){

@@ -311,13 +311,15 @@ unsafe fn effect_final_start(fighter: &mut L2CAgentBase) {
     frame(Frame=90)
     if(is_execute){
         EFFECT(hash40("lucario_final_beam"), hash40("rot"), 2, 3, 0, 0, 0, angle, 1.0, false)
-        LAST_EFFECT_SET_COLOR(/*R*/ 6.0, /*G*/ 8.0, /*B*/ 0.5)
+        LAST_EFFECT_SET_COLOR(/*R*/ 10.0, /*G*/ 10.0, /*B*/ 0.0)
+        LAST_EFFECT_SET_ALPHA(0.5)
     }
     frame(Frame=208)
     if(is_execute){
         EFFECT_OFF_KIND(hash40("lucario_final_beam"), true, true)
         EFFECT(hash40("lucario_final_beam_end"), hash40("rot"), 2, 3, 0, 0, 0, angle, 1.0, false)
-        LAST_EFFECT_SET_COLOR(/*R*/ 6.0, /*G*/ 8.0, /*B*/ 0.5)
+        LAST_EFFECT_SET_COLOR(/*R*/ 10.0, /*G*/ 10.0, /*B*/ 0.0)
+        LAST_EFFECT_SET_ALPHA(0.5)
     }
     });
 }

@@ -242,7 +242,7 @@ unsafe extern "C" fn galickgun_start_main(fighter: &mut L2CFighterCommon) -> L2C
     let lua_state = fighter.lua_state_agent;
     let entry_id = boma.entry_id();
 
-    let hold_eff: u32 = EffectModule::req_follow(fighter.module_accessor, Hash40::new("sys_hit_elec"), smash::phx::Hash40::new("haver"), &Vector3f {x: 0.0, y: 0.0, z: 0.0}, &ZERO_VECTOR, 0.4, true, 0, 0, 0, 0, 0, true, true) as u32;
+    let hold_eff: u32 = EffectModule::req_follow(fighter.module_accessor, Hash40::new("sys_hit_elec"), smash::phx::Hash40::new("haver"), &ZERO_VECTOR, &ZERO_VECTOR, 0.4, true, 0, 0, 0, 0, 0, true, true) as u32;
     EffectModule::set_rgb(fighter.module_accessor, hold_eff, 0.5, 0.3, 0.6);
     boma.set_color_rgb(0.5, 0.3, 0.6, ModelColorType(*MODEL_COLOR_TYPE_COLOR_BLEND));
 
@@ -297,7 +297,7 @@ unsafe extern "C" fn galickgun_hold_main(fighter: &mut L2CFighterCommon) -> L2CV
         );
     }
 
-    let hold_eff: u32 = EffectModule::req_follow(fighter.module_accessor, Hash40::new("sys_hit_elec"), smash::phx::Hash40::new("haver"), &Vector3f {x: 0.0, y: 0.0, z: 0.0}, &ZERO_VECTOR, 0.4, true, 0, 0, 0, 0, 0, true, true) as u32;
+    let hold_eff: u32 = EffectModule::req_follow(fighter.module_accessor, Hash40::new("sys_hit_elec"), smash::phx::Hash40::new("haver"), &ZERO_VECTOR, &ZERO_VECTOR, 0.4, true, 0, 0, 0, 0, 0, true, true) as u32;
     EffectModule::set_rgb(fighter.module_accessor, hold_eff, 0.5, 0.3, 0.6);
     boma.set_color_rgb(0.5, 0.3, 0.6, ModelColorType(*MODEL_COLOR_TYPE_COLOR_BLEND));
 

@@ -378,14 +378,6 @@ pub fn vegeta_frame(fighter : &mut L2CFighterCommon) {
             EffectModule::kill_kind(boma, Hash40::new("sys_sscope_bullet_max"), false, true);
         }
         ModelModule::set_mesh_visibility(boma, Hash40::new("ken_earring_p"), true);
-        if status_kind == *FIGHTER_STATUS_KIND_ATTACK_S3 && !boma.is_infliction_status(*COLLISION_KIND_MASK_HIT) && boma.motion_frame() > 20.0 {
-            boma.enable_cancel_into(CancelKind::Attack);
-            boma.enable_cancel_into(CancelKind::Catch);
-            boma.enable_cancel_into(CancelKind::SpecialN);
-            boma.enable_cancel_into(CancelKind::SpecialS);
-            boma.enable_cancel_into(CancelKind::SpecialHi);
-            boma.enable_cancel_into(CancelKind::SpecialLw);
-        }
         EffectModule::kill_kind(boma, Hash40::new("lucario_hadou"), false, true);
         EffectModule::kill_kind(boma, Hash40::new("lucario_hadou_l"), false, true);
         EffectModule::kill_kind(boma, Hash40::new("lucario_hadou_l_l"), false, true);
