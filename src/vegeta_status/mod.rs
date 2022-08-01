@@ -654,7 +654,7 @@ pub unsafe fn final_main_script(fighter: &mut L2CFighterCommon) -> L2CValue {
 unsafe extern "C" fn final_main(fighter: &mut L2CFighterCommon) -> L2CValue {
     let mut boma:&mut BattleObjectModuleAccessor = &mut *fighter.module_accessor;
     if boma.is_motion_end(){
-        fighter.change_status(FIGHTER_STATUS_KIND_FALL.into(), false.into())
+        fighter.change_status(FIGHTER_LUCARIO_STATUS_KIND_FINAL_END.into(), false.into())
     }
     boma.set_position_lock();
     StatusModule::set_situation_kind(boma, SituationKind(*SITUATION_KIND_AIR), true);
@@ -665,6 +665,12 @@ unsafe extern "C" fn final_main(fighter: &mut L2CFighterCommon) -> L2CValue {
 pub unsafe fn final_end(fighter: &mut L2CFighterCommon) -> L2CValue {
     let mut boma:&mut BattleObjectModuleAccessor = &mut *fighter.module_accessor;
     boma.unset_position_lock();
+    L2CValue::I32(0)
+}
+
+#[status_script(agent = "lucario", status = FIGHTER_LUCARIO_STATUS_KIND_FINAL_END, condition = LUA_SCRIPT_STATUS_FUNC_STATUS_MAIN)]
+pub unsafe fn final_end_main(fighter: &mut L2CFighterCommon) -> L2CValue {
+    fighter.change_status(FIGHTER_STATUS_KIND_FALL.into(), false.into());
     L2CValue::I32(0)
 }
 
@@ -700,6 +706,7 @@ pub fn install() {
         special_hi_end,
         final_pre,
         final_main_script,
-        final_end
+        final_end,
+        final_end_main
     );
 }

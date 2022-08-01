@@ -252,6 +252,14 @@ unsafe fn sound_final_start(fighter: &mut L2CAgentBase) {
     });
 }
 
+#[acmd_script(
+agent = "lucario",
+script = "sound_finalairend",
+category = ACMD_SOUND)]
+unsafe fn sound_finalairend(fighter: &mut L2CAgentBase) {
+
+}
+
 pub fn install() {
     smashline::install_acmd_scripts! {
         sound_vegeta_attack11,
@@ -269,6 +277,7 @@ pub fn install() {
         sound_vegeta_attacks4,
         sound_vegeta_attackhi4,
         sound_vegeta_attacklw4,
-        sound_final_start
+        sound_final_start,
+        sound_finalairend
     };
 }

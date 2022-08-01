@@ -79,7 +79,7 @@ pub fn rust_str_to_cstr(string: &str) -> *const u8 {
 unsafe fn declare_const_hook(unk: u64, constant: *const u8, mut value: u32) {
     let str = CStr::from_ptr(constant as _).to_str().unwrap();
     if str.contains("FIGHTER_LUCARIO_INSTANCE_WORK_ID_INT_TERM") {
-        value = 0x100000D1;
+        value = 0x100000D5;
     }
     if str.contains("FIGHTER_KOOPA_STATUS_KIND_MAX") {
         value = 0x1F4 //500

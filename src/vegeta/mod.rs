@@ -288,6 +288,7 @@ pub fn vegeta_frame(fighter : &mut L2CFighterCommon) {
         let current_form = boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM);
         let current_form_timer = boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM_TIMER);
         let multiplier = boma.get_float(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLOAT_POWER_MUL);
+        let current_form_aura = boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM_AURA);
         AttackModule::set_power_mul(boma, multiplier);
         test_variables(boma);
         if boma.is_status_one_of(&[*FIGHTER_STATUS_KIND_ATTACK_S4_HOLD, *FIGHTER_STATUS_KIND_ATTACK_S4, *FIGHTER_STATUS_KIND_ATTACK_S4_START]) {
@@ -408,6 +409,11 @@ pub fn vegeta_frame(fighter : &mut L2CFighterCommon) {
         if !FighterManager::is_result_mode(FIGHTER_MANAGER){
             if current_form == 1 {
                 ssj_neutral_face(boma);
+         //       if !EffectModule::is_exist_effect(boma, current_form_aura as u32){
+             //       let ssj_aura = EffectModule::req_follow(boma, Hash40::new("sys_final_aura_charge"), smash::phx::Hash40::new("top"), &ZERO_VECTOR, &ZERO_VECTOR, 1.0, true, 0, 0, 0, 0, 0, true, true) as u32;
+           //         boma.set_int(ssj_aura as i32, FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM_AURA);
+           //         EffectModule::set_rgb(boma, ssj_aura, 0.7, 0.7, 0.0);
+              //  }
                 boma.set_float(1.1, FIGHTER_VEGETA_INSTANCE_WORK_ID_FLOAT_POWER_MUL);
                 if current_form_timer == 1800{
                     boma.set_int(0,FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM);

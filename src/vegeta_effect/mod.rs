@@ -311,15 +311,23 @@ unsafe fn effect_final_start(fighter: &mut L2CAgentBase) {
     frame(Frame=90)
     if(is_execute){
         EFFECT(hash40("lucario_final_beam"), hash40("rot"), 2, 3, 0, 0, 0, angle, 1.0, false)
-        LAST_EFFECT_SET_COLOR(/*R*/ 3.0, /*G*/ 3.0, /*B*/ 0.0)
+        LAST_EFFECT_SET_COLOR(/*R*/ 6.0, /*G*/ 8.0, /*B*/ 0.5)
     }
     frame(Frame=208)
     if(is_execute){
         EFFECT_OFF_KIND(hash40("lucario_final_beam"), true, true)
         EFFECT(hash40("lucario_final_beam_end"), hash40("rot"), 2, 3, 0, 0, 0, angle, 1.0, false)
-        LAST_EFFECT_SET_COLOR(/*R*/ 3.0, /*G*/ 3.0, /*B*/ 0.0)
+        LAST_EFFECT_SET_COLOR(/*R*/ 6.0, /*G*/ 8.0, /*B*/ 0.5)
     }
     });
+}
+
+#[acmd_script(
+agent = "lucario",
+script = "effect_finalairend",
+category = ACMD_EFFECT)]
+unsafe fn vegeta_finalairend(fighter: &mut L2CAgentBase) {
+
 }
 
 pub fn install() {
@@ -346,6 +354,7 @@ pub fn install() {
         effect_win,
         effect_win_2,
         effect_win_2_wait,
-        effect_final_start
+        effect_final_start,
+        vegeta_finalairend
     };
 }

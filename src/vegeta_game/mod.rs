@@ -893,7 +893,18 @@ unsafe fn vegeta_finalstart(fighter: &mut L2CAgentBase) {
         collision_attr = hash40("collision_attr_purple");
     }
     acmd!(lua_state, {
-    sv_module_access::damage(MSC=MA_MSC_DAMAGE_DAMAGE_NO_REACTION, Type=DAMAGE_NO_REACTION_MODE_ALWAYS, DamageThreshold=0)
+    if(is_execute){
+       HitModule::set_whole(smash::app::HitStatus(*HIT_STATUS_XLU), 0)
+       FT_START_CUTIN()
+       SLOW_OPPONENT(10, 90)
+       if(!WorkModule::is_flag(boma, *FIGHTER_INSTANCE_WORK_ID_FLAG_DISABLE_FINAL_START_CAMERA)){
+           REQ_FINAL_START_CAMERA_arg3(hash40("d04finalstart.nuanmb"), false, false)
+       }
+    }
+    frame(Frame=80)
+    if(is_excute){
+            CAM_ZOOM_OUT()
+    }
     frame(Frame=90)
     if(is_excute){
         ATTACK(ID=0, Part=0, Bone=hash40("top"), Damage=0.7, Angle=361, KBG=50, FKB=10, BKB=10, Size=20.0, X=0.0, Y=11.0, Z=20.0, X2=0.0, Y2=11.0, Z2=1000.0, Hitlag=0.1, SDI=1.0, Clang_Rebound=ATTACK_SETOFF_KIND_ON, FacingRestrict=ATTACK_LR_CHECK_F, SetWeight=false, ShieldDamage=hash40("no"), Trip=0.0, Rehit=3, Reflectable=false, Absorbable=false, Flinchless=false, DisableHitlag=false, Direct_Hitbox=true, Ground_or_Air=COLLISION_SITUATION_MASK_GA, Hitbits=COLLISION_CATEGORY_MASK_ALL, CollisionPart=COLLISION_PART_MASK_ALL, FriendlyFire=false, Effect=collision_attr, SFXLevel=ATTACK_SOUND_LEVEL_L, SFXType=COLLISION_SOUND_ATTR_FIRE, Type=ATTACK_REGION_ENERGY)
@@ -906,9 +917,19 @@ unsafe fn vegeta_finalstart(fighter: &mut L2CAgentBase) {
     frame(Frame=210)
     if(is_excute){
        AttackModule::clear_all()
+       HitModule::set_whole(smash::app::HitStatus(*HIT_STATUS_NORMAL), 0)
     }
     });
 }
+
+#[acmd_script(
+agent = "lucario",
+script = "game_finalairend",
+category = ACMD_GAME)]
+unsafe fn vegeta_finalairend(fighter: &mut L2CAgentBase) {
+
+}
+
 
 pub fn install() {
     smashline::install_acmd_scripts! {
@@ -943,6 +964,7 @@ pub fn install() {
         vegeta_throwlw,
         vegeta_throwb,
         vegeta_throwhi,
-        vegeta_finalstart
+        vegeta_finalstart,
+        vegeta_finalairend
     };
 }
