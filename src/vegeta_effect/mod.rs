@@ -296,6 +296,32 @@ unsafe fn effect_win(fighter: &mut L2CAgentBase) {
     });
 }
 
+#[acmd_script(agent = "lucario", script = "effect_finalstart", category = ACMD_EFFECT)]
+unsafe fn effect_final_start(fighter: &mut L2CAgentBase) {
+    let lua_state = fighter.lua_state_agent;
+    let module_accessor = fighter.module_accessor;
+    let entry_id = (*module_accessor).entry_id();
+    let angle = if (*module_accessor).lr() > 0.0 {
+        90
+    }
+    else {
+        270
+    };
+    acmd!(lua_state, {
+    frame(Frame=90)
+    if(is_execute){
+        EFFECT(hash40("lucario_final_beam"), hash40("rot"), 2, 3, 0, 0, 0, angle, 1.0, false)
+        LAST_EFFECT_SET_COLOR(/*R*/ 3.0, /*G*/ 3.0, /*B*/ 0.0)
+    }
+    frame(Frame=208)
+    if(is_execute){
+        EFFECT_OFF_KIND(hash40("lucario_final_beam"), true, true)
+        EFFECT(hash40("lucario_final_beam_end"), hash40("rot"), 2, 3, 0, 0, 0, angle, 1.0, false)
+        LAST_EFFECT_SET_COLOR(/*R*/ 3.0, /*G*/ 3.0, /*B*/ 0.0)
+    }
+    });
+}
+
 pub fn install() {
     smashline::install_acmd_scripts! {
         effect_vegeta_attack11,
@@ -320,5 +346,6 @@ pub fn install() {
         effect_win,
         effect_win_2,
         effect_win_2_wait,
+        effect_final_start
     };
 }

@@ -289,6 +289,7 @@ pub fn vegeta_frame(fighter : &mut L2CFighterCommon) {
         let current_form_timer = boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM_TIMER);
         let multiplier = boma.get_float(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLOAT_POWER_MUL);
         AttackModule::set_power_mul(boma, multiplier);
+        test_variables(boma);
         if boma.is_status_one_of(&[*FIGHTER_STATUS_KIND_ATTACK_S4_HOLD, *FIGHTER_STATUS_KIND_ATTACK_S4, *FIGHTER_STATUS_KIND_ATTACK_S4_START]) {
             if boma.is_infliction_status(*COLLISION_KIND_MASK_HIT) {
                 if !boma.is_flag(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_USED_S4_EFFECT) {
@@ -450,6 +451,9 @@ pub fn vegeta_frame(fighter : &mut L2CFighterCommon) {
 
         if boma.is_status(*FIGHTER_STATUS_KIND_DEAD){
             boma.set_int(0,FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM);
+        }
+        if boma.is_button_on(Buttons::Special) && !boma.is_status(*FIGHTER_STATUS_KIND_FINAL){
+          //  boma.change_status(*FIGHTER_STATUS_KIND_FINAL, false);
         }
         //qcf_handle(boma);
         qcb_handle(boma);

@@ -879,6 +879,37 @@ unsafe fn vegeta_throwhi(fighter: &mut L2CAgentBase) {
     });
 }
 
+#[acmd_script(
+agent = "lucario",
+script = "game_finalstart",
+category = ACMD_GAME)]
+unsafe fn vegeta_finalstart(fighter: &mut L2CAgentBase) {
+    let lua_state = fighter.lua_state_agent;
+    let boma = &mut *fighter.module_accessor;
+    let entry_id = boma.entry_id();
+    let current_form = boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM);
+    let mut collision_attr = hash40("collision_attr_normal");
+    if current_form == 3{
+        collision_attr = hash40("collision_attr_purple");
+    }
+    acmd!(lua_state, {
+    sv_module_access::damage(MSC=MA_MSC_DAMAGE_DAMAGE_NO_REACTION, Type=DAMAGE_NO_REACTION_MODE_ALWAYS, DamageThreshold=0)
+    frame(Frame=90)
+    if(is_excute){
+        ATTACK(ID=0, Part=0, Bone=hash40("top"), Damage=0.7, Angle=361, KBG=50, FKB=10, BKB=10, Size=20.0, X=0.0, Y=11.0, Z=20.0, X2=0.0, Y2=11.0, Z2=1000.0, Hitlag=0.1, SDI=1.0, Clang_Rebound=ATTACK_SETOFF_KIND_ON, FacingRestrict=ATTACK_LR_CHECK_F, SetWeight=false, ShieldDamage=hash40("no"), Trip=0.0, Rehit=3, Reflectable=false, Absorbable=false, Flinchless=false, DisableHitlag=false, Direct_Hitbox=true, Ground_or_Air=COLLISION_SITUATION_MASK_GA, Hitbits=COLLISION_CATEGORY_MASK_ALL, CollisionPart=COLLISION_PART_MASK_ALL, FriendlyFire=false, Effect=collision_attr, SFXLevel=ATTACK_SOUND_LEVEL_L, SFXType=COLLISION_SOUND_ATTR_FIRE, Type=ATTACK_REGION_ENERGY)
+    }
+    frame(Frame=208)
+    if(is_excute){
+        AttackModule::clear_all()
+        ATTACK(ID=0, Part=0, Bone=hash40("top"), Damage=7.0, Angle=361, KBG=100, FKB=0, BKB=70, Size=20.0, X=0.0, Y=11.0, Z=20.0, X2=0.0, Y2=11.0, Z2=1000.0, Hitlag=1.0, SDI=1.0, Clang_Rebound=ATTACK_SETOFF_KIND_ON, FacingRestrict=ATTACK_LR_CHECK_F, SetWeight=false, ShieldDamage=hash40("no"), Trip=0.0, Rehit=0, Reflectable=false, Absorbable=false, Flinchless=false, DisableHitlag=false, Direct_Hitbox=true, Ground_or_Air=COLLISION_SITUATION_MASK_GA, Hitbits=COLLISION_CATEGORY_MASK_ALL, CollisionPart=COLLISION_PART_MASK_ALL, FriendlyFire=false, Effect=collision_attr, SFXLevel=ATTACK_SOUND_LEVEL_L, SFXType=COLLISION_SOUND_ATTR_BAT, Type=ATTACK_REGION_ENERGY)
+    }
+    frame(Frame=210)
+    if(is_excute){
+       AttackModule::clear_all()
+    }
+    });
+}
+
 pub fn install() {
     smashline::install_acmd_scripts! {
         vegeta_attack11,
@@ -912,5 +943,6 @@ pub fn install() {
         vegeta_throwlw,
         vegeta_throwb,
         vegeta_throwhi,
+        vegeta_finalstart
     };
 }

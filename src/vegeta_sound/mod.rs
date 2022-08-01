@@ -236,6 +236,22 @@ unsafe fn sound_vegeta_attacklw4(fighter: &mut L2CAgentBase) {
     });
 }
 
+#[acmd_script(agent = "lucario", script = "sound_finalstart", category = ACMD_SOUND)]
+unsafe fn sound_final_start(fighter: &mut L2CAgentBase) {
+    let lua_state = fighter.lua_state_agent;
+    let module_accessor = fighter.module_accessor;
+    let entry_id = (*module_accessor).entry_id();
+    acmd!(lua_state, {
+        if(is_execute){
+             PLAY_SE(hash40("vc_lucario_final01"))
+        }
+        frame(Frame=90)
+        if(is_execute){
+            PLAY_SE(hash40("se_lucario_attackl_h"))
+        }
+    });
+}
+
 pub fn install() {
     smashline::install_acmd_scripts! {
         sound_vegeta_attack11,
@@ -252,6 +268,7 @@ pub fn install() {
         sound_vegeta_attacklw3,
         sound_vegeta_attacks4,
         sound_vegeta_attackhi4,
-        sound_vegeta_attacklw4
+        sound_vegeta_attacklw4,
+        sound_final_start
     };
 }

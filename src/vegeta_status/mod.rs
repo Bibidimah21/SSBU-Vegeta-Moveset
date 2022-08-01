@@ -638,6 +638,36 @@ pub unsafe fn special_hi_end(fighter: &mut L2CFighterCommon) -> L2CValue {
     L2CValue::I32(0)
 }
 
+#[status_script(agent = "lucario", status = FIGHTER_STATUS_KIND_FINAL, condition = LUA_SCRIPT_STATUS_FUNC_STATUS_PRE)]
+pub unsafe fn final_pre(fighter: &mut L2CFighterCommon) -> L2CValue {
+    let mut boma = &mut *fighter.module_accessor;
+    L2CValue::I32(0)
+}
+#[status_script(agent = "lucario", status = FIGHTER_STATUS_KIND_FINAL, condition = LUA_SCRIPT_STATUS_FUNC_STATUS_MAIN)]
+pub unsafe fn final_main_script(fighter: &mut L2CFighterCommon) -> L2CValue {
+    let mut boma = &mut *fighter.module_accessor;
+    boma.change_motion(Hash40::new("final_start_l"), false);
+    fighter.sub_shift_status_main(L2CValue::Ptr(final_main as *const () as _))
+}
+
+
+unsafe extern "C" fn final_main(fighter: &mut L2CFighterCommon) -> L2CValue {
+    let mut boma:&mut BattleObjectModuleAccessor = &mut *fighter.module_accessor;
+    if boma.is_motion_end(){
+        fighter.change_status(FIGHTER_STATUS_KIND_FALL.into(), false.into())
+    }
+    boma.set_position_lock();
+    StatusModule::set_situation_kind(boma, SituationKind(*SITUATION_KIND_AIR), true);
+    L2CValue::I32(0)
+}
+
+#[status_script(agent = "lucario", status = FIGHTER_STATUS_KIND_FINAL, condition = LUA_SCRIPT_STATUS_FUNC_STATUS_END)]
+pub unsafe fn final_end(fighter: &mut L2CFighterCommon) -> L2CValue {
+    let mut boma:&mut BattleObjectModuleAccessor = &mut *fighter.module_accessor;
+    boma.unset_position_lock();
+    L2CValue::I32(0)
+}
+
 pub fn install() {
     smashline::install_status_scripts!(
         superdashkick_pre,
@@ -667,6 +697,9 @@ pub fn install() {
         ki_charge_end,
         special_hi_pre,
         special_hi_main,
-        special_hi_end
+        special_hi_end,
+        final_pre,
+        final_main_script,
+        final_end
     );
 }
