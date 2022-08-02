@@ -593,48 +593,23 @@ pub unsafe fn special_hi_pre(fighter: &mut L2CFighterCommon) -> L2CValue {
 #[status_script(agent = "lucario", status = FIGHTER_STATUS_KIND_SPECIAL_HI, condition = LUA_SCRIPT_STATUS_FUNC_STATUS_MAIN)]
 pub unsafe fn special_hi_main(fighter: &mut L2CFighterCommon) -> L2CValue {
     let mut boma = &mut *fighter.module_accessor;
-    boma.change_motion(Hash40::new("run"), false);
+    boma.change_motion(Hash40::new("superdashkick"), false);
     fighter.sub_shift_status_main(L2CValue::Ptr(specialhi_main as *const () as _))
 }
 
 
 unsafe extern "C" fn specialhi_main(fighter: &mut L2CFighterCommon) -> L2CValue {
     let mut boma:&mut BattleObjectModuleAccessor = &mut *fighter.module_accessor;
-    let mut add_pos_x = 0.0;
-    let mut add_pos_y = 0.0;
     StatusModule::set_situation_kind(boma, SituationKind(*SITUATION_KIND_AIR), true);
-    boma.inc_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_SPECIAL_HI_TIMER);
-    if boma.stick_x() < -0.8{
-        add_pos_x = -2.0;
-    }
-    else if boma.stick_x() > 0.8{
-        add_pos_x = 2.0;
-    }
-    if boma.stick_y() < -0.8{
-        add_pos_y = -2.0;
-    }
-    else if boma.stick_y() > 0.8{
-        add_pos_y = 2.0
-    }
-    boma.add_pos_2d(&smash::phx::Vector2f{
-        x: add_pos_x, y: add_pos_y
-    });
-    if boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_SPECIAL_HI_TIMER) >= 90{
+    if boma.is_motion_end(){
         fighter.change_status(FIGHTER_STATUS_KIND_FALL.into(), false.into());
     }
-    boma.enable_cancel_into(CancelKind::SpecialS);
-    boma.enable_cancel_into(CancelKind::SpecialLw);
-    boma.enable_cancel_into(CancelKind::SpecialN);
-    boma.enable_cancel_into(CancelKind::Aerial);
-    KineticModule::unable_energy(boma,  *FIGHTER_KINETIC_ENERGY_ID_GRAVITY);
     L2CValue::I32(0)
 }
 
 #[status_script(agent = "lucario", status = FIGHTER_STATUS_KIND_SPECIAL_HI, condition = LUA_SCRIPT_STATUS_FUNC_STATUS_END)]
 pub unsafe fn special_hi_end(fighter: &mut L2CFighterCommon) -> L2CValue {
     let mut boma:&mut BattleObjectModuleAccessor = &mut *fighter.module_accessor;
-    KineticModule::enable_energy(boma,  *FIGHTER_KINETIC_ENERGY_ID_GRAVITY);
-    boma.set_int(0, FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_SPECIAL_HI_TIMER);
     L2CValue::I32(0)
 }
 

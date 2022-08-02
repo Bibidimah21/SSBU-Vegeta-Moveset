@@ -391,9 +391,6 @@ pub fn vegeta_frame(fighter : &mut L2CFighterCommon) {
             boma.set_int(0, FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_AIR_TIMER);
             boma.off_flag(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_USED_AIR_GALICK_GUN);
         }
-        if MotionModule::motion_kind(boma) == hash40("attack_air_lw"){
-            //enable_jump(boma);
-        }
         //test_variables(boma);
         if current_form != 0 && !boma.is_status(*FIGHTER_STATUS_KIND_SPECIAL_LW){
             boma.inc_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM_TIMER);

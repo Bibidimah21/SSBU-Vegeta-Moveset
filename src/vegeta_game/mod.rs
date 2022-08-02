@@ -676,51 +676,19 @@ unsafe fn vegeta_catchattack(fighter: &mut L2CAgentBase) {
     });
 }
 
-/*
+
 #[acmd_script(agent = "lucario", script = "game_superdashkick", category = ACMD_GAME)]
 unsafe fn vegeta_superdashkick(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
     let boma = &mut *fighter.module_accessor;
     let current_form = boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM);
-    let collision_attr = "collision_attr_normal
-;
-    if current_form == 3{
-    collision_attr = "collision_attr_purplea;cmd!(lua_state, {
-    frame(Frame=12)
-    if(is_excute){
-            ATTACK(ID=0, Part=0, Bone=hash40("top"), Damage=2.0, Angle=47, KBG=0, FKB=70, BKB=70, Size=2.5, X=0.0, Y=12.0, Z=2.0, X2=0.0, Y2=13.0, Z2=10.0, Hitlag=1.0, SDI=1.0, Clang_Rebound=ATTACK_SETOFF_KIND_ON, FacingRestrict=ATTACK_LR_CHECK_F, SetWeight=false, ShieldDamage=0, Trip=0.0, Rehit=0, Reflectable=false, Absorbable=false, Flinchless=false, DisableHitlag=false, Direct_Hitbox=true, Ground_or_Air=COLLISION_SITUATION_MASK_G, Hitbits=COLLISION_CATEGORY_MASK_ALL, CollisionPart=COLLISION_PART_MASK_ALL, FriendlyFire=false, Effect=collision_attr, SFXLevel=ATTACK_SOUND_LEVEL_M, SFXType=COLLISION_SOUND_ATTR_KICK, Type=ATTACK_REGION_KICK)
-    }
-    wait(Frames=2)
-    if(is_excute){
-        AttackModule::clear_all()
-    }
-    frame(Frame=30)
-    if(is_excute){
-            ATTACK(ID=0, Part=0, Bone=hash40("top"), Damage=2.0, Angle=47, KBG=0, FKB=70, BKB=70, Size=2.5, X=0.0, Y=12.0, Z=2.0, X2=0.0, Y2=11.0, Z2=10.0, Hitlag=1.0, SDI=1.0, Clang_Rebound=ATTACK_SETOFF_KIND_ON, FacingRestrict=ATTACK_LR_CHECK_F, SetWeight=false, ShieldDamage=0, Trip=0.0, Rehit=0, Reflectable=false, Absorbable=false, Flinchless=false, DisableHitlag=false, Direct_Hitbox=true, Ground_or_Air=COLLISION_SITUATION_MASK_G, Hitbits=COLLISION_CATEGORY_MASK_ALL, CollisionPart=COLLISION_PART_MASK_ALL, FriendlyFire=false, Effect=collision_attr, SFXLevel=ATTACK_SOUND_LEVEL_M, SFXType=COLLISION_SOUND_ATTR_KICK, Type=ATTACK_REGION_KICK)
-    }
-    wait(Frames=2)
-    if(is_excute){
-        AttackModule::clear_all()
-    }
-    frame(Frame=42)
-    if(is_excute){
-            ATTACK(ID=0, Part=0, Bone=hash40("top"), Damage=1.0, Angle=361, KBG=0, FKB=10, BKB=0, Size=2.5, X=0.0, Y=12.0, Z=2.0, X2=0.0, Y2=13.0, Z2=10.0, Hitlag=1.0, SDI=1.0, Clang_Rebound=ATTACK_SETOFF_KIND_ON, FacingRestrict=ATTACK_LR_CHECK_F, SetWeight=false, ShieldDamage=0, Trip=0.0, Rehit=3, Reflectable=false, Absorbable=false, Flinchless=false, DisableHitlag=false, Direct_Hitbox=true, Ground_or_Air=COLLISION_SITUATION_MASK_G, Hitbits=COLLISION_CATEGORY_MASK_ALL, CollisionPart=COLLISION_PART_MASK_ALL, FriendlyFire=false, Effect=collision_attr, SFXLevel=ATTACK_SOUND_LEVEL_M, SFXType=COLLISION_SOUND_ATTR_KICK, Type=ATTACK_REGION_KICK)
-    }
-    frame(Frame=57)
-    if(is_excute){
-        AttackModule::clear_all()
-    }
-    frame(Frame=58)
-    if(is_excute){
-            ATTACK(ID=0, Part=0, Bone=hash40("top"), Damage=2.5, Angle=361, KBG=100, FKB=0, BKB=20, Size=2.5, X=0.0, Y=12.0, Z=2.0, X2=0.0, Y2=13.0, Z2=10.0, Hitlag=1.0, SDI=1.0, Clang_Rebound=ATTACK_SETOFF_KIND_ON, FacingRestrict=ATTACK_LR_CHECK_F, SetWeight=false, ShieldDamage=0, Trip=0.0, Rehit=0, Reflectable=false, Absorbable=false, Flinchless=false, DisableHitlag=false, Direct_Hitbox=true, Ground_or_Air=COLLISION_SITUATION_MASK_G, Hitbits=COLLISION_CATEGORY_MASK_ALL, CollisionPart=COLLISION_PART_MASK_ALL, FriendlyFire=false, Effect=collision_attr, SFXLevel=ATTACK_SOUND_LEVEL_M, SFXType=COLLISION_SOUND_ATTR_KICK, Type=ATTACK_REGION_KICK)
-    }
-    frame(Frame=61)
-    if(is_excute){
-        AttackModule::clear_all()
-    }
+    acmd!(lua_state, {
+        if(is_execute){
+            WorkModule::on_flag(Flag=FIGHTER_STATUS_SUPER_JUMP_PUNCH_FLAG_MOVE_TRANS)
+        }
     });
 }
- */
+
 #[acmd_script(agent = "lucario", script = "game_win2", category = ACMD_GAME)]
 unsafe fn win_2(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
@@ -952,7 +920,7 @@ pub fn install() {
        // vegeta_landingairlw,
         vegeta_attacklw3,
         vegeta_catchattack,
-        //vegeta_superdashkick,
+        vegeta_superdashkick,
         vegeta_attacks3,
         vegeta_kiblast,
         vegeta_attackhi3,
