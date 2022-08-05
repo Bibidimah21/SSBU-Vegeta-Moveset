@@ -188,7 +188,10 @@ unsafe fn effect_vegeta_attackhi4(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
     let module_accessor = fighter.module_accessor;
     acmd!(lua_state, {
+        frame(Frame=10)
+        if(is_execute){
 
+        }
     });
 }
 
@@ -208,7 +211,11 @@ unsafe fn effect_vegeta_attackairf(fighter: &mut L2CAgentBase) {
     let module_accessor = fighter.module_accessor;
     let entry_id = (*module_accessor).entry_id();
     acmd!(lua_state, {
-
+        frame(Frame=14)
+        if(is_excute){
+            EFFECT_FOLLOW_FLIP(hash40("sys_attack_arc_b"), hash40("sys_attack_arc_b"), hash40("top"), 0, 9, 0, -3, -11, -113, 1.1, true, EF_FLIP_YZ)
+            LAST_EFFECT_SET_RATE(1.0)
+        }
     });
 }
 
@@ -232,6 +239,11 @@ unsafe fn effect_vegeta_attackairb(fighter: &mut L2CAgentBase) {
     let module_accessor = fighter.module_accessor;
     let entry_id = (*module_accessor).entry_id();
     acmd!(lua_state, {
+        frame(Frame=11)
+        if(is_execute){
+            EFFECT_FOLLOW_FLIP(hash40("sys_attack_arc"), hash40("sys_attack_arc"), hash40("top"), 0, 9, 1, 160, 60, 15, 1, true, EF_FLIP_YZ)
+            LAST_EFFECT_SET_RATE(2.0)
+        }
 
     });
 }
@@ -242,7 +254,10 @@ unsafe fn effect_vegeta_attackairhi(fighter: &mut L2CAgentBase) {
     let module_accessor = fighter.module_accessor;
     let entry_id = (*module_accessor).entry_id();
     acmd!(lua_state, {
-
+        frame(Frame=11)
+        if(is_execute){
+               EFFECT_ALPHA(hash40("sys_attack_impact"), hash40("toel"), 0, 5, 2, 0, 0, 0, 1.0, 0, 0, 0, 0, 0, 0, true, 1.5)
+        }
     });
 }
 

@@ -600,6 +600,9 @@ pub unsafe fn special_hi_main(fighter: &mut L2CFighterCommon) -> L2CValue {
 
 unsafe extern "C" fn specialhi_main(fighter: &mut L2CFighterCommon) -> L2CValue {
     let mut boma:&mut BattleObjectModuleAccessor = &mut *fighter.module_accessor;
+    boma.enable_energy(*FIGHTER_KINETIC_TYPE_MOTION_AIR);
+    boma.enable_energy(*FIGHTER_KINETIC_TYPE_MOTION);
+    boma.set_gravity(false);
     StatusModule::set_situation_kind(boma, SituationKind(*SITUATION_KIND_AIR), true);
     if boma.is_motion_end(){
         fighter.change_status(FIGHTER_STATUS_KIND_FALL.into(), false.into());
