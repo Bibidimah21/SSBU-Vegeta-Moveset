@@ -43,8 +43,16 @@ script = "effect_attack13",
 category = ACMD_EFFECT)]
 unsafe fn effect_vegeta_attack13(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
-    let module_accessor = fighter.module_accessor;
-    let rot = if (*module_accessor).lr() > 0.0{
+    let module_accessor = &mut *fighter.module_accessor;
+    let mut r = 1.0;
+    let mut g = 1.0;
+    let mut b = 1.0;
+    if module_accessor.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM) == 3{
+        r = 2.0;
+        g = 0.2;
+        b = 0.5;
+    }
+    let rot = if module_accessor.lr() > 0.0{
         30
     }
     else{
@@ -53,7 +61,8 @@ unsafe fn effect_vegeta_attack13(fighter: &mut L2CAgentBase) {
     acmd!(lua_state, {
     frame(Frame=23)
     if(is_execute){
-            EFFECT(hash40("lucario_hakkei_far"), hash40("havel"), 0, 0, 0, 0, 0, rot, 0.8, false)
+            EFFECT(hash40("lucario_hattack_b"), hash40("havel"), 0, 0, 0, 0, 0, rot, 1.2, false)
+            LAST_EFFECT_SET_COLOR(/*R*/ r, /*G*/ g, /*B*/ b)
     }
     });
 }
@@ -135,11 +144,20 @@ script = "effect_attackhi3",
 category = ACMD_EFFECT)]
 unsafe fn vegeta_attackhi3(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
-    let module_accessor = fighter.module_accessor;
+    let module_accessor = &mut *fighter.module_accessor;
+    let mut r = 1.0;
+    let mut g = 1.0;
+    let mut b = 1.0;
+    if module_accessor.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM) == 3{
+        r = 2.0;
+        g = 0.2;
+        b = 0.5;
+    }
     acmd!(lua_state, {
         frame(Frame=13)
         if(is_execute){
             EFFECT_FOLLOW(hash40("lucario_hattack_b"), hash40("top"), 0, 27.0, 0, 0, 90, 90, 1.0, true)
+            LAST_EFFECT_SET_COLOR(r, g, b)
         }
     });
 }

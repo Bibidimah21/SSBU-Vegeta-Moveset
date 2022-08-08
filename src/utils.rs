@@ -66,10 +66,16 @@ static mut IS_STRAIGHT_QCF: [bool; 8] = [false; 8];
 static mut IS_DOWN_QCB: [bool; 8] = [false; 8];
 static mut IS_SIDE_QCB: [bool; 8] = [false; 8];
 static mut IS_STRAIGHT_QCB: [bool; 8] = [false; 8];
-pub static mut r:f32 = 0.0;
-pub static mut g:f32 = 0.0;
-pub static mut b:f32 = 0.0;
+//pub static mut r:f32 = 0.0;
+//pub static mut g:f32 = 0.0;
+//pub static mut b:f32 = 0.0;
 
+pub fn read_rgb_from_file() -> (f32, f32, f32){
+       let r = std::fs::read_to_string("sd:/r.txt").unwrap().parse::<f32>().unwrap();
+       let g = std::fs::read_to_string("sd:/g.txt").unwrap().parse::<f32>().unwrap();
+      let b = std::fs::read_to_string("sd:/b.txt").unwrap().parse::<f32>().unwrap();
+    (r, g, b)
+}
 
 #[repr(C)]
 pub struct ModelColorType(pub i32);
