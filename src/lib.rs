@@ -86,7 +86,7 @@ unsafe fn declare_const_hook(unk: u64, constant: *const u8, mut value: u32) {
         value = 0x1ef
     }
     if str.contains("FIGHTER_LUCARIO_INSTANCE_WORK_ID_FLAG_TERM"){
-        value = 0x100000D1;
+        value = 0x100000F2;
     }
     if str.contains("FIGHTER_LUCARIO_INSTANCE_WORK_ID_FLOAT_TERM"){
         value = 0x57;

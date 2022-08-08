@@ -140,7 +140,6 @@ pub fn hadoken(weapon: &mut L2CFighterBase) {
         EffectModule::kill_kind(weapon_module_accessor, Hash40::new("lucario_hadoudan_max_l"), false, true);
         EffectModule::kill_kind(weapon_module_accessor, Hash40::new("lucario_hadoudan_max_r"), false, true);
         EffectModule::kill_kind(weapon_module_accessor, Hash40::new("lucario_hadoudan"), false, true);
-        GroundModule::modify_rhombus(weapon_module_accessor, 0.5, 0.5, 0.5);
         if owner_module_accessor.status_kind() == *FIGHTER_STATUS_KIND_SPECIAL_S{
             if weapon_module_accessor.motion_frame() == 1.0{
                 let bbatk = EffectModule::req_follow(weapon_module_accessor, Hash40::new("sys_sscope_bullet_max"), smash::phx::Hash40::new("top"), &ZERO_VECTOR, &ZERO_VECTOR, 2.25, true, 0, 0, 0, 0, 0, true, true) as u32;

@@ -415,16 +415,30 @@ unsafe extern "C" fn attackhi4_main(fighter: &mut L2CFighterCommon) -> L2CValue 
         let attacked_player = &mut *get_module_accessor_by_entry_id(attacked_players[0] as i32);
         if (19.0..25.0).contains(&boma.motion_frame()){
             if boma.is_button_on(Buttons::Attack){
-                boma.set_position(&Vector3f{
-                    x: attacked_player.pos_x(),
-                    y: attacked_player.pos_y(),
-                    z: attacked_player.pos_z()
+                let teleport_eff = boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_TELEPORT_EFF_HANDLE) as u32;
+                if !boma.is_flag(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_USED_TELEPORT_EFFECT){
+                    let teleport = EffectModule::req_on_joint(boma,Hash40::new("sys_attack_speedline"),Hash40::new("rot"),&ZERO_VECTOR,&ZERO_VECTOR,2.0,&ZERO_VECTOR, &ZERO_VECTOR,false,0,0,0) as u32;
+                    boma.set_int(teleport as i32, FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_TELEPORT_EFF_HANDLE);
+                  //  EffectModule::set_rate(boma, teleport, 2.0);
+                    boma.on_flag(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_USED_TELEPORT_EFFECT);
+                    ModelModule::set_scale(boma, 0.0);
+                    MotionModule::set_rate(boma, 0.0);
+                    boma.play_se(Hash40::new("se_lucario_smash_h01"));
+                }
+                else if !EffectModule::is_exist_common(boma, Hash40::new("sys_attack_speedline")){
+                    ModelModule::set_scale(boma, 1.0);
+                    MotionModule::set_rate(boma, 1.0);
+                    boma.set_position(&Vector3f{
+                        x: attacked_player.pos_x(),
+                        y: attacked_player.pos_y(),
+                        z: attacked_player.pos_z()
+                    });
+                    boma.on_flag(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_AMAZING_IMPACT);
+                    acmd!(lua_state, {
+                   SLOW_OPPONENT(20, 60)
                 });
-                boma.on_flag(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_AMAZING_IMPACT);
-                acmd!(lua_state, {
-                   SLOW_OPPONENT(20, 600)
-                });
-                fighter.change_status(FIGHTER_STATUS_KIND_ATTACK_AIR.into(), false.into())
+                    fighter.change_status(FIGHTER_STATUS_KIND_ATTACK_AIR.into(), false.into())
+                }
             }
         }
     }
@@ -439,6 +453,9 @@ pub unsafe fn attackair_status(fighter: &mut L2CFighterCommon) -> L2CValue {
     let mut boma = &mut *fighter.module_accessor;
     let lua_state = fighter.lua_state_agent;
     let boma = smash::app::sv_system::battle_object_module_accessor(lua_state);
+    boma.off_flag(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_USED_TELEPORT_EFFECT);
+    boma.off_flag(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_USED_TELEPORT_EFFECT);
+    boma.set_int(0, FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_TELEPORT_EFF_HANDLE);
     if boma.is_flag(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_AMAZING_IMPACT){
         boma.change_motion(Hash40::new("attack_air_f"), false);
         AttackModule::set_reaction_mul(boma, 1.3);

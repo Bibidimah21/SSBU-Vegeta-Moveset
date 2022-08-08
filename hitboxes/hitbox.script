@@ -112,9 +112,9 @@ atk_clear_all
 
 #begin c04attackhi4.nuanmb
 frame 13
-attack 0 legr 12.0 53 4.0 0.0 0.0 0.0
-attack 1 kneer 12.0 53 4.0 0.0 0.0 0.0
-attack 2 footr 12.0 53 4.0 0.0 0.0 0.0
+attack 0 legr 12.0 53 5.0 2.0 0.0 0.0
+attack 1 kneer 12.0 53 5.0 2.0 0.0 0.0
+attack 2 footr 12.0 53 5.0 2.0 0.0 0.0
 frame 20
 atk_clear_all
 #end
