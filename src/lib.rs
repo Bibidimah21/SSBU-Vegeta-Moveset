@@ -7,6 +7,7 @@
 
 
 mod utils;
+use utils::*;
 mod vegeta;
 mod vegeta_effect;
 mod vegeta_game;
@@ -98,17 +99,6 @@ unsafe fn declare_const_hook(unk: u64, constant: *const u8, mut value: u32) {
 pub unsafe fn get_param_int_replace(work_module: u64, param_type: u64, param_hash: u64) -> i32 {
     let mut boma = *(*((work_module as *mut u64).offset(1)) as *mut BattleObjectModuleAccessor);
     let ret = original!()(work_module, param_type, param_hash);
-    if boma.kind() == *WEAPON_KIND_LUCARIO_AURABALL{
-        if param_hash == hash40("life"){
-            return 50;
-        }
-        if param_hash == hash40("down") {
-           return -1
-        }
-        else if [hash40("up"), hash40("half_width")].contains(&param_hash){
-          return 1
-        }
-    }
     ret
 }
 
@@ -137,7 +127,16 @@ pub unsafe fn get_param_float_replace(work_module: u64, param_type: u64, param_h
     ret
 }
 
-#[smashline::installer]
+#[skyline::hook(offset=0x490720)]
+unsafe fn set_mesh_visibility_2(model_module: u64, mesh: Hash40, vis: bool){
+    let mut boma = &mut *(*((model_module as *mut u64).offset(1)) as *mut BattleObjectModuleAccessor);
+
+    if boma.kind() == *FIGHTER_KIND_LUCARIO && !get_all_vegeta_meshes().contains(&mesh){
+        return;
+    }
+    original!()(model_module, mesh, vis);
+}
+
 fn installAll() {
     unsafe {
         let text_ptr = getRegionAddress(Region::Text) as *const u8;
@@ -156,7 +155,7 @@ fn installAll() {
     vegeta_status::install();
     vegeta_game::install();
     vegeta_sound::install();
-    skyline::install_hooks!(declare_const_hook, get_param_int_replace, get_param_float_replace);
+    skyline::install_hooks!(declare_const_hook, get_param_float_replace, set_mesh_visibility_2);
 }
 #[skyline::main(name = "vegeta_moveset")]
 pub fn main() {

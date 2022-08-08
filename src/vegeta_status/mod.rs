@@ -72,6 +72,9 @@ unsafe extern "C" fn special_n_main(fighter: &mut L2CFighterCommon) -> L2CValue 
     if boma.is_button_on(Buttons::Attack){
         boma.on_flag(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_KIBLAST_RAPIDFIRE);
     }
+    if boma.is_motion_one_of(&[Hash40::new("kiblastair_right"), Hash40::new("kiblastair_left")]) && boma.is_grounded(){
+        fighter.change_status(FIGHTER_STATUS_KIND_LANDING.into(), false.into());
+    }
     if boma.motion_frame() > 10.0{
         if boma.is_flag(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_KIBLAST_RAPIDFIRE) && boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_KIBLAST_TOTAL) < 5{
             if boma.is_motion(Hash40::new("kiblast_left")) || boma.is_motion(Hash40::new("kiblastair_left")){
@@ -131,7 +134,7 @@ pub unsafe fn special_n_status_end(fighter: &mut L2CFighterCommon) -> L2CValue {
     boma.set_int(0, FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_KIBLAST_TOTAL);
     boma.off_flag(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_KIBLAST_RAPIDFIRE);
     boma.unset_position_lock();
-
+    boma.stop_all_sound();
     L2CValue::I32(0)
 }
 
@@ -483,6 +486,19 @@ unsafe extern "C" fn kicharge_main(fighter: &mut L2CFighterCommon) -> L2CValue {
     let mut boma:&mut BattleObjectModuleAccessor = &mut *fighter.module_accessor;
     let lua_state = fighter.lua_state_agent;
 
+    let mut time = 0;
+    match boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM) {
+        0 => {
+            time = 60
+        },
+        1 => {
+            time = 90
+        },
+        2 => {
+            time = 120
+        }
+        _ => {}
+    }
 
     if boma.is_grounded(){
         boma.set_position_lock();
@@ -500,10 +516,10 @@ unsafe extern "C" fn kicharge_main(fighter: &mut L2CFighterCommon) -> L2CValue {
         }
     }
     if boma.is_motion(Hash40::new("ki_charge_start")) && boma.is_motion_end(){
-        if boma.is_button_on(Buttons::Special) && boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_KI_CHARGE) != 90 && boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM) < 3{
+        if boma.is_button_on(Buttons::Special) && boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_KI_CHARGE) != time && boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM) < 3{
             boma.change_motion(Hash40::new("ki_charge_hold"), false);
         }
-        else if boma.motion_frame() == 28.0 && boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_KI_CHARGE) == 90 && boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM) < 3{
+        else if boma.motion_frame() == 28.0 && boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_KI_CHARGE) == time && boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM) < 3{
             boma.set_int(0, FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_KI_CHARGE);
             boma.set_int(0, FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM_TIMER);
             boma.stop_all_sound();
@@ -535,19 +551,31 @@ unsafe extern "C" fn kicharge_main(fighter: &mut L2CFighterCommon) -> L2CValue {
     if boma.is_motion(Hash40::new("ki_charge_hold")){
         let current_form = boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM);
         let handle = boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_KI_CHARGE_EFFECT_HANDLE) as u32;
+        let aura_time = boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_TIME_AURA_RESET);
         boma.inc_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_KI_CHARGE);
 
-        if boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_KI_CHARGE) == 90{
+        if boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_KI_CHARGE) == time{
             EffectModule::kill_kind(boma, Hash40::new("lucario_aura"), false, true);
             boma.change_motion(Hash40::new("ki_charge_start"), false);
         }
-        if !EffectModule::is_exist_effect(boma, handle){
-            let aura = EffectModule::req_follow(boma, Hash40::new("lucario_aura"), smash::phx::Hash40::new("top"), &ZERO_VECTOR, &ZERO_VECTOR, 1.0, true, 0, 0, 0, 0, 0, true, true) as u32;
-            boma.set_int(aura as i32, FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_KI_CHARGE_EFFECT_HANDLE as i32);
+        if aura_time < 15{
+            if aura_time == 0{
+                let aura = EffectModule::req_follow(boma, Hash40::new("lucario_aura"), smash::phx::Hash40::new("top"), &ZERO_VECTOR, &ZERO_VECTOR, 1.0, true, 0, 0, 0, 0, 0, true, true) as u32;
+                boma.set_int(aura as i32, FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_KI_CHARGE_EFFECT_HANDLE as i32);
+                EffectModule::set_rate(boma, aura, 0.67);
+            }
+            boma.inc_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_TIME_AURA_RESET);
+        }
+        else{
+            EffectModule::kill_kind(boma, Hash40::new("lucario_aura"), false, true);
+            boma.set_int(0, FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_TIME_AURA_RESET);
+        }
+        if !boma.is_flag(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_PLAYED_KICHARGE_SOUNDS){
+            boma.on_flag(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_PLAYED_KICHARGE_SOUNDS);
             boma.play_se(Hash40::new("vc_lucario_002"));
             boma.play_se(Hash40::new("se_lucario_special_l01"));
         }
-        EffectModule::set_rate(boma, handle, 0.67);
+        //
         if current_form == 1{
             EffectModule::set_rgb(boma, handle, 0.7, 0.7, 0.0);
             EffectModule::set_alpha(boma, handle, 2.0);
@@ -565,6 +593,7 @@ unsafe extern "C" fn kicharge_main(fighter: &mut L2CFighterCommon) -> L2CValue {
         if !boma.is_button_on(Buttons::Special){
             EffectModule::kill_kind(boma, Hash40::new("lucario_aura"), false, true);
             boma.change_motion(Hash40::new("ki_charge_end"), false);
+            boma.stop_all_sound();
         }
     }
     if boma.is_motion_end() {
@@ -582,6 +611,7 @@ pub unsafe fn ki_charge_end(fighter: &mut L2CFighterCommon) -> L2CValue {
     let mut boma = &mut *fighter.module_accessor;
     boma.unset_position_lock();
     KineticModule::clear_speed_all(boma);
+    boma.off_flag(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_PLAYED_KICHARGE_SOUNDS);
     L2CValue::I32(0)
 }
 
@@ -679,9 +709,9 @@ pub fn install() {
         attackair_status_end,
         ki_charge,
         ki_charge_end,
-     //   special_hi_pre,
-      //  special_hi_main,
-       // special_hi_end,
+        //special_hi_pre,
+        //special_hi_main,
+        //special_hi_end,
         final_pre,
         final_main_script,
         final_end,

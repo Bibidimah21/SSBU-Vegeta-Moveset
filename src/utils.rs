@@ -36,6 +36,7 @@ pub const FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM_TIMER: i32 = 0x100000
 pub const FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_AIR_TIMER: i32 = 0x100000cE;
 pub const FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_SPECIAL_HI_TIMER: i32 = 0x100000cF;
 pub const FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM_AURA: i32 = 0x100000d1;
+pub const FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_TIME_AURA_RESET: i32 = 0x100000d2;
 
 pub const FIGHTER_VEGETA_INSTANCE_WORK_ID_FLOAT_LW4_EFFECT_SIZE: i32 = 0x53;
 pub const FIGHTER_VEGETA_INSTANCE_WORK_ID_FLOAT_LW4_HITBOX_SIZE: i32 = 0x54;
@@ -52,6 +53,7 @@ pub const FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_SSJBE: i32 = 0x200000eB;
 pub const FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_UE: i32 = 0x200000eC;
 pub const FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_FORM_TIMER_END: i32 = 0x200000eD;
 pub const FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_USED_AIR_GALICK_GUN: i32 = 0x200000eE;
+pub const FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_PLAYED_KICHARGE_SOUNDS: i32 = 0x200000eF;
 
 pub const ZERO_VECTOR:Vector3f = Vector3f{x: 0.0, y: 0.0, z: 0.0};
 static mut QCF_COUNTER: [f32; 8] = [0.0; 8];
@@ -189,6 +191,99 @@ pub unsafe fn test_variables(boma: &mut BattleObjectModuleAccessor){
             println!("{TEST}");
         }
     }
+}
+
+
+enum MeshType{
+    SS,
+    SSB,
+    SSBE,
+    Base,
+    All
+}
+pub fn get_all_vegeta_meshes() -> Vec<Hash40>{
+    ["ken_bingo_mouth", "ken_bingo_mouth2", "ken_bingo_y", "ken_bingo", "ken_bingo_b", "ken_bingo_p", "ken_facen_mouth", "ken_final_mouth", "ken_finalblink",
+        "ken_finalblink_b", "ken_finalblink_y", "ken_finalblink_p", "ken_hurt_mouth", "ken_hurtblink", "ken_hurtblink_y", "ken_hurtblink_b", "ken_hurtblink_p", "ken_laugh_mouth",
+        "ken_laughblink", "ken_laughblink_y", "ken_laughblink_b","ken_laughblink_p", "ken_openblink", "ken_openblink_y", "ken_openblink_b", "ken_openblink_p", "ken_saiyan_mouth",
+        "ken_smile2_mouth", "ken_smile2blink", "ken_smile2blink_y", "ken_smile2blink_b", "ken_smile2blink_p", "ken_smile_mouth", "ken_hair1", "ken_hair2",
+        "ken_hair3", "ken_hair4", "ken_hair5", "ken_earring_p"].iter().map(|x|{
+        Hash40::new(x)
+    }).collect::<Vec<Hash40>>()
+}
+
+
+pub unsafe fn disable_all_face_meshes(module_accessor: *mut BattleObjectModuleAccessor){
+    for mesh in get_all_vegeta_meshes() {
+        if mesh == Hash40::new("ken_earring_p"){
+            continue
+        }
+        ModelModule::set_mesh_visibility(module_accessor, mesh, false);
+    }
+}
+
+
+
+pub unsafe fn base_neutral_face(module_accessor: *mut app::BattleObjectModuleAccessor){
+    disable_all_face_meshes(module_accessor);
+    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_facen_mouth"), true);
+    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_openblink"), true);
+    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_hair1"), true);
+}
+
+pub unsafe fn ssj_neutral_face(module_accessor: *mut app::BattleObjectModuleAccessor){
+    disable_all_face_meshes(module_accessor);
+    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_facen_mouth"), true);
+    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_openblink_y"), true);
+    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_hair2"), true);
+}
+
+pub unsafe fn ssjb_neutral_face(module_accessor: *mut app::BattleObjectModuleAccessor){
+    disable_all_face_meshes(module_accessor);
+    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_facen_mouth"), true);
+    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_openblink_b"), true);
+    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_hair3"), true);
+}
+
+pub unsafe fn ssjbe_neutral_face(module_accessor: *mut app::BattleObjectModuleAccessor){
+    disable_all_face_meshes(module_accessor);
+    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_facen_mouth"), true);
+    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_openblink_b"), true);
+    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_hair4"), true);
+}
+
+pub unsafe fn ue_neutral_face(module_accessor: *mut app::BattleObjectModuleAccessor){
+    disable_all_face_meshes(module_accessor);
+    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_facen_mouth"), true);
+    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_openblink_p"), true);
+    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_hair5"), true);
+}
+
+pub unsafe fn ue_smile_face(module_accessor: *mut app::BattleObjectModuleAccessor){
+    disable_all_face_meshes(module_accessor);
+    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_smile_mouth"), true);
+    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_openblink_p"), true);
+    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_hair5"), true);
+}
+
+pub unsafe fn base_smile_face(module_accessor: *mut app::BattleObjectModuleAccessor){
+    disable_all_face_meshes(module_accessor);
+    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_smile2_mouth"), true);
+    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_openblink"), true);
+    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_hair1"), true);
+}
+
+pub unsafe fn base_power_attack_face_n(module_accessor: *mut app::BattleObjectModuleAccessor){
+    disable_all_face_meshes(module_accessor);
+    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_final_mouth"), true);
+    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_openblink"), true);
+    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_hair1"), true);
+}
+
+pub unsafe fn base_power_charge_face_n(module_accessor: *mut app::BattleObjectModuleAccessor){
+    disable_all_face_meshes(module_accessor);
+    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_hurt_mouth"), true);
+    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_openblink"), true);
+    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_hair1"), true);
 }
 
 pub fn is_grounded(module_accessor: *mut app::BattleObjectModuleAccessor) -> bool {

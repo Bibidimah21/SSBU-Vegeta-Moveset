@@ -3,7 +3,7 @@ use std::sync::atomic::{AtomicPtr, Ordering};
 use smash::{
     *,
     hash40,
-    phx::{Hash40, Vector3f},
+    phx::{Hash40, Vector2f, Vector3f, Vector4f},
     lib::{lua_const::*, L2CValue},
     app::{lua_bind::{*, StatusModule::*}, sv_animcmd::{frame, wait}, BattleObjectModuleAccessor},
     lua2cpp::{L2CFighterCommon, L2CAgentBase, L2CFighterBase}
@@ -26,97 +26,7 @@ pub static mut TEST2: i32 = 0;
 pub static mut TEST3: i32 = 0;
 
 
-pub const FIGHTER_VEGETA_GENERATE_ARTICLE_BBATK: i32 = 0x4;
 
-enum MeshType{
-    SS,
-    SSB,
-    SSBE,
-    Base,
-    All
-}
-const ALL_VEGETA_MESHES:[&str;39] = [
-    "ken_bingo_mouth", "ken_bingo_mouth2", "ken_bingo_y", "ken_bingo", "ken_bingo_b", "ken_bingo_p", "ken_facen_mouth", "ken_final_mouth", "ken_finalblink",
-    "ken_finalblink_b", "ken_finalblink_y", "ken_finalblink_p", "ken_hurt_mouth", "ken_hurtblink", "ken_hurtblink_y", "ken_hurtblink_b", "ken_hurtblink_p", "ken_laugh_mouth",
-    "ken_laughblink", "ken_laughblink_y", "ken_laughblink_b","ken_laughblink_p", "ken_openblink", "ken_openblink_y", "ken_openblink_b", "ken_openblink_p", "ken_saiyan_mouth",
-    "ken_smile2_mouth", "ken_smile2blink", "ken_smile2blink_y", "ken_smile2blink_b", "ken_smile2blink_p", "ken_smile_mouth", "ken_hair1", "ken_hair2",
-    "ken_hair3", "ken_hair4", "ken_hair5", "ken_earring_p",
-];
-
-
-pub unsafe fn disable_all_face_meshes(module_accessor: *mut BattleObjectModuleAccessor){
-    for mesh in ALL_VEGETA_MESHES {
-        if mesh == "ken_earring_p"{
-            continue
-        }
-        ModelModule::set_mesh_visibility(module_accessor, Hash40::new(mesh), false);
-    }
-}
-
-
-
-pub unsafe fn base_neutral_face(module_accessor: *mut app::BattleObjectModuleAccessor){
-    disable_all_face_meshes(module_accessor);
-    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_facen_mouth"), true);
-    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_openblink"), true);
-    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_hair1"), true);
-}
-
-pub unsafe fn ssj_neutral_face(module_accessor: *mut app::BattleObjectModuleAccessor){
-    disable_all_face_meshes(module_accessor);
-    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_facen_mouth"), true);
-    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_openblink_y"), true);
-    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_hair2"), true);
-}
-
-pub unsafe fn ssjb_neutral_face(module_accessor: *mut app::BattleObjectModuleAccessor){
-    disable_all_face_meshes(module_accessor);
-    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_facen_mouth"), true);
-    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_openblink_b"), true);
-    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_hair3"), true);
-}
-
-pub unsafe fn ssjbe_neutral_face(module_accessor: *mut app::BattleObjectModuleAccessor){
-    disable_all_face_meshes(module_accessor);
-    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_facen_mouth"), true);
-    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_openblink_b"), true);
-    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_hair4"), true);
-}
-
-pub unsafe fn ue_neutral_face(module_accessor: *mut app::BattleObjectModuleAccessor){
-    disable_all_face_meshes(module_accessor);
-    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_facen_mouth"), true);
-    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_openblink_p"), true);
-    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_hair5"), true);
-}
-
-pub unsafe fn ue_smile_face(module_accessor: *mut app::BattleObjectModuleAccessor){
-    disable_all_face_meshes(module_accessor);
-    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_smile_mouth"), true);
-    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_openblink_p"), true);
-    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_hair5"), true);
-}
-
-pub unsafe fn base_smile_face(module_accessor: *mut app::BattleObjectModuleAccessor){
-    disable_all_face_meshes(module_accessor);
-    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_smile2_mouth"), true);
-    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_openblink"), true);
-    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_hair1"), true);
-}
-
-pub unsafe fn base_power_attack_face_n(module_accessor: *mut app::BattleObjectModuleAccessor){
-    disable_all_face_meshes(module_accessor);
-    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_final_mouth"), true);
-    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_openblink"), true);
-    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_hair1"), true);
-}
-
-pub unsafe fn base_power_charge_face_n(module_accessor: *mut app::BattleObjectModuleAccessor){
-    disable_all_face_meshes(module_accessor);
-    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_hurt_mouth"), true);
-    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_openblink"), true);
-    ModelModule::set_mesh_visibility(module_accessor, Hash40::new("ken_hair1"), true);
-}
 
 
 const ZERO_VECTOR:Vector3f = Vector3f{x: 0.0, y: 0.0, z: 0.0};
@@ -230,7 +140,7 @@ pub fn hadoken(weapon: &mut L2CFighterBase) {
         EffectModule::kill_kind(weapon_module_accessor, Hash40::new("lucario_hadoudan_max_l"), false, true);
         EffectModule::kill_kind(weapon_module_accessor, Hash40::new("lucario_hadoudan_max_r"), false, true);
         EffectModule::kill_kind(weapon_module_accessor, Hash40::new("lucario_hadoudan"), false, true);
-
+        GroundModule::modify_rhombus(weapon_module_accessor, 0.5, 0.5, 0.5);
         if owner_module_accessor.status_kind() == *FIGHTER_STATUS_KIND_SPECIAL_S{
             if weapon_module_accessor.motion_frame() == 1.0{
                 let bbatk = EffectModule::req_follow(weapon_module_accessor, Hash40::new("sys_sscope_bullet_max"), smash::phx::Hash40::new("top"), &ZERO_VECTOR, &ZERO_VECTOR, 2.25, true, 0, 0, 0, 0, 0, true, true) as u32;
@@ -284,13 +194,14 @@ pub fn vegeta_frame(fighter : &mut L2CFighterCommon) {
         let lua_state = fighter.lua_state_agent;
         let boma = smash::app::sv_system::battle_object_module_accessor(lua_state);
         let status_kind = boma.status_kind();
-        let entry_id = get_entry_id(boma);
+        let entry_id = boma.entry_id();
         let current_form = boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM);
         let current_form_timer = boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM_TIMER);
         let multiplier = boma.get_float(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLOAT_POWER_MUL);
         let current_form_aura = boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM_AURA);
         AttackModule::set_power_mul(boma, multiplier);
-        test_variables(boma);
+        //EffectModule::req_on_joint(boma, Hash40::new(eff.as_str()), smash::phx::Hash40::new("top"), &ZERO_VECTOR, &ZERO_VECTOR, 1.0, &ZERO_VECTOR, &ZERO_VECTOR, false, 0, 0, 0) as u32;
+        //test_variables(boma);
         if boma.is_status_one_of(&[*FIGHTER_STATUS_KIND_ATTACK_S4_HOLD, *FIGHTER_STATUS_KIND_ATTACK_S4, *FIGHTER_STATUS_KIND_ATTACK_S4_START]) {
             if boma.is_infliction_status(*COLLISION_KIND_MASK_HIT) {
                 if !boma.is_flag(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_USED_S4_EFFECT) {
@@ -371,8 +282,8 @@ pub fn vegeta_frame(fighter : &mut L2CFighterCommon) {
         }
         if !boma.is_status_one_of(&[*FIGHTER_STATUS_KIND_ATTACK_LW4_HOLD, *FIGHTER_STATUS_KIND_ATTACK_LW4, *FIGHTER_STATUS_KIND_ATTACK_LW4_START, *FIGHTER_STATUS_KIND_SPECIAL_S]) {
             boma.set_int(0, FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_LW4_CHARGE_FRAME);
-            boma.set_float(4.67, FIGHTER_VEGETA_INSTANCE_WORK_ID_FLOAT_LW4_HITBOX_SIZE);
-            boma.set_float(1.0, FIGHTER_VEGETA_INSTANCE_WORK_ID_FLOAT_LW4_EFFECT_SIZE);
+            boma.set_float(7.0, FIGHTER_VEGETA_INSTANCE_WORK_ID_FLOAT_LW4_HITBOX_SIZE);
+            boma.set_float(1.5, FIGHTER_VEGETA_INSTANCE_WORK_ID_FLOAT_LW4_EFFECT_SIZE);
             boma.set_float(10.0, FIGHTER_VEGETA_INSTANCE_WORK_ID_FLOAT_LW4_DAMAGE);
             boma.off_flag(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_USED_LW4_EFFECT);
             EffectModule::kill_kind(boma, Hash40::new("sys_sscope_bullet_max"), false, true);
@@ -417,7 +328,7 @@ pub fn vegeta_frame(fighter : &mut L2CFighterCommon) {
             else if current_form == 2 {
                 ssjb_neutral_face(boma);
                 boma.set_float(1.3, FIGHTER_VEGETA_INSTANCE_WORK_ID_FLOAT_POWER_MUL);
-                if current_form_timer == 1500{
+                if current_form_timer == 1200{
                     boma.set_int(0,FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM);
                     boma.on_flag(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_FORM_TIMER_END);
                     boma.set_int(0, FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM_TIMER);
@@ -428,8 +339,9 @@ pub fn vegeta_frame(fighter : &mut L2CFighterCommon) {
             }
             else if current_form == 3 {
                 ue_neutral_face(boma);
-                boma.set_float(1.5, FIGHTER_VEGETA_INSTANCE_WORK_ID_FLOAT_POWER_MUL);
-                if current_form_timer == 900{
+                let damage = DamageModule::damage(boma, 0);
+                boma.set_float(if damage < 300.0 {1.4 + damage * 0.002} else{2.0}, FIGHTER_VEGETA_INSTANCE_WORK_ID_FLOAT_POWER_MUL);
+                if current_form_timer == 600{
                     boma.set_int(0,FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM);
                     boma.on_flag(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_FORM_TIMER_END);
                     boma.set_int(0, FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM_TIMER);
@@ -451,7 +363,7 @@ pub fn vegeta_frame(fighter : &mut L2CFighterCommon) {
           //  boma.change_status(*FIGHTER_STATUS_KIND_FINAL, false);
         }
         //qcf_handle(boma);
-        qcb_handle(boma);
+        //qcb_handle(boma);
         /*
         if ControlModule::check_button_on(boma, *CONTROL_PAD_BUTTON_SPECIAL){
             if ControlModule::check_button_trigger(boma, *CONTROL_PAD_BUTTON_APPEAL_S_L){

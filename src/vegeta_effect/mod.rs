@@ -1,5 +1,5 @@
 use crate::utils::*;
-use crate::vegeta::{CHARGE_TIME, ue_smile_face};
+use crate::vegeta::{CHARGE_TIME};
 use crate::vegeta_status::GALICKGUN_ROT;
 use smash::app::lua_bind::*;
 use smash::app::*;
@@ -107,12 +107,12 @@ unsafe fn effect_vegeta_bigbangatk(fighter: &mut L2CAgentBase) {
     acmd!(lua_state, {
         frame(Frame=10)
         if(is_execute){
-            EFFECT(hash40("sys_sscope_bullet_max"), hash40("top"), 18, 15, 0, 0, 0, 0, 2.25, false)
+            EFFECT(hash40("sys_sscope_hold"), hash40("top"), 18, 17, 0, 0, 0, 0, 1.5, false)
             LAST_EFFECT_SET_COLOR(/*R*/ 0.0, /*G*/ 0.8, /*B*/ 13.0)
         }
         frame(Frame=27)
         if(is_execute){
-            EFFECT_OFF_KIND(hash40("sys_sscope_bullet_max"), true, true)
+            EFFECT_OFF_KIND(hash40("sys_sscope_hold"), true, true)
         }
     });
 }
@@ -179,7 +179,10 @@ unsafe fn effect_vegeta_attacks4(fighter: &mut L2CAgentBase) {
     let module_accessor = fighter.module_accessor;
     let entry_id = get_entry_id(module_accessor);
     acmd!(lua_state, {
-
+        frame(Frame=5)
+        if(is_execute){
+           // EFFECT_ALPHA(hash40("sys_attack_speedline"), hash40("top"), 0, TEST, TEST2, 0, 0, 0, 0.8, 0, 0, 0, 0, 0, 0, true, 0.45)
+        }
     });
 }
 
@@ -211,10 +214,10 @@ unsafe fn effect_vegeta_attackairf(fighter: &mut L2CAgentBase) {
     let module_accessor = fighter.module_accessor;
     let entry_id = (*module_accessor).entry_id();
     acmd!(lua_state, {
-        frame(Frame=14)
+        frame(Frame=13)
         if(is_excute){
             EFFECT_FOLLOW_FLIP(hash40("sys_attack_arc_b"), hash40("sys_attack_arc_b"), hash40("top"), 0, 9, 0, -3, -11, -113, 1.1, true, EF_FLIP_YZ)
-            LAST_EFFECT_SET_RATE(1.0)
+            LAST_EFFECT_SET_RATE(1.3)
         }
     });
 }
@@ -278,6 +281,47 @@ unsafe fn effect_vegeta_throwf(fighter: &mut L2CAgentBase) {
     let entry_id = (*module_accessor).entry_id();
     acmd!(lua_state, {
 
+    });
+}
+
+#[acmd_script(agent = "lucario", script = "effect_throwb", category = ACMD_EFFECT)]
+unsafe fn effect_vegeta_throwb(fighter: &mut L2CAgentBase) {
+    let lua_state = fighter.lua_state_agent;
+    let module_accessor = fighter.module_accessor;
+    let entry_id = (*module_accessor).entry_id();
+    acmd!(lua_state, {
+        frame(Frame=7)
+        if(is_excute){
+            EFFECT(hash40("sys_crown"), hash40("top"), 8, 0, 0, 0, 0, 0, 0.9, 0, 0, 0, 0, 0, 0, false)
+        }
+        frame(Frame=16)
+        if(is_excute){
+            LANDING_EFFECT_FLIP(hash40("sys_whirlwind_l"), hash40("sys_whirlwind_r"), hash40("top"), 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, false, EF_FLIP_NONE)
+        }
+        frame(Frame=22)
+        if(is_excute){
+            EFFECT_FOLLOW_FLIP_COLOR(hash40("sys_spin_wind"), hash40("sys_spin_wind"), hash40("rot"), 0, -2, 0, 0, -90, 0, 1.5, true, EF_FLIP_YZ, 1, 1, 1)
+        }
+        frame(Frame=26)
+        if(is_excute){
+            EFFECT_FOLLOW_FLIP_COLOR(hash40("sys_spin_wind"), hash40("sys_spin_wind"), hash40("rot"), 0, 1.5, 0, 0, -90, 0, 1.5, true, EF_FLIP_YZ, 1, 1, 1)
+        }
+        frame(Frame=29)
+        if(is_excute){
+            LANDING_EFFECT_FLIP(hash40("sys_whirlwind_l"), hash40("sys_whirlwind_r"), hash40("top"), 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, false, EF_FLIP_NONE)
+        }
+        frame(Frame=34)
+        if(is_excute){
+            EFFECT_FOLLOW_FLIP_COLOR(hash40("sys_spin_wind"), hash40("sys_spin_wind"), hash40("rot"), 0, 0, 0, 0, 0, 0, 1.5, true, EF_FLIP_YZ, 1, 1, 1)
+        }
+        frame(Frame=44)
+        if(is_excute){
+            EFFECT(hash40("sys_smash_flash_s"), hash40("throw"), 0, 0, 0, 0, 0, 0, 1.5, 0, 0, 0, 0, 0, 0, true)
+        }
+        frame(Frame=45)
+        if(is_excute){
+            LANDING_EFFECT(hash40("sys_atk_smoke"), hash40("top"), 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, false)
+        }
     });
 }
 
@@ -358,6 +402,7 @@ pub fn install() {
         effect_vegeta_attackairlw,
         effect_vegeta_attackairb,
         effect_vegeta_throwf,
+        effect_vegeta_throwb,
         effect_vegeta_attacks3,
         effect_vegeta_attacklw3,
         effect_vegeta_bigbangatk,
