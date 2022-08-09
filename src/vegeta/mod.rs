@@ -140,6 +140,7 @@ pub fn hadoken(weapon: &mut L2CFighterBase) {
         EffectModule::kill_kind(weapon_module_accessor, Hash40::new("lucario_hadoudan_max_l"), false, true);
         EffectModule::kill_kind(weapon_module_accessor, Hash40::new("lucario_hadoudan_max_r"), false, true);
         EffectModule::kill_kind(weapon_module_accessor, Hash40::new("lucario_hadoudan"), false, true);
+        GroundModule::modify_rhombus(weapon_module_accessor, 0.5, 0.5, 0.5);
         if owner_module_accessor.status_kind() == *FIGHTER_STATUS_KIND_SPECIAL_S{
             if weapon_module_accessor.motion_frame() == 1.0{
                 let bbatk = EffectModule::req_follow(weapon_module_accessor, Hash40::new("sys_sscope_bullet_max"), smash::phx::Hash40::new("top"), &ZERO_VECTOR, &ZERO_VECTOR, 2.25, true, 0, 0, 0, 0, 0, true, true) as u32;
@@ -198,6 +199,7 @@ pub fn vegeta_frame(fighter : &mut L2CFighterCommon) {
         let current_form_timer = boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM_TIMER);
         let multiplier = boma.get_float(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLOAT_POWER_MUL);
         let current_form_aura = boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM_AURA);
+        let max_kiblasts = boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_MAX_KIBLASTS);
         AttackModule::set_power_mul(boma, multiplier);
         //EffectModule::req_on_joint(boma, Hash40::new(eff.as_str()), smash::phx::Hash40::new("top"), &ZERO_VECTOR, &ZERO_VECTOR, 1.0, &ZERO_VECTOR, &ZERO_VECTOR, false, 0, 0, 0) as u32;
         //test_variables(boma);
@@ -301,6 +303,16 @@ pub fn vegeta_frame(fighter : &mut L2CFighterCommon) {
             boma.set_int(0, FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_AIR_TIMER);
             boma.off_flag(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_USED_AIR_GALICK_GUN);
         }
+        if max_kiblasts < 5 {
+            if !boma.is_status(*FIGHTER_STATUS_KIND_SPECIAL_N) {
+                boma.inc_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_KIBLAST_COOLDOWN_TIME);
+            }
+            if boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_KIBLAST_COOLDOWN_TIME) >= 60 {
+                boma.inc_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_MAX_KIBLASTS);
+                boma.set_int(0, FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_KIBLAST_COOLDOWN_TIME);
+            }
+        }
+
         //test_variables(boma);
         if current_form != 0 && !boma.is_status(*FIGHTER_STATUS_KIND_SPECIAL_LW){
             boma.inc_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM_TIMER);

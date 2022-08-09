@@ -57,6 +57,7 @@ pub unsafe fn special_n_status(fighter: &mut L2CFighterCommon) -> L2CValue {
 
 unsafe extern "C" fn special_n_main(fighter: &mut L2CFighterCommon) -> L2CValue {
     let mut boma:&mut BattleObjectModuleAccessor = &mut *fighter.module_accessor;
+    let max_kiblasts = boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_MAX_KIBLASTS);
     if boma.is_grounded(){
         boma.set_position_lock();
     }
@@ -76,7 +77,7 @@ unsafe extern "C" fn special_n_main(fighter: &mut L2CFighterCommon) -> L2CValue 
         fighter.change_status(FIGHTER_STATUS_KIND_LANDING.into(), false.into());
     }
     if boma.motion_frame() > 10.0{
-        if boma.is_flag(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_KIBLAST_RAPIDFIRE) && boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_KIBLAST_TOTAL) < 5{
+        if boma.is_flag(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_KIBLAST_RAPIDFIRE) && boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_KIBLAST_TOTAL) < max_kiblasts{
             if boma.is_motion(Hash40::new("kiblast_left")) || boma.is_motion(Hash40::new("kiblastair_left")){
                 boma.inc_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_KIBLAST_TOTAL);
                 if boma.is_grounded(){
@@ -96,7 +97,7 @@ unsafe extern "C" fn special_n_main(fighter: &mut L2CFighterCommon) -> L2CValue 
                 }
             }
         }
-        else if boma.is_button_on(Buttons::Special) && boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_KIBLAST_TOTAL) < 5{
+        else if boma.is_button_on(Buttons::Special) && boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_KIBLAST_TOTAL) < max_kiblasts{
             if boma.is_motion(Hash40::new("kiblast_left")) || boma.is_motion(Hash40::new("kiblastair_left")){
                 boma.inc_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_KIBLAST_TOTAL);
                 if boma.is_grounded(){
@@ -132,6 +133,7 @@ unsafe extern "C" fn special_n_main(fighter: &mut L2CFighterCommon) -> L2CValue 
 pub unsafe fn special_n_status_end(fighter: &mut L2CFighterCommon) -> L2CValue {
     let mut boma = &mut *fighter.module_accessor;
     boma.set_int(0, FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_KIBLAST_TOTAL);
+    boma.dec_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_MAX_KIBLASTS);
     boma.off_flag(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLAG_KIBLAST_RAPIDFIRE);
     boma.unset_position_lock();
     boma.stop_all_sound();
@@ -536,7 +538,7 @@ unsafe extern "C" fn kicharge_main(fighter: &mut L2CFighterCommon) -> L2CValue {
         if boma.is_button_on(Buttons::Special) && boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_KI_CHARGE) != time && boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM) < 3{
             boma.change_motion(Hash40::new("ki_charge_hold"), false);
         }
-        else if boma.motion_frame() == 28.0 && boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_KI_CHARGE) == time && boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM) < 3{
+        else if boma.motion_frame() == 28.0 && boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_KI_CHARGE) >= time && boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM) < 3{
             boma.set_int(0, FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_KI_CHARGE);
             boma.set_int(0, FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM_TIMER);
             boma.stop_all_sound();
@@ -571,7 +573,7 @@ unsafe extern "C" fn kicharge_main(fighter: &mut L2CFighterCommon) -> L2CValue {
         let aura_time = boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_TIME_AURA_RESET);
         boma.inc_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_KI_CHARGE);
 
-        if boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_KI_CHARGE) == time{
+        if boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_KI_CHARGE) >= time{
             EffectModule::kill_kind(boma, Hash40::new("lucario_aura"), false, true);
             boma.change_motion(Hash40::new("ki_charge_start"), false);
         }
