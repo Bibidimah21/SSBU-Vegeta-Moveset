@@ -124,35 +124,59 @@ pub fn hadoken(weapon: &mut L2CFighterBase) {
         let owner_motion_kind = MotionModule::motion_kind(owner_module_accessor);
         let motion_frame = weapon_module_accessor.motion_frame();
         let multiplier = owner_module_accessor.get_float(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLOAT_POWER_MUL);
+        let is_ue = owner_module_accessor.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM) == 3;
+        let effect_handle = weapon_module_accessor.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_BIGBANGATK_EFFECT_HANDLE);
+        let attacked_players = get_attacked_players(weapon_module_accessor);
         AttackModule::set_power_mul(weapon_module_accessor, multiplier);
-        if weapon_module_accessor.motion_frame() >= 30.0{
+        let mut r = 1.0;
+        let mut g = 2.0;
+        let mut b = 1.5;
+        let mut collision_attr = hash40("collision_attr_aura");
+        if is_ue{
+            if attacked_players.len() > 0 && EffectModule::is_exist_effect(weapon_module_accessor, effect_handle as u32){
+                for player in attacked_players.clone(){
+                    let player_boma = &mut *get_module_accessor_by_entry_id(player as i32);
+                    if DamageModule::damage(player_boma, 0) >= 110.0 && !player_boma.is_status(*FIGHTER_STATUS_KIND_DEAD){
+                        player_boma.change_status(*FIGHTER_STATUS_KIND_DEAD,  false);
+                    }
+                }
+            }
+            r = 2.0;
+            g = 0.5;
+            b = 1.0;
+            collision_attr = hash40("collision_attr_purple");
+        }
+        if weapon_module_accessor.motion_frame() >= 30.0 || attacked_players.len() > 0{
             AttackModule::clear_all(weapon_module_accessor);
             EffectModule::kill_kind(weapon_module_accessor, Hash40::new("sys_killereye_bullet"), false, true);
             EffectModule::kill_kind(weapon_module_accessor, Hash40::new("sys_sscope_bullet"), false, true);
-            EffectModule::kill_kind(weapon_module_accessor, Hash40::new("sys_sscope_bullet_max"), false, true);
+            EffectModule::kill_kind(weapon_module_accessor, Hash40::new("lucario_hadoudan"), false, true);
             return 0.into();
         }
-        EffectModule::kill_kind(weapon_module_accessor, Hash40::new("lucario_hadoudan_tail"), false, true);
-        EffectModule::kill_kind(weapon_module_accessor, Hash40::new("lucario_hadoudan_hold"), false, true);
-        EffectModule::kill_kind(weapon_module_accessor, Hash40::new("lucario_hadoudan_max_sign"), false, true);
-        EffectModule::kill_kind(weapon_module_accessor, Hash40::new("lucario_hadoudan_max_hold"), false, true);
-        EffectModule::kill_kind(weapon_module_accessor, Hash40::new("lucario_hadoudan_bomb"), false, true);
-        EffectModule::kill_kind(weapon_module_accessor, Hash40::new("lucario_hadoudan_max_l"), false, true);
-        EffectModule::kill_kind(weapon_module_accessor, Hash40::new("lucario_hadoudan_max_r"), false, true);
-        EffectModule::kill_kind(weapon_module_accessor, Hash40::new("lucario_hadoudan"), false, true);
         GroundModule::modify_rhombus(weapon_module_accessor, 0.5, 0.5, 0.5);
         if owner_module_accessor.status_kind() == *FIGHTER_STATUS_KIND_SPECIAL_S{
             if weapon_module_accessor.motion_frame() == 1.0{
-                let bbatk = EffectModule::req_follow(weapon_module_accessor, Hash40::new("sys_sscope_bullet_max"), smash::phx::Hash40::new("top"), &ZERO_VECTOR, &ZERO_VECTOR, 2.25, true, 0, 0, 0, 0, 0, true, true) as u32;
-                EffectModule::set_rgb(weapon_module_accessor, bbatk, 0.0, 0.8, 13.0);
+                let bbatk = EffectModule::req_follow(weapon_module_accessor, Hash40::new("lucario_hadoudan"), smash::phx::Hash40::new("top"), &ZERO_VECTOR, &ZERO_VECTOR, 3.0, true, 0, 0, 0, 0, 0, true, true) as u32;
+                EffectModule::set_rgb(weapon_module_accessor, bbatk, r, g,  b);
+                weapon_module_accessor.set_int(bbatk as i32, FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_BIGBANGATK_EFFECT_HANDLE);
             }
             acmd!(lua_state, {
-                ATTACK(ID=0, Part=0, Bone=hash40("top"), Damage=9.0, Angle=40, KBG=65, FKB=0, BKB=55, Size=6.0, X=0.0, Y=0.0, Z=0.0, X2=LUA_VOID, Y2=LUA_VOID, Z2=LUA_VOID, Hitlag=1.0, SDI=1.0, Clang_Rebound=ATTACK_SETOFF_KIND_ON, FacingRestrict=ATTACK_LR_CHECK_SPEED, SetWeight=false, ShieldDamage=-7, Trip=0.0, Rehit=0, Reflectable=true, Absorbable=true, Flinchless=false, DisableHitlag=false, Direct_Hitbox=false, Ground_or_Air=COLLISION_SITUATION_MASK_GA, Hitbits=COLLISION_CATEGORY_MASK_ALL, CollisionPart=COLLISION_PART_MASK_ALL, FriendlyFire=false, Effect=hash40("collision_attr_aura"), SFXLevel=ATTACK_SOUND_LEVEL_L, SFXType=COLLISION_SOUND_ATTR_KICK, Type=ATTACK_REGION_ENERGY)
-            });
+                ATTACK(ID=0, Part=0, Bone=hash40("top"), Damage=9.0, Angle=40, KBG=65, FKB=0, BKB=55, Size=6.0, X=0.0, Y=0.0, Z=0.0, X2=LUA_VOID, Y2=LUA_VOID, Z2=LUA_VOID, Hitlag=1.0, SDI=1.0, Clang_Rebound=ATTACK_SETOFF_KIND_ON, FacingRestrict=ATTACK_LR_CHECK_SPEED, SetWeight=false, ShieldDamage=-7, Trip=0.0, Rehit=0, Reflectable=true, Absorbable=true, Flinchless=false, DisableHitlag=false, Direct_Hitbox=false, Ground_or_Air=COLLISION_SITUATION_MASK_GA, Hitbits=COLLISION_CATEGORY_MASK_ALL, CollisionPart=COLLISION_PART_MASK_ALL, FriendlyFire=false, Effect=collision_attr, SFXLevel=ATTACK_SOUND_LEVEL_L, SFXType=COLLISION_SOUND_ATTR_KICK, Type=ATTACK_REGION_ENERGY)
+            })
         }
-        if owner_module_accessor.status_kind() == *FIGHTER_STATUS_KIND_SPECIAL_N{
+        else{
+            EffectModule::kill_kind(weapon_module_accessor, Hash40::new("lucario_hadoudan_tail"), false, true);
+            EffectModule::kill_kind(weapon_module_accessor, Hash40::new("lucario_hadoudan_hold"), false, true);
+            EffectModule::kill_kind(weapon_module_accessor, Hash40::new("lucario_hadoudan_max_sign"), false, true);
+            EffectModule::kill_kind(weapon_module_accessor, Hash40::new("lucario_hadoudan_max_hold"), false, true);
+            EffectModule::kill_kind(weapon_module_accessor, Hash40::new("lucario_hadoudan_bomb"), false, true);
+            EffectModule::kill_kind(weapon_module_accessor, Hash40::new("lucario_hadoudan_max_l"), false, true);
+            EffectModule::kill_kind(weapon_module_accessor, Hash40::new("lucario_hadoudan_max_r"), false, true);
+            EffectModule::kill_kind(weapon_module_accessor, Hash40::new("lucario_hadoudan"), false, true);
+        }
+        if  owner_module_accessor.status_kind() == *FIGHTER_STATUS_KIND_SPECIAL_N{
             if weapon_module_accessor.motion_frame() == 1.0{
-                let kiblast = EffectModule::req_follow(weapon_module_accessor, Hash40::new("sys_sscope_bullet"), smash::phx::Hash40::new("top"), &ZERO_VECTOR, &ZERO_VECTOR, 1.26, true, 0, 0, 0, 0, 0, true, true) as u32;
+                 let kiblast = EffectModule::req_follow(weapon_module_accessor, Hash40::new("sys_sscope_bullet"), smash::phx::Hash40::new("top"), &ZERO_VECTOR, &ZERO_VECTOR, 1.26, true, 0, 0, 0, 0, 0, true, true) as u32;
             }
             acmd!(lua_state, {
                 ATTACK(ID=0, Part=0, Bone=hash40("top"), Damage=3.0, Angle=40, KBG=65, FKB=0, BKB=55, Size=2.83, X=0.0, Y=0.0, Z=0.0, X2=LUA_VOID, Y2=LUA_VOID, Z2=LUA_VOID, Hitlag=1.0, SDI=1.0, Clang_Rebound=ATTACK_SETOFF_KIND_ON, FacingRestrict=ATTACK_LR_CHECK_SPEED, SetWeight=false, ShieldDamage=-7, Trip=0.0, Rehit=0, Reflectable=true, Absorbable=true, Flinchless=false, DisableHitlag=false, Direct_Hitbox=false, Ground_or_Air=COLLISION_SITUATION_MASK_GA, Hitbits=COLLISION_CATEGORY_MASK_ALL, CollisionPart=COLLISION_PART_MASK_ALL, FriendlyFire=false, Effect=hash40("collision_attr_normal"), SFXLevel=ATTACK_SOUND_LEVEL_M,SFXType=COLLISION_SOUND_ATTR_PUNCH, Type=ATTACK_REGION_ENERGY)
@@ -170,13 +194,9 @@ pub fn hadoken(weapon: &mut L2CFighterBase) {
                 ATTACK(ID=0, Part=0, Bone=hash40("top"), Damage=damage, Angle=40, KBG=60, FKB=0, BKB=50, Size=hitbox_size, X=0.0, Y=0.0, Z=0.0, X2=LUA_VOID, Y2=LUA_VOID, Z2=LUA_VOID, Hitlag=1.0, SDI=1.0, Clang_Rebound=ATTACK_SETOFF_KIND_ON, FacingRestrict=ATTACK_LR_CHECK_SPEED, SetWeight=false, ShieldDamage=-7, Trip=0.0, Rehit=0, Reflectable=true, Absorbable=true, Flinchless=false, DisableHitlag=false, Direct_Hitbox=false, Ground_or_Air=COLLISION_SITUATION_MASK_GA, Hitbits=COLLISION_CATEGORY_MASK_ALL, CollisionPart=COLLISION_PART_MASK_ALL, FriendlyFire=false, Effect=hash40("collision_attr_normal"), SFXLevel=ATTACK_SOUND_LEVEL_L,SFXType=COLLISION_SOUND_ATTR_KICK, Type=ATTACK_REGION_ENERGY)
             });
         }
-
     }
 }
 
-fn update_effect_from_file() -> String{
-    std::fs::read_to_string("sd:/effect.txt").unwrap()
-}
 
 
 

@@ -111,17 +111,25 @@ unsafe fn effect_vegeta_attacks3(fighter: &mut L2CAgentBase) {
 #[acmd_script(agent = "lucario", scripts = ["effect_bigbangatk", "effect_bigbangatk_air"], category = ACMD_EFFECT)]
 unsafe fn effect_vegeta_bigbangatk(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
-    let module_accessor = fighter.module_accessor;
+    let module_accessor = &mut *fighter.module_accessor;
     let entry_id = get_entry_id(module_accessor);
+    let mut r = 1.0;
+    let mut g = 2.0;
+    let mut b = 1.5;
+    if module_accessor.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM) == 3{
+        r = 2.0;
+        g = 0.5;
+        b = 1.0;
+    }
     acmd!(lua_state, {
         frame(Frame=10)
         if(is_execute){
-            EFFECT(hash40("sys_sscope_hold"), hash40("top"), 18, 17, 0, 0, 0, 0, 1.5, false)
-            LAST_EFFECT_SET_COLOR(/*R*/ 0.0, /*G*/ 0.8, /*B*/ 13.0)
+            EFFECT(hash40("lucario_hadoudan"), hash40("top"), 18, 17, 0, 0, 0, 0, 3.0, false)
+            LAST_EFFECT_SET_COLOR(/*R*/ r, /*G*/ g, /*B*/ b)
         }
         frame(Frame=27)
         if(is_execute){
-            EFFECT_OFF_KIND(hash40("sys_sscope_hold"), true, true)
+            EFFECT_OFF_KIND(hash40("lucario_hadoudan"), true, true)
         }
     });
 }

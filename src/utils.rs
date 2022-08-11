@@ -41,6 +41,7 @@ pub const FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_TELEPORT_EFF_HANDLE: i32 = 0x10000
 pub const FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_EFF_HANDLE: i32 = 0x100000d4;
 pub const FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_MAX_KIBLASTS: i32 = 0x100000d5;
 pub const FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_KIBLAST_COOLDOWN_TIME: i32 = 0x100000d6;
+pub const FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_BIGBANGATK_EFFECT_HANDLE: i32 = 0x100000d7;
 
 pub const FIGHTER_VEGETA_INSTANCE_WORK_ID_FLOAT_LW4_EFFECT_SIZE: i32 = 0x53;
 pub const FIGHTER_VEGETA_INSTANCE_WORK_ID_FLOAT_LW4_HITBOX_SIZE: i32 = 0x54;
@@ -115,6 +116,9 @@ pub unsafe fn get_attacked_players(boma: &mut BattleObjectModuleAccessor) -> Vec
         }
     }
     attacked_players
+}
+pub fn update_effect_from_file() -> String{
+    std::fs::read_to_string("sd:/effect.txt").unwrap()
 }
 
 pub fn get_module_accessor_by_entry_id(
