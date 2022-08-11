@@ -125,7 +125,6 @@ pub fn hadoken(weapon: &mut L2CFighterBase) {
         let motion_frame = weapon_module_accessor.motion_frame();
         let multiplier = owner_module_accessor.get_float(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLOAT_POWER_MUL);
         let is_ue = owner_module_accessor.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM) == 3;
-        let effect_handle = weapon_module_accessor.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_BIGBANGATK_EFFECT_HANDLE);
         let attacked_players = get_attacked_players(weapon_module_accessor);
         AttackModule::set_power_mul(weapon_module_accessor, multiplier);
         let mut r = 1.0;
@@ -133,20 +132,12 @@ pub fn hadoken(weapon: &mut L2CFighterBase) {
         let mut b = 1.5;
         let mut collision_attr = hash40("collision_attr_aura");
         if is_ue{
-            if attacked_players.len() > 0 && EffectModule::is_exist_effect(weapon_module_accessor, effect_handle as u32){
-                for player in attacked_players.clone(){
-                    let player_boma = &mut *get_module_accessor_by_entry_id(player as i32);
-                    if DamageModule::damage(player_boma, 0) >= 110.0 && !player_boma.is_status(*FIGHTER_STATUS_KIND_DEAD){
-                        player_boma.change_status(*FIGHTER_STATUS_KIND_DEAD,  false);
-                    }
-                }
-            }
             r = 2.0;
             g = 0.5;
             b = 1.0;
             collision_attr = hash40("collision_attr_purple");
         }
-        if weapon_module_accessor.motion_frame() >= 30.0 || attacked_players.len() > 0{
+        if weapon_module_accessor.motion_frame() >= 30.0{
             AttackModule::clear_all(weapon_module_accessor);
             EffectModule::kill_kind(weapon_module_accessor, Hash40::new("sys_killereye_bullet"), false, true);
             EffectModule::kill_kind(weapon_module_accessor, Hash40::new("sys_sscope_bullet"), false, true);
@@ -158,7 +149,6 @@ pub fn hadoken(weapon: &mut L2CFighterBase) {
             if weapon_module_accessor.motion_frame() == 1.0{
                 let bbatk = EffectModule::req_follow(weapon_module_accessor, Hash40::new("lucario_hadoudan"), smash::phx::Hash40::new("top"), &ZERO_VECTOR, &ZERO_VECTOR, 3.0, true, 0, 0, 0, 0, 0, true, true) as u32;
                 EffectModule::set_rgb(weapon_module_accessor, bbatk, r, g,  b);
-                weapon_module_accessor.set_int(bbatk as i32, FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_BIGBANGATK_EFFECT_HANDLE);
             }
             acmd!(lua_state, {
                 ATTACK(ID=0, Part=0, Bone=hash40("top"), Damage=9.0, Angle=40, KBG=65, FKB=0, BKB=55, Size=6.0, X=0.0, Y=0.0, Z=0.0, X2=LUA_VOID, Y2=LUA_VOID, Z2=LUA_VOID, Hitlag=1.0, SDI=1.0, Clang_Rebound=ATTACK_SETOFF_KIND_ON, FacingRestrict=ATTACK_LR_CHECK_SPEED, SetWeight=false, ShieldDamage=-7, Trip=0.0, Rehit=0, Reflectable=true, Absorbable=true, Flinchless=false, DisableHitlag=false, Direct_Hitbox=false, Ground_or_Air=COLLISION_SITUATION_MASK_GA, Hitbits=COLLISION_CATEGORY_MASK_ALL, CollisionPart=COLLISION_PART_MASK_ALL, FriendlyFire=false, Effect=collision_attr, SFXLevel=ATTACK_SOUND_LEVEL_L, SFXType=COLLISION_SOUND_ATTR_KICK, Type=ATTACK_REGION_ENERGY)

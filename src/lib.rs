@@ -91,6 +91,9 @@ unsafe fn declare_const_hook(unk: u64, constant: *const u8, mut value: u32) {
     if str.contains("FIGHTER_LUCARIO_INSTANCE_WORK_ID_FLOAT_TERM"){
         value = 0x57;
     }
+    if str.contains("WEAPON_LUCARIO_AURABALL_INSTANCE_WORK_ID_INT_TERM"){
+        value = 0x10000010;
+    }
     original!()(unk, constant, value)
 }
 
