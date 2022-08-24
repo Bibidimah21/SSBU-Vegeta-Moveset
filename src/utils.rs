@@ -42,6 +42,7 @@ pub const FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_EFF_HANDLE: i32 = 0x100000d4;
 pub const FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_MAX_KIBLASTS: i32 = 0x100000d5;
 pub const FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_KIBLAST_COOLDOWN_TIME: i32 = 0x100000d6;
 pub const FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_BIGBANGATK_EFFECT_HANDLE: i32 = 0x100000d7;
+pub const FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_GALICKGUN_COOLDOWN: i32 = 0x100000d8;
 
 pub const FIGHTER_VEGETA_INSTANCE_WORK_ID_FLOAT_LW4_EFFECT_SIZE: i32 = 0x53;
 pub const FIGHTER_VEGETA_INSTANCE_WORK_ID_FLOAT_LW4_HITBOX_SIZE: i32 = 0x54;
@@ -77,15 +78,18 @@ static mut IS_STRAIGHT_QCB: [bool; 8] = [false; 8];
 //pub static mut b:f32 = 0.0;
 
 pub fn read_rgb_from_file() -> (f32, f32, f32){
-       let r = std::fs::read_to_string("sd:/r.txt").unwrap().parse::<f32>().unwrap();
-       let g = std::fs::read_to_string("sd:/g.txt").unwrap().parse::<f32>().unwrap();
-      let b = std::fs::read_to_string("sd:/b.txt").unwrap().parse::<f32>().unwrap();
+       let r = std::fs::read_to_string("sd:/r.txt").unwrap().parse::<f32>().unwrap_or(0.0);
+       let g = std::fs::read_to_string("sd:/g.txt").unwrap().parse::<f32>().unwrap_or(0.0);
+      let b = std::fs::read_to_string("sd:/b.txt").unwrap().parse::<f32>().unwrap_or(0.0);
     (r, g, b)
 }
 
 #[repr(C)]
 pub struct ModelColorType(pub i32);
 
+pub unsafe fn is_galick_gun(boma: &mut BattleObjectModuleAccessor) -> bool{
+    boma.is_status_one_of(&[FIGHTER_VEGETA_STATUS_KIND_GALICK_GUN_START, FIGHTER_VEGETA_STATUS_KIND_GALICK_GUN_HOLD, FIGHTER_VEGETA_STATUS_KIND_GALICK_GUN_FIRE])
+}
 extern "C" {
     #[link_name = "\u{1}_ZN3app8lua_bind31ModelModule__set_color_rgb_implEPNS_26BattleObjectModuleAccessorEfffNS_16MODEL_COLOR_TYPEE"]
     pub fn set_color_rgb(

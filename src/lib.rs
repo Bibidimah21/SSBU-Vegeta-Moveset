@@ -80,7 +80,7 @@ pub fn rust_str_to_cstr(string: &str) -> *const u8 {
 unsafe fn declare_const_hook(unk: u64, constant: *const u8, mut value: u32) {
     let str = CStr::from_ptr(constant as _).to_str().unwrap();
     if str.contains("FIGHTER_LUCARIO_INSTANCE_WORK_ID_INT_TERM") {
-        value = 0x100000D8;
+        value = 0x100000D9;
     }
     if str.contains("FIGHTER_KOOPA_STATUS_KIND_MAX") {
         value = 0x1ef
@@ -140,6 +140,14 @@ unsafe fn set_mesh_visibility_2(model_module: u64, mesh: Hash40, vis: bool){
     original!()(model_module, mesh, vis);
 }
 
+#[skyline::hook(offset=0x4dddc0)]
+unsafe fn change_status_request_from_script(status_module: u64, status_kind: i32, clear_command: bool){
+    if status_kind == *FIGHTER_STATUS_KIND_APPEAL{
+        return;
+    }
+    original!()(status_module, status_kind, clear_command);
+}
+
 fn installAll() {
     unsafe {
         let text_ptr = getRegionAddress(Region::Text) as *const u8;
@@ -158,7 +166,7 @@ fn installAll() {
     vegeta_status::install();
     vegeta_game::install();
     vegeta_sound::install();
-    skyline::install_hooks!(declare_const_hook, get_param_float_replace, set_mesh_visibility_2);
+    skyline::install_hooks!(declare_const_hook, get_param_float_replace, set_mesh_visibility_2, change_status_request_from_script);
 }
 #[skyline::main(name = "vegeta_moveset")]
 pub fn main() {

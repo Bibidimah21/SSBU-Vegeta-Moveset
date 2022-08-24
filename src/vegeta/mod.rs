@@ -197,6 +197,8 @@ unsafe fn print_all_fighters_motions(){
     }
 }
 
+
+
 static mut IS_USED_EFFECT:bool = false;
 #[fighter_frame(agent = FIGHTER_KIND_LUCARIO)]
 pub fn vegeta_frame(fighter : &mut L2CFighterCommon) {
@@ -211,6 +213,17 @@ pub fn vegeta_frame(fighter : &mut L2CFighterCommon) {
         let current_form_aura = boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM_AURA);
         let max_kiblasts = boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_MAX_KIBLASTS);
         AttackModule::set_power_mul(boma, multiplier);
+        if !is_galick_gun(boma){
+            if boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_GALICKGUN_COOLDOWN) >= 1200{
+                if boma.is_button_on(Buttons::AppealSL){
+                    boma.change_status(FIGHTER_VEGETA_STATUS_KIND_GALICK_GUN_START, false);
+                    boma.set_int(0, FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_GALICKGUN_COOLDOWN);
+                }
+            }
+            else{
+                boma.inc_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_GALICKGUN_COOLDOWN);
+            }
+        }
         //EffectModule::req_on_joint(boma, Hash40::new(eff.as_str()), smash::phx::Hash40::new("top"), &ZERO_VECTOR, &ZERO_VECTOR, 1.0, &ZERO_VECTOR, &ZERO_VECTOR, false, 0, 0, 0) as u32;
         //test_variables(boma);
         if boma.is_status_one_of(&[*FIGHTER_STATUS_KIND_ATTACK_S4_HOLD, *FIGHTER_STATUS_KIND_ATTACK_S4, *FIGHTER_STATUS_KIND_ATTACK_S4_START]) {
@@ -379,6 +392,8 @@ pub fn vegeta_frame(fighter : &mut L2CFighterCommon) {
 
         if boma.is_status(*FIGHTER_STATUS_KIND_DEAD){
             boma.set_int(0,FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM);
+            boma.set_int(5,FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_MAX_KIBLASTS);
+            boma.set_int(1200,FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_GALICKGUN_COOLDOWN);
         }
         if boma.is_button_on(Buttons::Special) && !boma.is_status(*FIGHTER_STATUS_KIND_FINAL){
           //  boma.change_status(*FIGHTER_STATUS_KIND_FINAL, false);

@@ -307,9 +307,9 @@ unsafe extern "C" fn galickgun_hold_main(fighter: &mut L2CFighterCommon) -> L2CV
     boma.set_color_rgb(0.5, 0.3, 0.6, ModelColorType(*MODEL_COLOR_TYPE_COLOR_BLEND));
 
     if !SoundModule::is_playing(fighter.module_accessor, Hash40::new("se_galickgun_start")){
-        boma.play_se(Hash40::new("se_galickgun_hold"));
+       // boma.play_se(Hash40::new("se_galickgun_hold"));
     }
-    if boma.is_button_on(Buttons::Special) {
+    if boma.is_button_on(Buttons::AppealSL) {
         boma.set_position_lock();
     } else {
         boma.stop_all_sound();
@@ -397,6 +397,7 @@ pub unsafe fn galickgunfire_end(fighter: &mut L2CFighterCommon) -> L2CValue {
     //  enable_gravity(fighter.module_accessor);
     let mut boma = &mut *fighter.module_accessor;
     boma.unset_position_lock();
+    EffectModule::kill_kind(boma, Hash40::new("lucario_final_beam"), false, true);
     L2CValue::I32(0)
 }
 

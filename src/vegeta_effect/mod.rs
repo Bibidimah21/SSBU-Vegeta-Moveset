@@ -186,14 +186,14 @@ unsafe fn effect_vegeta_galickgun_fire(fighter: &mut L2CAgentBase) {
     acmd!(lua_state, {
     frame(Frame=11)
     if(is_execute){
-        EFFECT(hash40("lucario_final_beam"), hash40("rot"), 5, 0, 0, 0, 0, GALICKGUN_ROT[entry_id], 0.6, false)
+        EFFECT(hash40("lucario_final_beam"), hash40("rot"), 5, 0, 0, 0, 0, GALICKGUN_ROT[entry_id], 0.3, false)
         LAST_EFFECT_SET_COLOR(/*R*/ 0.5, /*G*/ 0.3, /*B*/ 0.6)
 
     }
     frame(Frame=35)
     if(is_execute){
         EFFECT_OFF_KIND(hash40("lucario_final_beam"), true, true)
-        EFFECT(hash40("lucario_final_beam_end"), hash40("rot"), 5, 0, 0, 0, 0, GALICKGUN_ROT[entry_id], 0.6, false)
+        EFFECT(hash40("lucario_final_beam_end"), hash40("rot"), 5, 0, 0, 0, 0, GALICKGUN_ROT[entry_id], 0.3, false)
         LAST_EFFECT_SET_COLOR(/*R*/ 0.5, /*G*/ 0.3, /*B*/ 0.6)
     }
     });
