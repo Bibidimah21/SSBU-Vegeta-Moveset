@@ -940,7 +940,7 @@ unsafe fn vegeta_specialhibound(fighter: &mut L2CAgentBase) {
     });
 }
 
-#[acmd_script(agent = "lucario", script = "game_specialhiend", category = ACMD_GAME)]
+#[acmd_script(agent = "lucario", script = "game_specialairhiend", category = ACMD_GAME)]
 unsafe fn vegeta_specialairhiend(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
     let boma: &mut BattleObjectModuleAccessor = &mut *fighter.module_accessor;
