@@ -199,6 +199,33 @@ unsafe fn effect_vegeta_galickgun_fire(fighter: &mut L2CAgentBase) {
     });
 }
 
+#[acmd_script(agent = "lucario", script = "effect_specialhimove", category = ACMD_EFFECT)]
+unsafe fn effect_vegeta_specialhimove(fighter: &mut L2CAgentBase) {
+    let lua_state = fighter.lua_state_agent;
+    let module_accessor = &mut *fighter.module_accessor;
+    let entry_id = get_entry_id(module_accessor);
+    let a = read_rgb_from_file();
+    let current_form = module_accessor.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM);
+    acmd!(lua_state, {
+        if(is_execute){
+	        EFFECT_FOLLOW(hash40("lucario_sinsoku_hadou2"), hash40("rot"), 0.0, 15.0, 0.0, 0, 0, 270, 5, true)
+            LAST_EFFECT_SET_ALPHA(0.6)
+            rust{
+            let eff = EffectModule::get_last_handle(module_accessor) as u32;
+            if current_form == 1{
+                EffectModule::set_rgb(module_accessor, eff, 0.7, 0.7, 0.0);
+            }
+            else if current_form == 3 {
+                EffectModule::set_rgb(module_accessor, eff, 5.0, 0.7, 5.0);
+            }
+            else if current_form != 2{
+                 EffectModule::set_rgb(module_accessor, eff, 0.3, 0.3, 0.3);
+            }
+            }
+        }
+    });
+}
+
 #[acmd_script(agent = "lucario", script = "effect_attacks4", category = ACMD_EFFECT)]
 unsafe fn effect_vegeta_attacks4(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
@@ -411,7 +438,7 @@ unsafe fn effect_final_start(fighter: &mut L2CAgentBase) {
 agent = "lucario",
 script = "effect_finalairend",
 category = ACMD_EFFECT)]
-unsafe fn vegeta_finalairend(fighter: &mut L2CAgentBase) {
+unsafe fn effect_vegeta_finalairend(fighter: &mut L2CAgentBase) {
 
 }
 
@@ -441,6 +468,7 @@ pub fn install() {
         effect_win_2,
         effect_win_2_wait,
         effect_final_start,
-        vegeta_finalairend
+        effect_vegeta_finalairend,
+        effect_vegeta_specialhimove
     };
 }

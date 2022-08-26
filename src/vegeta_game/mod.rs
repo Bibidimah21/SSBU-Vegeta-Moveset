@@ -896,6 +896,75 @@ unsafe fn vegeta_finalairend(fighter: &mut L2CAgentBase) {
 
 }
 
+#[acmd_script(agent = "lucario", script = "game_specialhimove", category = ACMD_GAME)]
+unsafe fn vegeta_specialhimove(fighter: &mut L2CAgentBase) {
+    let lua_state = fighter.lua_state_agent;
+    let boma: &mut BattleObjectModuleAccessor = &mut *fighter.module_accessor;
+    let entry_id = boma.entry_id();
+    let current_form = boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM);
+    let mut collision_attr = hash40("collision_attr_normal");
+    if current_form == 3{
+        collision_attr = hash40("collision_attr_purple");
+    }
+    acmd!(lua_state, {
+        if(is_excute){
+            ATTACK(ID=0, Part=0, Bone=hash40("hip"), Damage=4.0, Angle=38, KBG=100, FKB=0, BKB=70, Size=12.0, X=0.0, Y=0.0, Z=0.0, X2=LUA_VOID, Y2=LUA_VOID, Z2=LUA_VOID, Hitlag=1.2, SDI=1.0, Clang_Rebound=ATTACK_SETOFF_KIND_THRU, FacingRestrict=ATTACK_LR_CHECK_F, SetWeight=false, ShieldDamage=0, Trip=0.0, Rehit=0, Reflectable=false, Absorbable=false, Flinchless=false, DisableHitlag=false, Direct_Hitbox=true, Ground_or_Air=COLLISION_SITUATION_MASK_GA, Hitbits=COLLISION_CATEGORY_MASK_ALL, CollisionPart=COLLISION_PART_MASK_ALL, FriendlyFire=false, Effect=collision_attr, SFXLevel=ATTACK_SOUND_LEVEL_L, SFXType=COLLISION_SOUND_ATTR_KICK, Type=ATTACK_REGION_NONE)
+            JostleModule::set_status(false)
+        }
+        frame(Frame=15)
+        if(is_excute){
+            GroundModule::set_passable_check(true)
+        }
+    });
+}
+
+#[acmd_script(agent = "lucario", scripts = ["game_specialhibound", "game_specialhiend"], category = ACMD_GAME)]
+unsafe fn vegeta_specialhibound(fighter: &mut L2CAgentBase) {
+    let lua_state = fighter.lua_state_agent;
+    let boma: &mut BattleObjectModuleAccessor = &mut *fighter.module_accessor;
+    let entry_id = boma.entry_id();
+    let current_form = boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM);
+    let mut collision_attr = hash40("collision_attr_normal");
+    if current_form == 3{
+        collision_attr = hash40("collision_attr_purple");
+    }
+    acmd!(lua_state, {
+        wait(Frames=1)
+        if(is_excute){
+            ATTACK(ID=0, Part=0, Bone=hash40("hip"), Damage=3.0, Angle=38, KBG=100, FKB=0, BKB=70, Size=12.0, X=0.0, Y=0.0, Z=0.0, X2=LUA_VOID, Y2=LUA_VOID, Z2=LUA_VOID, Hitlag=1.2, SDI=1.0, Clang_Rebound=ATTACK_SETOFF_KIND_THRU, FacingRestrict=ATTACK_LR_CHECK_F, SetWeight=false, ShieldDamage=0, Trip=0.0, Rehit=0, Reflectable=false, Absorbable=false, Flinchless=false, DisableHitlag=false, Direct_Hitbox=true, Ground_or_Air=COLLISION_SITUATION_MASK_GA, Hitbits=COLLISION_CATEGORY_MASK_ALL, CollisionPart=COLLISION_PART_MASK_ALL, FriendlyFire=false, Effect=collision_attr, SFXLevel=ATTACK_SOUND_LEVEL_L, SFXType=COLLISION_SOUND_ATTR_KICK, Type=ATTACK_REGION_NONE)
+        }
+        wait(Frames=2)
+        if(is_excute){
+            AttackModule::clear_all()
+        }
+    });
+}
+
+#[acmd_script(agent = "lucario", script = "game_specialhiend", category = ACMD_GAME)]
+unsafe fn vegeta_specialairhiend(fighter: &mut L2CAgentBase) {
+    let lua_state = fighter.lua_state_agent;
+    let boma: &mut BattleObjectModuleAccessor = &mut *fighter.module_accessor;
+    let entry_id = boma.entry_id();
+    let current_form = boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM);
+    let mut collision_attr = hash40("collision_attr_normal");
+    if current_form == 3{
+        collision_attr = hash40("collision_attr_purple");
+    }
+    acmd!(lua_state, {
+        wait(Frames=1)
+        if(is_excute){
+            ATTACK(ID=0, Part=0, Bone=hash40("hip"), Damage=3.0, Angle=38, KBG=100, FKB=0, BKB=70, Size=12.0, X=0.0, Y=0.0, Z=0.0, X2=LUA_VOID, Y2=LUA_VOID, Z2=LUA_VOID, Hitlag=1.2, SDI=1.0, Clang_Rebound=ATTACK_SETOFF_KIND_THRU, FacingRestrict=ATTACK_LR_CHECK_F, SetWeight=false, ShieldDamage=0, Trip=0.0, Rehit=0, Reflectable=false, Absorbable=false, Flinchless=false, DisableHitlag=false, Direct_Hitbox=true, Ground_or_Air=COLLISION_SITUATION_MASK_GA, Hitbits=COLLISION_CATEGORY_MASK_ALL, CollisionPart=COLLISION_PART_MASK_ALL, FriendlyFire=false, Effect=collision_attr, SFXLevel=ATTACK_SOUND_LEVEL_L, SFXType=COLLISION_SOUND_ATTR_KICK, Type=ATTACK_REGION_NONE)
+        }
+        wait(Frames=2)
+        if(is_excute){
+            AttackModule::clear_all()
+        }
+        frame(Frame=23)
+        if(is_excute){
+            WorkModule::on_flag(Flag=FIGHTER_LUCARIO_MACH_STATUS_WORK_ID_FLAG_AIR_END_CONTROL_X)
+        }
+    });
+}
 
 pub fn install() {
     smashline::install_acmd_scripts! {
@@ -931,6 +1000,9 @@ pub fn install() {
         vegeta_throwb,
         vegeta_throwhi,
         vegeta_finalstart,
-        vegeta_finalairend
+        vegeta_finalairend,
+        vegeta_specialhimove,
+        vegeta_specialhibound,
+        vegeta_specialairhiend
     };
 }
