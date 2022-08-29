@@ -226,6 +226,15 @@ unsafe fn effect_vegeta_specialhimove(fighter: &mut L2CAgentBase) {
     });
 }
 
+#[acmd_script(agent = "lucario", scripts = ["effect_specialhi", "effect_specialairhi", "effect_specialhibound", "effect_specialhiend", "effect_specialairhiend"], category = ACMD_EFFECT)]
+unsafe fn effect_vegeta_specialhibound(fighter: &mut L2CAgentBase) {
+    let lua_state = fighter.lua_state_agent;
+    let boma: &mut BattleObjectModuleAccessor = &mut *fighter.module_accessor;
+    let entry_id = boma.entry_id();
+    acmd!(lua_state, {
+
+    });
+}
 #[acmd_script(agent = "lucario", script = "effect_attacks4", category = ACMD_EFFECT)]
 unsafe fn effect_vegeta_attacks4(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
@@ -469,6 +478,7 @@ pub fn install() {
         effect_win_2_wait,
         effect_final_start,
         effect_vegeta_finalairend,
-        effect_vegeta_specialhimove
+        effect_vegeta_specialhimove,
+        effect_vegeta_specialhibound
     };
 }

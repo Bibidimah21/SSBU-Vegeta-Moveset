@@ -261,17 +261,20 @@ unsafe fn sound_finalairend(fighter: &mut L2CAgentBase) {
 }
 
 #[acmd_script(agent = "lucario", script = "sound_specialhimove", category = ACMD_SOUND)]
-unsafe fn vegeta_specialhimove(fighter: &mut L2CAgentBase) {
+unsafe fn sound_vegeta_specialhimove(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
     let boma: &mut BattleObjectModuleAccessor = &mut *fighter.module_accessor;
     let entry_id = boma.entry_id();
     acmd!(lua_state, {
-
+        frame(Frame=1)
+        if(is_execute){
+            PLAY_SE(hash40("se_lucario_special_h02"))
+        }
     });
 }
 
 #[acmd_script(agent = "lucario", scripts = ["sound_specialhi", "sound_specialairhi", "sound_specialhibound", "sound_specialhiend", "sound_specialairhiend"], category = ACMD_SOUND)]
-unsafe fn vegeta_specialhibound(fighter: &mut L2CAgentBase) {
+unsafe fn sound_vegeta_specialhibound(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
     let boma: &mut BattleObjectModuleAccessor = &mut *fighter.module_accessor;
     let entry_id = boma.entry_id();
@@ -299,7 +302,7 @@ pub fn install() {
         sound_vegeta_attacklw4,
         sound_final_start,
         sound_finalairend,
-        vegeta_specialhimove,
-        vegeta_specialhibound
+        sound_vegeta_specialhimove,
+        sound_vegeta_specialhibound,
     };
 }
