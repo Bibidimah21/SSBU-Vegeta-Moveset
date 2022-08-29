@@ -250,7 +250,7 @@ unsafe extern "C" fn galickgun_start_main(fighter: &mut L2CFighterCommon) -> L2C
     let hold_eff: u32 = EffectModule::req_follow(fighter.module_accessor, Hash40::new("sys_hit_elec"), smash::phx::Hash40::new("haver"), &ZERO_VECTOR, &ZERO_VECTOR, 0.4, true, 0, 0, 0, 0, 0, true, true) as u32;
     EffectModule::set_rgb(fighter.module_accessor, hold_eff, 0.5, 0.3, 0.6);
     boma.set_color_rgb(0.5, 0.3, 0.6, ModelColorType(*MODEL_COLOR_TYPE_COLOR_BLEND));
-
+    boma.play_se(Hash40::new("vc_lucario_appeal01"));
     if boma.is_motion_end() {
         fighter.change_status(
             FIGHTER_VEGETA_STATUS_KIND_GALICK_GUN_HOLD.into(),
@@ -327,6 +327,7 @@ pub unsafe fn galickgun_hold_end(fighter: &mut L2CFighterCommon) -> L2CValue {
     //  enable_gravity(fighter.module_accessor);
     let mut boma = &mut *fighter.module_accessor;
     boma.unset_position_lock();
+    boma.stop_all_sound();
     L2CValue::I32(0)
 }
 
@@ -338,7 +339,7 @@ pub unsafe fn galickgunfire_pre(fighter: &mut L2CFighterCommon) -> L2CValue {
 #[status_script(agent = "lucario", status = 0x1ee, condition = LUA_SCRIPT_STATUS_FUNC_STATUS_MAIN)]
 pub unsafe fn galickgunfire(fighter: &mut L2CFighterCommon) -> L2CValue {
     let mut boma = &mut *fighter.module_accessor;
-
+    boma.play_se(Hash40::new("vc_lucario_appeal02"));
     if boma.is_grounded() {
         boma.change_motion(Hash40::new("galickgun_fire"), false);
     } else {
@@ -397,6 +398,7 @@ pub unsafe fn galickgunfire_end(fighter: &mut L2CFighterCommon) -> L2CValue {
     //  enable_gravity(fighter.module_accessor);
     let mut boma = &mut *fighter.module_accessor;
     boma.unset_position_lock();
+    boma.stop_all_sound();
     EffectModule::kill_kind(boma, Hash40::new("lucario_final_beam"), false, true);
     L2CValue::I32(0)
 }

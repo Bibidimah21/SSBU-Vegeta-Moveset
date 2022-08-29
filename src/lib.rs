@@ -110,6 +110,12 @@ pub unsafe fn get_param_float_replace(work_module: u64, param_type: u64, param_h
     let mut boma_ptr = (*((work_module as *mut u64).offset(1)) as *mut BattleObjectModuleAccessor);
     let mut boma = &mut *boma_ptr;
     let ret = original!()(work_module, param_type, param_hash);
+    if param_type == hash40("run_speed_max"){
+        return 2.2;
+    }
+    if param_type == hash40("run_accel_mul"){
+        return 0.12;
+    }
     if boma.kind() == *WEAPON_KIND_LUCARIO_AURABALL{
         if [hash40("min_speed"), hash40("max_speed")].contains(&param_hash){
             return 3.5;
@@ -118,14 +124,6 @@ pub unsafe fn get_param_float_replace(work_module: u64, param_type: u64, param_h
             hash40("charge_min_scale_shoot"), hash40("charge_max_scale_shoot")].contains(&param_hash){
             return 1.0;
         }
-    }
-    if boma.kind() == *FIGHTER_KIND_LUCARIO{
-       if param_hash == hash40("run_speed_max"){
-           return 2.167;
-       }
-        if param_hash == hash40("run_accel_mul"){
-           return 0.099;
-       }
     }
     ret
 }
@@ -142,7 +140,9 @@ unsafe fn set_mesh_visibility_2(model_module: u64, mesh: Hash40, vis: bool){
 
 #[skyline::hook(offset=0x4dddc0)]
 unsafe fn change_status_request_from_script(status_module: u64, status_kind: i32, clear_command: bool){
-    if status_kind == *FIGHTER_STATUS_KIND_APPEAL{
+    let mut boma = &mut *(*((status_module as *mut u64).offset(1)) as *mut BattleObjectModuleAccessor);
+
+    if boma.kind() == *FIGHTER_KIND_LUCARIO && status_kind == *FIGHTER_STATUS_KIND_APPEAL{
         return;
     }
     original!()(status_module, status_kind, clear_command);
