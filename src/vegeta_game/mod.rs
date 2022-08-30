@@ -715,7 +715,7 @@ unsafe fn win_wait(fighter: &mut L2CAgentBase) {
 }
 
 
-#[acmd_script(agent = "lucario", script = "game_throwf", category = ACMD_GAME, low_priority )]
+#[acmd_script(agent = "lucario", script = "game_throwf", category = ACMD_GAME)]
 unsafe fn vegeta_throwf(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
     let boma = &mut *fighter.module_accessor;
@@ -753,7 +753,7 @@ unsafe fn vegeta_throwf(fighter: &mut L2CAgentBase) {
     });
 }
 
-#[acmd_script(agent = "lucario", script = "game_throwlw", category = ACMD_GAME, low_priority )]
+#[acmd_script(agent = "lucario", script = "game_throwlw", category = ACMD_GAME)]
 unsafe fn vegeta_throwlw(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
     let boma = &mut *fighter.module_accessor;
@@ -779,7 +779,7 @@ unsafe fn vegeta_throwlw(fighter: &mut L2CAgentBase) {
     });
 }
 
-#[acmd_script(agent = "lucario", script = "game_throwb", category = ACMD_GAME, low_priority )]
+#[acmd_script(agent = "lucario", script = "game_throwb", category = ACMD_GAME)]
 unsafe fn vegeta_throwb(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
     let boma = &mut *fighter.module_accessor;
@@ -821,7 +821,7 @@ unsafe fn vegeta_throwb(fighter: &mut L2CAgentBase) {
     });
 }
 
-#[acmd_script(agent = "lucario", script = "game_throwhi", category = ACMD_GAME, low_priority )]
+#[acmd_script(agent = "lucario", script = "game_throwhi", category = ACMD_GAME)]
 unsafe fn vegeta_throwhi(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
     let boma = &mut *fighter.module_accessor;
