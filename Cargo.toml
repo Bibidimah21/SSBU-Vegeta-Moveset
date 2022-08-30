@@ -1,6 +1,6 @@
 [package]
 name = "vegeta"
-version = "0.1.0"
+version = "0.9"
 authors = ["VinegarChicken"]
 edition = "2018"
 
