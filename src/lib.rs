@@ -5,6 +5,11 @@
 #![allow(warnings)]
 #![allow(dead_code)]
 
+macro_rules! c_str {
+    ($l:tt) => {
+        [$l.as_bytes(), "\u{0}".as_bytes()].concat().as_ptr();
+    };
+}
 
 mod utils;
 use utils::*;
@@ -97,16 +102,59 @@ unsafe fn declare_const_hook(unk: u64, constant: *const u8, mut value: u32) {
     original!()(unk, constant, value)
 }
 
+extern "C"{
+    fn get_param_float_hook(work_module: u64, param_type: u64, param_hash: u64) -> f32;
+    fn get_param_float_replace(work_module: u64, param_type: u64, param_hash: u64) -> f32;
+}
 
-#[skyline::hook(offset = INT_OFFSET)]
-pub unsafe fn get_param_int_replace(work_module: u64, param_type: u64, param_hash: u64) -> i32 {
-    let mut boma = *(*((work_module as *mut u64).offset(1)) as *mut BattleObjectModuleAccessor);
+
+#[skyline::hook(replace=get_param_float_hook)]
+pub unsafe fn get_param_float_replace_hdr(work_module: u64, param_type: u64, param_hash: u64) -> f32 {
+    let mut boma_ptr = (*((work_module as *mut u64).offset(1)) as *mut BattleObjectModuleAccessor);
+    let mut boma = &mut *boma_ptr;
     let ret = original!()(work_module, param_type, param_hash);
+    if param_type == hash40("run_speed_max"){
+        return 2.2;
+    }
+    if param_type == hash40("run_accel_mul"){
+        return 0.12;
+    }
+    if boma.kind() == *WEAPON_KIND_LUCARIO_AURABALL{
+        if [hash40("min_speed"), hash40("max_speed")].contains(&param_hash){
+            return 3.5;
+        }
+        if [hash40("charge_min_scale"), hash40("charge_max_scale"),
+            hash40("charge_min_scale_shoot"), hash40("charge_max_scale_shoot")].contains(&param_hash){
+            return 1.0;
+        }
+    }
+    ret
+}
+#[skyline::hook(offset = FLOAT_OFFSET)]
+pub unsafe fn get_param_float_replace2(work_module: u64, param_type: u64, param_hash: u64) -> f32 {
+    let mut boma_ptr = (*((work_module as *mut u64).offset(1)) as *mut BattleObjectModuleAccessor);
+    let mut boma = &mut *boma_ptr;
+    let ret = original!()(work_module, param_type, param_hash);
+    if param_type == hash40("run_speed_max"){
+        return 2.2;
+    }
+    if param_type == hash40("run_accel_mul"){
+        return 0.12;
+    }
+    if boma.kind() == *WEAPON_KIND_LUCARIO_AURABALL{
+        if [hash40("min_speed"), hash40("max_speed")].contains(&param_hash){
+            return 3.5;
+        }
+        if [hash40("charge_min_scale"), hash40("charge_max_scale"),
+            hash40("charge_min_scale_shoot"), hash40("charge_max_scale_shoot")].contains(&param_hash){
+            return 1.0;
+        }
+    }
     ret
 }
 
-#[skyline::hook(offset = FLOAT_OFFSET)]
-pub unsafe fn get_param_float_replace(work_module: u64, param_type: u64, param_hash: u64) -> f32 {
+#[skyline::hook(replace=get_param_float_replace)]
+pub unsafe fn get_param_float_replace_hook(work_module: u64, param_type: u64, param_hash: u64) -> f32 {
     let mut boma_ptr = (*((work_module as *mut u64).offset(1)) as *mut BattleObjectModuleAccessor);
     let mut boma = &mut *boma_ptr;
     let ret = original!()(work_module, param_type, param_hash);
@@ -159,14 +207,31 @@ fn installAll() {
         if let Some(offset) = find_subsequence(text, INT_SEARCH_CODE) {
             INT_OFFSET = offset;
         }
-    }
+      //  else if nn::ro::LookupSymbol(0 as *mut usize, skyline::c_str("the_wubor_patch\u{0}")) == 0{
+        //    println!("wubor hook install");
+         //   skyline::install_hook!(get_param_float_replace_hook);
+        //}
+        let mut out = 0;
+        let mut out2 = 0;
+        let hook = nn::ro::LookupSymbol(&mut out, c_str!("get_param_float_hook"));
+        let replace = nn::ro::LookupSymbol(&mut out2, c_str!("get_param_float_replace"));
+        if hook == 0{
+           skyline::install_hook!(get_param_float_replace_hdr);
+        }
+        else if replace == 0{
+            skyline::install_hook!(get_param_float_replace_hook);
+        }
+        else{
+            skyline::install_hook!(get_param_float_replace2);
+        }
 
+    }
     vegeta::install();
     vegeta_effect::install();
     vegeta_status::install();
     vegeta_game::install();
     vegeta_sound::install();
-    skyline::install_hooks!(declare_const_hook, get_param_float_replace, set_mesh_visibility_2, change_status_request_from_script);
+    skyline::install_hooks!(declare_const_hook, change_status_request_from_script);
 }
 #[skyline::main(name = "vegeta_moveset")]
 pub fn main() {
