@@ -204,7 +204,6 @@ unsafe fn effect_vegeta_specialhimove(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
     let module_accessor = &mut *fighter.module_accessor;
     let entry_id = get_entry_id(module_accessor);
-    let a = read_rgb_from_file();
     let current_form = module_accessor.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM);
     acmd!(lua_state, {
         if(is_execute){
