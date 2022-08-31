@@ -78,9 +78,9 @@ static mut IS_STRAIGHT_QCB: [bool; 8] = [false; 8];
 //pub static mut b:f32 = 0.0;
 
 pub fn read_rgb_from_file() -> (f32, f32, f32){
-       let r = std::fs::read_to_string("sd:/r.txt").unwrap().parse::<f32>().unwrap_or(0.0);
-       let g = std::fs::read_to_string("sd:/g.txt").unwrap().parse::<f32>().unwrap_or(0.0);
-      let b = std::fs::read_to_string("sd:/b.txt").unwrap().parse::<f32>().unwrap_or(0.0);
+       let r = std::fs::read_to_string("sd:/r.txt").unwrap_or("".to_string()).parse::<f32>().unwrap_or(0.0);
+       let g = std::fs::read_to_string("sd:/g.txt").unwrap_or("".to_string()).parse::<f32>().unwrap_or(0.0);
+      let b = std::fs::read_to_string("sd:/b.txt").unwrap_or("".to_string()).parse::<f32>().unwrap_or(0.0);
     (r, g, b)
 }
 
