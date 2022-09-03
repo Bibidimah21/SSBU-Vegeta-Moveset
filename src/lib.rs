@@ -123,7 +123,7 @@ pub unsafe fn get_param_float_replace_hdr(work_module: u64, param_type: u64, par
     }
     if boma.kind() == *WEAPON_KIND_LUCARIO_AURABALL{
         if [hash40("min_speed"), hash40("max_speed")].contains(&param_hash){
-            return 3.5;
+            return 2.5;
         }
         if [hash40("charge_min_scale"), hash40("charge_max_scale"),
             hash40("charge_min_scale_shoot"), hash40("charge_max_scale_shoot")].contains(&param_hash){
@@ -147,7 +147,7 @@ pub unsafe fn get_param_float_replace2(work_module: u64, param_type: u64, param_
     }
     if boma.kind() == *WEAPON_KIND_LUCARIO_AURABALL{
         if [hash40("min_speed"), hash40("max_speed")].contains(&param_hash){
-            return 3.5;
+            return 2.5;
         }
         if [hash40("charge_min_scale"), hash40("charge_max_scale"),
             hash40("charge_min_scale_shoot"), hash40("charge_max_scale_shoot")].contains(&param_hash){
@@ -172,7 +172,7 @@ pub unsafe fn get_param_float_replace_hook(work_module: u64, param_type: u64, pa
     }
     if boma.kind() == *WEAPON_KIND_LUCARIO_AURABALL{
         if [hash40("min_speed"), hash40("max_speed")].contains(&param_hash){
-            return 3.5;
+            return 2.5;
         }
         if [hash40("charge_min_scale"), hash40("charge_max_scale"),
             hash40("charge_min_scale_shoot"), hash40("charge_max_scale_shoot")].contains(&param_hash){

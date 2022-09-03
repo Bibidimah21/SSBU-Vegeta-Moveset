@@ -213,6 +213,9 @@ pub fn vegeta_frame(fighter : &mut L2CFighterCommon) {
         let current_form_aura = boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM_AURA);
         let max_kiblasts = boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_MAX_KIBLASTS);
         AttackModule::set_power_mul(boma, multiplier);
+        if !boma.is_status(*FIGHTER_STATUS_KIND_SPECIAL_S){
+            EffectModule::kill_kind(boma, Hash40::new("lucario_hadoudan"), false, true);
+        }
         if !is_galick_gun(boma){
             if boma.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_GALICKGUN_COOLDOWN) >= 1200{
                 if boma.is_button_on(Buttons::AppealSL){

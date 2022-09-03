@@ -17,9 +17,14 @@ category = ACMD_SOUND)]
 unsafe fn sound_vegeta_attack11(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
     let module_accessor = fighter.module_accessor;
+    let rand_val = smash::app::sv_math::rand(hash40("lucario"), 2);
+    let mut sound = hash40("none");
+    if rand_val == 0{
+        sound = hash40("vc_lucario_attack01");
+    }
     acmd!(lua_state, {
         if(is_execute){
-            PLAY_SE(hash40("vc_lucario_attack01"))
+            PLAY_SE(sound)
         }
     });
 }
@@ -31,9 +36,14 @@ category = ACMD_SOUND)]
 unsafe fn sound_vegeta_attack12(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
     let module_accessor = fighter.module_accessor;
+    let rand_val = smash::app::sv_math::rand(hash40("lucario"), 2);
+    let mut sound = hash40("none");
+    if rand_val == 0{
+        sound = hash40("vc_lucario_attack02");
+    }
     acmd!(lua_state, {
         if(is_execute){
-            PLAY_SE(hash40("vc_lucario_attack02"))
+            PLAY_SE(sound)
         }
     });
 }
@@ -45,10 +55,15 @@ category = ACMD_SOUND)]
 unsafe fn sound_vegeta_attack13(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
     let module_accessor = fighter.module_accessor;
+    let rand_val = smash::app::sv_math::rand(hash40("lucario"), 2);
+    let mut sound = hash40("none");
+    if rand_val == 0{
+        sound = hash40("vc_lucario_attack03");
+    }
     acmd!(lua_state, {
         frame(Frame=7)
         if(is_execute){
-            PLAY_SE(hash40("vc_lucario_attack03"))
+            PLAY_SE(sound)
         }
         frame(Frame=23)
         if(is_execute){
@@ -63,10 +78,15 @@ unsafe fn sound_vegeta_bigbangatk(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
     let module_accessor = fighter.module_accessor;
     let entry_id = get_entry_id(module_accessor);
+    let rand_val = smash::app::sv_math::rand(hash40("lucario"), 2);
+    let mut sound = hash40("none");
+    if rand_val == 0{
+        sound = hash40("vc_lucario_001");
+    }
     acmd!(lua_state, {
         frame(Frame=10)
         if(is_execute){
-            PLAY_SE(hash40("vc_lucario_001"))
+            PLAY_SE(sound)
         }
         frame(Frame=25)
         if(is_execute){
@@ -80,10 +100,15 @@ unsafe fn sound_vegeta_attackairf(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
     let module_accessor: &mut BattleObjectModuleAccessor = &mut *fighter.module_accessor;
     let entry_id = module_accessor.entry_id();
+    let rand_val = smash::app::sv_math::rand(hash40("lucario"), 2);
+    let mut sound = hash40("none");
+    if rand_val == 0{
+        sound = hash40("seq_lucario_rnd_attack");
+    }
     acmd!(lua_state, {
         frame(Frame=9)
         if(is_execute){
-            PLAY_SEQUENCE(hash40("seq_lucario_rnd_attack"))
+            PLAY_SEQUENCE(sound)
         }
     });
 }
@@ -93,11 +118,15 @@ unsafe fn sound_vegeta_attackairb(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
     let module_accessor: &mut BattleObjectModuleAccessor = &mut *fighter.module_accessor;
     let entry_id = module_accessor.entry_id();
-
+    let rand_val = smash::app::sv_math::rand(hash40("lucario"), 2);
+    let mut sound = hash40("none");
+    if rand_val == 0{
+        sound = hash40("seq_lucario_rnd_attack");
+    }
     acmd!(lua_state, {
         frame(Frame=8)
         if(is_execute){
-            PLAY_SEQUENCE(hash40("seq_lucario_rnd_attack"))
+            PLAY_SEQUENCE(sound)
         }
     });
 }
@@ -106,10 +135,15 @@ unsafe fn sound_vegeta_attackairb(fighter: &mut L2CAgentBase) {
 unsafe fn sound_vegeta_attackairn(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
     let module_accessor = fighter.module_accessor;
+    let rand_val = smash::app::sv_math::rand(hash40("lucario"), 2);
+    let mut sound = hash40("none");
+    if rand_val == 0{
+        sound = hash40("seq_lucario_rnd_attack");
+    }
     acmd!(lua_state, {
         frame(Frame=3)
         if(is_execute){
-            PLAY_SEQUENCE(hash40("seq_lucario_rnd_attack"))
+            PLAY_SEQUENCE(sound)
         }
     });
 }
@@ -119,10 +153,15 @@ unsafe fn sound_vegeta_attackairhi(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
     let module_accessor = fighter.module_accessor;
     let entry_id = get_entry_id(module_accessor);
+    let rand_val = smash::app::sv_math::rand(hash40("lucario"), 2);
+    let mut sound = hash40("none");
+    if rand_val == 0{
+        sound = hash40("seq_lucario_rnd_attack");
+    }
     acmd!(lua_state, {
         frame(Frame=7)
         if(is_execute){
-            PLAY_SEQUENCE(hash40("seq_lucario_rnd_attack"))
+            PLAY_SEQUENCE(sound)
         }
     });
 }
@@ -132,10 +171,15 @@ unsafe fn sound_vegeta_attackairlw(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
     let module_accessor = fighter.module_accessor;
     let entry_id = get_entry_id(module_accessor);
+    let rand_val = smash::app::sv_math::rand(hash40("lucario"), 2);
+    let mut sound = hash40("none");
+    if rand_val == 0{
+        sound = hash40("seq_lucario_rnd_attack");
+    }
     acmd!(lua_state, {
         frame(Frame=7)
         if(is_execute){
-            PLAY_SEQUENCE(hash40("seq_lucario_rnd_attack"))
+            PLAY_SEQUENCE(sound)
         }
     });
 }
@@ -147,10 +191,15 @@ category = ACMD_SOUND)]
 unsafe fn sound_vegeta_attacks3(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
     let module_accessor = fighter.module_accessor;
+    let rand_val = smash::app::sv_math::rand(hash40("lucario"), 2);
+    let mut sound = hash40("none");
+    if rand_val == 0{
+        sound = hash40("seq_lucario_rnd_attack");
+    }
     acmd!(lua_state, {
         frame(Frame=7)
         if(is_execute){
-            PLAY_SEQUENCE(hash40("seq_lucario_rnd_attack"))
+            PLAY_SEQUENCE(sound)
         }
     });
 }
@@ -162,10 +211,15 @@ category = ACMD_SOUND)]
 unsafe fn sound_vegeta_attacklw3(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
     let module_accessor = fighter.module_accessor;
+    let rand_val = smash::app::sv_math::rand(hash40("lucario"), 2);
+    let mut sound = hash40("none");
+    if rand_val == 0{
+        sound = hash40("seq_lucario_rnd_attack");
+    }
     acmd!(lua_state, {
         frame(Frame=6)
         if(is_execute){
-            PLAY_SEQUENCE(hash40("seq_lucario_rnd_attack"))
+            PLAY_SEQUENCE(sound)
         }
     });
 }
@@ -177,10 +231,15 @@ category = ACMD_SOUND)]
 unsafe fn sound_vegeta_attackhi3(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
     let module_accessor = fighter.module_accessor;
+    let rand_val = smash::app::sv_math::rand(hash40("lucario"), 2);
+    let mut sound = hash40("none");
+    if rand_val == 0{
+        sound = hash40("seq_lucario_rnd_attack");
+    }
     acmd!(lua_state, {
         frame(Frame=9)
         if(is_execute){
-            PLAY_SEQUENCE(hash40("seq_lucario_rnd_attack"))
+            PLAY_SEQUENCE(sound)
         }
         frame(Frame=13)
         if(is_execute){
@@ -220,10 +279,15 @@ unsafe fn sound_vegeta_attacklw4(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;
     let module_accessor = fighter.module_accessor;
     let entry_id = get_entry_id(module_accessor);
+    let rand_val = smash::app::sv_math::rand(hash40("lucario"), 2);
+    let mut sound = hash40("none");
+    if rand_val == 0{
+        sound = hash40("vc_lucario_attack02");
+    }
     acmd!(lua_state, {
         frame(Frame=10)
         if(is_excute){
-            PLAY_SE(hash40("vc_lucario_attack02"))
+            PLAY_SE(sound)
         }
         frame(Frame=15)
         if(is_execute){
