@@ -126,6 +126,7 @@ pub fn hadoken(weapon: &mut L2CFighterBase) {
         let multiplier = owner_module_accessor.get_float(FIGHTER_VEGETA_INSTANCE_WORK_ID_FLOAT_POWER_MUL);
         let is_ue = owner_module_accessor.get_int(FIGHTER_VEGETA_INSTANCE_WORK_ID_INT_CURRENT_FORM) == 3;
         let attacked_players = get_attacked_players(weapon_module_accessor);
+        let mut end_frame = if owner_module_accessor.is_status(*FIGHTER_STATUS_KIND_ATTACK_LW4){15.0}else{20.0};
         AttackModule::set_power_mul(weapon_module_accessor, multiplier);
         let mut r = 1.0;
         let mut g = 2.0;
@@ -137,7 +138,7 @@ pub fn hadoken(weapon: &mut L2CFighterBase) {
             b = 1.0;
             collision_attr = hash40("collision_attr_purple");
         }
-        if weapon_module_accessor.motion_frame() >= 30.0{
+        if weapon_module_accessor.motion_frame() >= end_frame{
             AttackModule::clear_all(weapon_module_accessor);
             EffectModule::kill_kind(weapon_module_accessor, Hash40::new("sys_killereye_bullet"), false, true);
             EffectModule::kill_kind(weapon_module_accessor, Hash40::new("sys_sscope_bullet"), false, true);
